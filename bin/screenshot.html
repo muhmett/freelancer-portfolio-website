@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../jeux-marketing/assets/css/main.css">
+<style>
+  html,body{width:1200px;height:900px;overflow:hidden}
+  body{display:flex;flex-direction:column}
+  .rv{opacity:1;transform:none}
+  .shot-top{flex:none}
+  .shot-body{flex:1;display:flex;align-items:center;padding-top:18px}
+  .hero{padding:0}
+  .hero-grid{gap:40px}
+  h1{font-size:3.6rem}
+  .wheel-holder{width:430px}
+  .shot-strip{flex:none;padding:0 0 30px}
+  .shot-strip .two{gap:26px}
+</style>
+</head>
+<body>
+<header class="topbar shot-top">
+  <div class="wrap">
+    <div class="brand"><span class="dot"></span><span>Maison Solène</span></div>
+    <nav class="topnav"><a>Vos couleurs</a><a>Probabilités</a><a>Jeux</a><a>Rentabilité</a><a>Devis</a></nav>
+    <button class="btn btn-ghost">WhatsApp</button>
+  </div>
+  <div class="progress" style="width:34%"></div>
+</header>
+
+<div class="shot-body">
+  <div class="wrap hero">
+    <div class="hero-grid">
+      <div>
+        <p class="eyebrow">Démonstration en direct</p>
+        <h1>Tournez d'abord.<br><span class="accent-text">On parlera ensuite.</span></h1>
+        <p class="lede">Cette roue n'est pas une image. Elle tourne, elle respecte des probabilités que vous réglez vous-même, et elle envoie l'email du joueur là où vous travaillez déjà.</p>
+        <div class="metaline">
+          <span class="chip">44 Ko au total</span>
+          <span class="chip">Tactile &amp; clavier</span>
+          <span class="chip">FR · EN · AR (RTL)</span>
+        </div>
+        <div class="hero-cta">
+          <button class="btn">Configurer mon jeu</button>
+          <button class="btn btn-ghost">Calculer ce que ça rapporte</button>
+        </div>
+      </div>
+      <div class="stage">
+        <div class="wheel-holder">
+          <div class="needle"></div>
+          <canvas id="wheel" width="840" height="840"></canvas>
+          <div class="hub">TOURNEZ</div>
+        </div>
+        <button class="btn">Lancer la roue</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="shot-strip">
+  <div class="wrap">
+    <div class="divider" style="margin-bottom:26px"></div>
+    <div class="two">
+      <div class="panel">
+        <div class="panel-title"><h3>Réglage des lots</h3><span class="lot-sub">config.json</span></div>
+        <div id="lotList"></div>
+      </div>
+      <div class="panel">
+        <div class="panel-title"><h3>Vérification</h3><button class="btn btn-ghost">Simuler 1 000 tours</button></div>
+        <div id="simResults"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+var LOTS = [
+  { label: '-10 %',             hue: 0,    losing: false },
+  { label: 'Livraison offerte', hue: 38,   losing: false },
+  { label: '-25 %',             hue: -42,  losing: false },
+  { label: 'Produit offert',    hue: 150,  losing: false },
+  { label: 'Réessayez',         hue: null, losing: true  }
+];
+var accent = '#D9A441';
+
+function hexToHsl(hex){
+  hex = hex.replace('#','');
+  var r=parseInt(hex.slice(0,2),16)/255,g=parseInt(hex.slice(2,4),16)/255,b=parseInt(hex.slice(4,6),16)/255,
+      mx=Math.max(r,g,b),mn=Math.min(r,g,b),d=mx-mn,h=0;
+  if(d){h=mx===r?((g-b)/d+(g<b?6:0)):mx===g?((b-r)/d+2):((r-g)/d+4);h*=60;}
+  var l=(mx+mn)/2;
+  return [h,(d?d/(1-Math.abs(2*l-1)):0)*100,l*100];
+}
+function hsl(h,s,l){return 'hsl('+(((h%360)+360)%360)+' '+Math.max(0,Math.min(100,s))+'% '+Math.max(0,Math.min(100,l))+'%)';}
+function lotColor(lot){
+  if(lot.hue===null||lot.losing){return '#3A2B4D';}
+  var c=hexToHsl(accent);
+  return hsl(c[0]+lot.hue,Math.max(35,Math.min(88,c[1])),Math.max(38,Math.min(66,c[2])));
+}
+
+var cv=document.getElementById('wheel'),ctx=cv.getContext('2d'),R=cv.width/2;
+var n=LOTS.length,seg=(Math.PI*2)/n,rotation=-0.32;
+ctx.save();ctx.translate(R,R);ctx.rotate(rotation);
+LOTS.forEach(function(lot,i){
+  var a0=-Math.PI/2+i*seg;
+  ctx.beginPath();ctx.moveTo(0,0);ctx.arc(0,0,R-6,a0,a0+seg);ctx.closePath();
+  ctx.fillStyle=lotColor(lot);ctx.fill();
+  ctx.lineWidth=3;ctx.strokeStyle='#150C1D';ctx.stroke();
+  ctx.save();ctx.rotate(a0+seg/2);
+  ctx.textAlign='right';ctx.textBaseline='middle';
+  ctx.fillStyle=(lot.hue===null||lot.losing)?'#9C90AC':'#150C1D';
+  ctx.font='700 40px "Bricolage Grotesque", sans-serif';
+  var w=lot.label.split(' ');
+  if(w.length>1&&lot.label.length>10){
+    ctx.fillText(w[0],R-56,-24);
+    ctx.fillText(w.slice(1).join(' '),R-56,24);
+  }else{
+    ctx.fillText(lot.label,R-56,0);
+  }
+  ctx.restore();
+});
+ctx.restore();
+/* panneau des lots + simulation, comme sur la page réelle */
+var WEIGHTS = [38,24,11,2,25], TOTAL = 100;
+var lotHost = document.getElementById('lotList');
+LOTS.forEach(function(lot,i){
+  var pct=(WEIGHTS[i]/TOTAL)*100;
+  var row=document.createElement('div');
+  row.className='lot-row';
+  row.innerHTML='<span class="swatch" style="background:'+lotColor(lot)+'"></span>'+
+    '<span><span class="lot-name">'+lot.label+'</span>'+
+    (i===3?'<span class="cap-flag">plafond 5</span>':'')+'</span>'+
+    '<span class="lot-ctl"><input type="range" min="0" max="60" value="'+WEIGHTS[i]+'">'+
+    '<span class="pct">'+pct.toFixed(1)+'%</span></span>';
+  lotHost.appendChild(row);
+});
+var OBS=[37.4,24.9,10.6,1.8,25.3];
+var simHost=document.getElementById('simResults');
+LOTS.forEach(function(lot,i){
+  var row=document.createElement('div');
+  row.className='simrow';
+  row.innerHTML='<span>'+lot.label+'</span>'+
+    '<div class="bartrack"><div class="barfill" style="background:'+lotColor(lot)+';width:'+OBS[i]+'%"></div>'+
+    '<span class="target-tick" style="left:'+WEIGHTS[i]+'%"></span></div>'+
+    '<span class="simnum">'+OBS[i].toFixed(1)+'%</span>';
+  simHost.appendChild(row);
+});
+document.title='ready';
+</script>
+</body>
+</html>

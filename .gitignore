@@ -1,0 +1,12 @@
+# Archives produites par bin/build-zip.sh
+/dist/
+
+# Fichiers système
+.DS_Store
+Thumbs.db
+
+# Éditeurs
+.idea/
+.vscode/
+*.swp
+*~

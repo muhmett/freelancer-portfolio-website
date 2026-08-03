@@ -1,0 +1,16 @@
+/*
+Theme Name: Jeux Marketing
+Theme URI: https://exemple.com/jeux-marketing
+Author: Hamouda
+Description: Thème one-page pour vendre des mini-jeux marketing HTML5 : roue de la fortune, carte à gratter, tap-to-win et quiz. Tout se règle depuis le menu « Jeux Marketing » de l'administration : lots et probabilités, couleurs, numéro WhatsApp, lien Fiverr, tarifs du devis, textes. Les participants sont enregistrés dans WordPress et exportables en CSV.
+Version: 1.0.0
+Requires at least: 6.0
+Tested up to: 6.6
+Requires PHP: 7.4
+License: GNU General Public License v2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: jeux-marketing
+Tags: one-column, custom-colors, custom-menu, translation-ready
+*/
+
+/* Les styles du thème sont dans assets/css/main.css */

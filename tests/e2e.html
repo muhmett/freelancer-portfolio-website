@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head><meta charset="utf-8"><title>run</title></head>
+<body>
+<canvas id="jmk-confetti"></canvas>
+<button id="topCta">Me contacter</button>
+<div id="prog"></div>
+
+<!-- roue -->
+<div class="stage">
+  <div class="wheel-holder">
+    <div class="glowring" id="glow"></div><div class="needle" id="needle"></div>
+    <canvas id="wheel" width="840" height="840"></canvas>
+    <div class="hub" id="hubText">TOURNEZ</div>
+  </div>
+  <button class="btn" id="spinBtn">Lancer</button>
+  <div class="result" id="wheelResult"></div>
+  <button id="resetPlay" hidden>Rejouer</button>
+</div>
+
+<!-- labo -->
+<div id="lotList"></div>
+<button id="simBtn">Simuler</button>
+<div id="simResults"></div>
+<div id="capPanel" hidden><div id="capRows"></div></div>
+
+<!-- grattage -->
+<div class="scratch-holder" style="width:300px;height:150px;position:relative">
+  <div class="scratch-under"><div><strong id="scratchPrize">—</strong></div></div>
+  <canvas id="scratchCv" style="position:absolute;inset:0;width:300px;height:150px"></canvas>
+</div>
+<button id="scratchReset">Nouvelle carte</button><span id="scratchPct">0 %</span>
+
+<!-- tap -->
+<div class="boxes" id="boxes">
+  <button class="box" data-i="0">?</button><button class="box" data-i="1">?</button><button class="box" data-i="2">?</button>
+</div>
+<button id="tapReset">Rejouer</button><span id="tapMsg"></span>
+
+<!-- quiz -->
+<span id="quizCount"></span><div id="quizBox"></div><button id="quizReset">Recommencer</button>
+
+<!-- capture -->
+<input id="fname"><input id="femail" type="email"><input id="fconsent" type="checkbox">
+<button id="sendLead">Recevoir</button><p id="leadErr"></p>
+<table><tbody id="sheetBody"><tr><td class="sheet-empty">vide</td></tr></tbody></table>
+
+<!-- devis / roi -->
+<div id="opts"></div><span id="qTotal"></span><p id="qDelay"></p><div id="quoteCta"></div>
+<div id="embedCode"></div><button id="copyCode">Copier</button><div id="finalCta"></div>
+<input id="cVisit" value="8000"><input id="cPart" value="24"><input id="cConv" value="4"><input id="cCart" value="65">
+<div id="kLeads"></div><div id="kSales"></div><div id="kRev"></div><div id="kPay"></div>
+<input id="bName"><input id="bColor" type="color" value="#D9A441"><span id="bHex"></span>
+<div id="swatches"></div><select id="bLang"><option value="fr">fr</option><option value="ar">ar</option></select>
+<span id="brandLabel">Marque</span>
+
+<pre id="LOG"></pre>
+
+<script>
+/* ── faux serveur admin-ajax ── */
+var SERVER = {
+  awarded: {},
+  tokens: {},
+  lots: [
+    { label: '-10 %',             weight: 38, cap: 0, code: 'PROMO10',  losing: false },
+    { label: 'Livraison offerte', weight: 24, cap: 0, code: 'LIVRAISON',losing: false },
+    { label: 'Unique',            weight: 90, cap: 1, code: 'UNIQUE',   losing: false },
+    { label: 'Réessayez',         weight: 25, cap: 0, code: '',         losing: true  }
+  ],
+  playCalls: 0,
+  leadCalls: 0
+};
+function srvDraw(){
+  var pool=[],sum=0;
+  SERVER.lots.forEach(function(l,i){
+    if(l.cap>0 && (SERVER.awarded[i]||0)>=l.cap){return;}
+    if(l.weight<=0){return;}
+    pool.push([i,l.weight]); sum+=l.weight;
+  });
+  var r=Math.random()*sum;
+  for(var k=0;k<pool.length;k++){ r-=pool[k][1]; if(r<=0){return pool[k][0];} }
+  return pool.length?pool[pool.length-1][0]:SERVER.lots.length-1;
+}
+window.fetch = function(url, opt){
+  var p = new URLSearchParams(opt.body);
+  var action = p.get('action');
+  if(action==='jmk_play'){
+    SERVER.playCalls++;
+    var i=srvDraw(), lot=SERVER.lots[i];
+    var losing = lot.losing || !lot.code;
+    if(!losing){ SERVER.awarded[i]=(SERVER.awarded[i]||0)+1; }
+    var code = losing ? '' : lot.code+'-ABCD';
+    var token = 'tok'+SERVER.playCalls;
+    SERVER.tokens[token]={label:lot.label,code:code};
+    return Promise.resolve({json:function(){return Promise.resolve({success:true,data:{
+      index:i,label:lot.label,code:code,token:token,caps:SERVER.awarded}});}});
+  }
+  if(action==='jmk_lead'){
+    SERVER.leadCalls++;
+    var tk=p.get('token'), d=SERVER.tokens[tk];
+    var lot = d?d.label:'', cd = d?d.code:'';
+    if(d){ delete SERVER.tokens[tk]; }
+    window.__lastLead={name:p.get('name'),email:p.get('email'),token:tk,lot:lot,code:cd,
+                       sentLot:p.get('lot'),sentCode:p.get('code')};
+    return Promise.resolve({json:function(){return Promise.resolve({success:true,data:{
+      message:'ok',lot:lot,code:cd}});}});
+  }
+  return Promise.reject(new Error('unknown'));
+};
+
+var MODE = /mode=fiverr/.test(location.search) ? 'fiverr' : 'direct';
+
+window.JMK = {
+  ajax:'/fake', nonce:'n',
+  mode: MODE,
+  // jmk_js_config() n'envoie pas le numéro au navigateur en mode Fiverr.
+  whatsapp: MODE === 'fiverr' ? '' : '212600000000',
+  fiverr:'',
+  brand:'', accent:'#D9A441', lang:'fr', onePlay:false, currency:'€',
+  lots: SERVER.lots.map(function(l,i){return {id:'lot'+i,label:l.label,weight:l.weight,
+    cap:l.cap>0?l.cap:null,awarded:0,code:l.losing?'':l.code,hue:l.losing?null:0,losing:l.losing};}),
+  options:[{label:'Jeu principal',price:45,days:2,on:true,fixed:true},
+           {label:'Jeu supplémentaire',price:45,days:1,on:false,fixed:false}],
+  quiz:[{q:'Q1',o:['a','b'],a:1}],
+  roi:{visitors:8000,part:24,conv:4,cart:65},
+  i18n:{win:'Vous gagnez :',lose:'Perdu cette fois.',loseSub:'Revenez demain.',
+    already:'déjà',copied:'Copié',copy:'Copier le récapitulatif',copyCode:'Copier',
+    scratch:'GRATTEZ ICI',revealed:'Révélé',scratched:'%s %%',
+    errName:'Indiquez un prénom.',errMail:'Email invalide.',errCons:'Consentement requis.',
+    errDupe:'déjà participé',saved:'Participation enregistrée.',spin:'TOURNEZ',
+    question:'Question %1$s / %2$s',score:'%1$s / %2$s bonnes réponses',exhausted:'ÉPUISÉ',
+    waSend:'Envoyer ce devis sur WhatsApp',waChat:'Discuter sur WhatsApp',
+    order:'Commander sur Fiverr',contact:'Me contacter',delay:'Délai estimé : %s',
+    day:'jour',days:'jours',briefHi:'Bonjour',briefBrand:'Marque',briefColor:'Couleur',
+    briefLang:'Langue',briefConf:'Ma configuration :',briefTotal:'Total estimé',
+    briefEnd:'Mes lots :',noLot:'(à préciser)'}
+};
+/* headless --dump-dom ne déclenche pas requestAnimationFrame : on le
+   remplace par un minuteur pour que les animations aboutissent. */
+window.requestAnimationFrame = function(cb){ return setTimeout(function(){ cb(performance.now()); }, 16); };
+var _mm = window.matchMedia;
+window.matchMedia = function(q){
+  if(q.indexOf('prefers-reduced-motion')>-1){ return {matches:true, addListener:function(){}, addEventListener:function(){}}; }
+  return _mm.call(window,q);
+};
+</script>
+<script src="../jeux-marketing/assets/js/app.js"></script>
+<script>
+/* ── scénario ── */
+var out=[], fails=0;
+function ok(c,m){ out.push((c?'  ok   ':'  FAIL ')+m); if(!c){fails++;} }
+function wait(ms){ return new Promise(function(r){setTimeout(r,ms);}); }
+function fire(el,type,init){ el.dispatchEvent(new MouseEvent(type,Object.assign({bubbles:true},init||{}))); }
+
+(async function(){
+  out.push('roue');
+  document.getElementById('spinBtn').click();
+  await wait(800);
+  var res=document.getElementById('wheelResult').textContent;
+  ok(SERVER.playCalls===1,'la roue appelle le serveur une fois');
+  ok(res.length>0,'un résultat est affiché : '+JSON.stringify(res.slice(0,42)));
+
+  out.push('grattage');
+  var before=SERVER.playCalls;
+  var sc=document.getElementById('scratchCv');
+  ok(before===1,'afficher la page ne tire aucun lot pour la carte');
+  fire(sc,'mousedown',{clientX:10,clientY:10});
+  for(var x=0;x<300;x+=3){ fire(sc,'mousemove',{clientX:x,clientY:40}); fire(sc,'mousemove',{clientX:x,clientY:75}); fire(sc,'mousemove',{clientX:x,clientY:110}); }
+  await wait(300);
+  ok(SERVER.playCalls===before+1,'le premier grattage tire une seule partie côté serveur');
+  ok(document.getElementById('scratchPrize').textContent!=='—','le lot gratté est affiché');
+
+  out.push('tap-to-win');
+  before=SERVER.playCalls;
+  document.querySelector('.box').click();
+  await wait(300);
+  ok(SERVER.playCalls===before+1,'le tap tire côté serveur');
+  ok(document.getElementById('tapMsg').textContent.length>0,'un message est affiché');
+
+  out.push('quiz');
+  before=SERVER.playCalls;
+  document.querySelector('.qz-opt').click();
+  await wait(400);
+  ok(SERVER.playCalls===before+1,'la fin du quiz tire côté serveur');
+  ok((document.querySelector('.quiz-final')||{}).textContent.length>0,'le résultat du quiz est affiché');
+
+  out.push('plafond');
+  var uniqueAwarded=SERVER.awarded[2]||0;
+  ok(uniqueAwarded<=1,'le lot plafonné à 1 n\'a jamais dépassé son plafond (obtenu : '+uniqueAwarded+')');
+
+  out.push('capture');
+  document.getElementById('fname').value='Camille';
+  document.getElementById('femail').value='camille@exemple.fr';
+  document.getElementById('fconsent').checked=true;
+  document.getElementById('sendLead').click();
+  await wait(300);
+  var L=window.__lastLead||{};
+  ok(SERVER.leadCalls===1,'le formulaire appelle le serveur');
+  ok(!!L.token,'un jeton est transmis : '+L.token);
+  ok(L.sentLot===null&&L.sentCode===null,'aucun lot n\'est envoyé par le navigateur');
+  ok(document.querySelectorAll('#sheetBody tr').length===1,'une ligne apparaît dans l\'aperçu');
+  ok(!document.querySelector('#sheetBody .sheet-empty'),'la ligne « vide » a disparu');
+
+  if (MODE === 'direct') {
+    out.push('mode direct');
+    ok(!!document.querySelector('.wa-float'),'le bouton WhatsApp flottant est présent');
+    ok(document.querySelectorAll('a[href*="wa.me"]').length>0,'les liens pointent vers WhatsApp');
+    ok(!document.getElementById('topCta').hidden,'le bouton d\'en-tête est visible');
+  } else {
+    out.push('mode Fiverr');
+    ok(!document.querySelector('.wa-float'),'aucun bouton WhatsApp flottant');
+    ok(document.querySelectorAll('a[href*="wa.me"]').length===0,'aucun lien vers WhatsApp rendu');
+    ok(window.JMK.whatsapp==='','le numéro n\'est pas transmis au navigateur');
+    ok(!/\d{9,}/.test(document.querySelector('.stage').textContent+document.getElementById('quoteCta').textContent),
+       'aucun numéro visible dans les zones de contact');
+    ok(document.getElementById('topCta').hidden,'le bouton d\'en-tête est masqué faute de lien');
+    ok(document.querySelectorAll('#quoteCta a').length===0,'aucun bouton mort dans le devis');
+    ok(!!document.getElementById('copyBrief'),'le récapitulatif reste copiable');
+  }
+
+  out.push('devis et personnalisation');
+  ok(document.getElementById('qTotal').textContent.indexOf('45')===0,'le total du devis est calculé : '+document.getElementById('qTotal').textContent);
+  ok(document.querySelectorAll('#opts .opt').length===2,'les options du devis sont rendues');
+  ok(document.getElementById('embedCode').textContent.indexOf('data-marque')>-1,'le code d\'intégration est généré');
+  var bn=document.getElementById('bName');
+  bn.value='Maison Solène'; bn.dispatchEvent(new Event('input',{bubbles:true}));
+  await wait(50);
+  ok(document.getElementById('brandLabel').textContent==='Maison Solène','le nom de marque se propage');
+
+  out.push('simulation');
+  document.getElementById('simBtn').click();
+  await wait(100);
+  ok(document.querySelectorAll('#simResults .simrow').length===4,'la simulation affiche une ligne par lot');
+
+  document.getElementById('LOG').textContent =
+    out.join('\n') + '\n\n' + (fails ? fails+' ECHEC(S)' : 'TOUT VERT') + '\n';
+  document.title = fails ? 'FAIL' : 'PASS';
+})();
+</script>
+</body>
+</html>
