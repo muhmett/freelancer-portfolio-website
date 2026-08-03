@@ -31,7 +31,7 @@ Le script régénère le fichier de traduction puis écrit
 
 ```sh
 php tests/test-draw.php     # logique de tirage
-tests/run-e2e.sh           # les quatre jeux dans un navigateur
+tests/run-e2e.sh           # les six jeux dans un navigateur
 ```
 
 Les tests chargent `inc/defaults.php` et `inc/leads.php` avec des doublures

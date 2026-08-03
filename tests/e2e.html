@@ -37,6 +37,20 @@
 </div>
 <button id="tapReset">Rejouer</button><span id="tapMsg"></span>
 
+<!-- machine à sous -->
+<div class="reels" id="reels">
+  <div class="reel"><div class="strip"></div></div>
+  <div class="reel"><div class="strip"></div></div>
+  <div class="reel"><div class="strip"></div></div>
+</div>
+<button id="slotBtn">Lancer</button><span id="slotMsg"></span>
+
+<!-- pluie de lots -->
+<div class="plinko-holder" style="width:320px;height:232px">
+  <canvas id="plinkoCv" style="width:320px;height:232px"></canvas>
+</div>
+<button id="plinkoBtn">Lâcher</button><span id="plinkoMsg"></span>
+
 <!-- quiz -->
 <span id="quizCount"></span><div id="quizBox"></div><button id="quizReset">Recommencer</button>
 
@@ -176,6 +190,23 @@ function fire(el,type,init){ el.dispatchEvent(new MouseEvent(type,Object.assign(
   await wait(300);
   ok(SERVER.playCalls===before+1,'le tap tire côté serveur');
   ok(document.getElementById('tapMsg').textContent.length>0,'un message est affiché');
+
+  out.push('machine à sous');
+  before=SERVER.playCalls;
+  ok(document.querySelectorAll('#reels .cell').length>0,'les rouleaux sont construits');
+  document.getElementById('slotBtn').click();
+  await wait(2600);
+  ok(SERVER.playCalls===before+1,'la machine tire côté serveur');
+  ok(document.getElementById('slotMsg').textContent.length>0,'un message est affiché');
+  ok(!document.getElementById('slotBtn').disabled,'le bouton est réactivé');
+
+  out.push('pluie de lots');
+  before=SERVER.playCalls;
+  document.getElementById('plinkoBtn').click();
+  await wait(3000);
+  ok(SERVER.playCalls===before+1,'la bille tire côté serveur');
+  ok(document.getElementById('plinkoMsg').textContent.length>0,'un message est affiché');
+  ok(!document.getElementById('plinkoBtn').disabled,'le bouton est réactivé');
 
   out.push('quiz');
   before=SERVER.playCalls;

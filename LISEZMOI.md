@@ -26,8 +26,12 @@ La couleur se propage à toute la page : roue, boutons, accents, graphiques.
 Le logo se règle dans **Apparence → Personnaliser**.
 
 ### Jeux
-Activer ou désactiver la roue, la carte à gratter, le tap-to-win et le quiz.
+Activer ou désactiver les six jeux : la roue, la carte à gratter, le tap-to-win,
+le quiz, la machine à sous et la pluie de lots.
 Les questions du quiz se modifient dans le même onglet.
+
+Tous partagent les mêmes lots, les mêmes probabilités et les mêmes plafonds.
+Changer de jeu ne demande aucun autre réglage.
 
 ### Lots et probabilités
 Le tableau central du thème.
@@ -88,7 +92,7 @@ Chaque personne qui remplit le formulaire est enregistrée dans **Jeux Marketing
 - **Webhook** : renseignez une URL dans l'onglet Général et chaque participant y est envoyé en JSON, pour Zapier, Make, Mailchimp, Brevo ou votre CRM
 - **Notification** : renseignez un email et vous recevez un message à chaque participation
 
-Le tirage se fait **côté serveur**, pour les quatre jeux. Les plafonds sont donc réellement respectés : personne ne peut forcer un gain en modifiant la page dans son navigateur.
+Le tirage se fait **côté serveur**, pour les six jeux. Les plafonds sont donc réellement respectés : personne ne peut forcer un gain en modifiant la page dans son navigateur.
 
 Le lot enregistré avec un participant est celui que le serveur a tiré, et pas celui que le navigateur annonce avoir gagné : chaque partie produit un jeton à usage unique, et c'est ce jeton que le formulaire renvoie. Un formulaire bricolé à la main ne peut donc pas s'attribuer le gros lot.
 
@@ -103,6 +107,8 @@ Le code court `[jeu]` fonctionne dans n'importe quelle page ou article.
 [jeu type="grattage"]              → la carte à gratter
 [jeu type="tap"]                   → le tap-to-win
 [jeu type="quiz"]                  → le quiz
+[jeu type="machine"]               → la machine à sous
+[jeu type="plinko"]                → la pluie de lots
 [jeu type="roue" formulaire="non"] → la roue seule, sans formulaire
 ```
 

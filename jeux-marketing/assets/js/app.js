@@ -488,6 +488,280 @@
 		} );
 	}
 
+	/* ══════════ MACHINE À SOUS ══════════ */
+	/* Trois rouleaux identiques = gagné. Le serveur ayant déjà tranché, les
+	   rouleaux ne font qu'illustrer sa décision : ils s'arrêtent sur le lot
+	   tiré si c'est gagné, sur une combinaison dépareillée sinon. */
+	var CELL = 58, CYCLES = 9, slotBusy = false;
+
+	function slotStrips() {
+		return $$( '#reels .strip' );
+	}
+	function buildReels() {
+		var strips = slotStrips();
+		if ( ! strips.length || ! LOTS.length ) { return; }
+		strips.forEach( function ( strip ) {
+			var html = '';
+			for ( var c = 0; c < CYCLES; c++ ) {
+				LOTS.forEach( function ( lot ) {
+					var face = String( lot.label );
+					if ( face.length > 18 ) { face = face.slice( 0, 17 ) + '…'; }
+					html += '<span class="cell" style="background:' + lotColor( lot ) + ';color:' +
+						( ( null === lot.hue || lot.losing ) ? '#9C90AC' : '#150C1D' ) + '">' +
+						esc( face ) + '</span>';
+				} );
+			}
+			strip.innerHTML = html;
+			strip.style.transition = 'none';
+			strip.style.transform  = 'translateY(0)';
+		} );
+	}
+
+	/**
+	 * Fait glisser un rouleau jusqu'au lot voulu.
+	 *
+	 * @param {Element} strip Bande du rouleau.
+	 * @param {number}  idx   Index du lot.
+	 * @param {number}  turns Nombre de tours avant l'arrêt.
+	 * @param {number}  ms    Durée.
+	 */
+	function stopReel( strip, idx, turns, ms ) {
+		var y = -( ( turns * LOTS.length ) + idx ) * CELL;
+		strip.style.transition = 'none';
+		strip.style.transform  = 'translateY(0)';
+		void strip.offsetWidth;
+		strip.style.transition = 'transform ' + ms + 'ms cubic-bezier(.16,.84,.28,1)';
+		strip.style.transform  = 'translateY(' + y + 'px)';
+	}
+
+	/* Combinaison dépareillée : on affiche trois lots différents. */
+	function missCombo( drawn ) {
+		var others = LOTS.map( function ( l, i ) { return i; } )
+			.filter( function ( i ) { return i !== drawn; } );
+		if ( others.length < 2 ) { return [ drawn, drawn, others[ 0 ] || drawn ]; }
+		var a = others[ Math.floor( Math.random() * others.length ) ];
+		var b = others.filter( function ( i ) { return i !== a; } );
+		return [ drawn, a, b[ Math.floor( Math.random() * b.length ) ] ];
+	}
+
+	if ( $( '#slotBtn' ) ) {
+		buildReels();
+		$( '#slotBtn' ).addEventListener( 'click', function () {
+			if ( slotBusy ) { return; }
+			slotBusy = true;
+			var btn = this;
+			btn.disabled = true;
+			$( '#slotMsg' ).textContent = '';
+
+			play( function ( lot, code ) {
+				var idx    = Math.max( 0, LOTS.indexOf( lot ) );
+				var faces  = code ? [ idx, idx, idx ] : missCombo( idx );
+				var strips = slotStrips();
+				var base   = reduced ? 120 : 900;
+
+				strips.forEach( function ( strip, i ) {
+					stopReel( strip, faces[ i ], 3 + i * 2, base + i * ( reduced ? 40 : 420 ) );
+				} );
+
+				setTimeout( function () {
+					slotBusy     = false;
+					btn.disabled = false;
+					$( '#slotMsg' ).textContent = code ? T.win + ' ' + lot.label : T.lose;
+					if ( code ) {
+						renderLots();
+						drawWheel();
+						if ( ! reduced ) { burst(); }
+					}
+				}, base + 2 * ( reduced ? 40 : 420 ) + ( reduced ? 20 : 160 ) );
+			} );
+		} );
+	}
+
+	/* ══════════ PLUIE DE LOTS ══════════ */
+	/* La case d'arrivée est connue avant le lancer : on construit un chemin
+	   qui y mène, puis on l'anime. Le hasard est déjà passé, côté serveur. */
+	var pk        = $( '#plinkoCv' ),
+		px        = pk ? pk.getContext( '2d' ) : null,
+		PK_ROWS   = 9,
+		pkBusy    = false,
+		pkBall    = null,
+		pkLanded  = -1;
+
+	/* ctx.roundRect n'existe pas partout : on trace le chemin à la main. */
+	function roundPath( c, x, y, w, h, r ) {
+		r = Math.min( r, w / 2, h / 2 );
+		c.beginPath();
+		c.moveTo( x + r, y );
+		c.arcTo( x + w, y, x + w, y + h, r );
+		c.arcTo( x + w, y + h, x, y + h, r );
+		c.arcTo( x, y + h, x, y, r );
+		c.arcTo( x, y, x + w, y, r );
+		c.closePath();
+	}
+
+	function pkSize() {
+		if ( ! px ) { return null; }
+		var r = pk.getBoundingClientRect(),
+			d = window.devicePixelRatio || 1,
+			w = Math.max( 200, r.width ),
+			h = Math.max( 180, r.height );
+		if ( pk.width !== Math.round( w * d ) || pk.height !== Math.round( h * d ) ) {
+			pk.width  = Math.round( w * d );
+			pk.height = Math.round( h * d );
+		}
+		px.setTransform( d, 0, 0, d, 0, 0 );
+		return { w: w, h: h };
+	}
+
+	function pkDraw() {
+		var s = pkSize();
+		if ( ! s || ! LOTS.length ) { return; }
+		var slotH = 30,
+			top   = 14,
+			usable = s.h - slotH - top,
+			gapY  = usable / PK_ROWS,
+			gapX  = s.w / ( PK_ROWS + 2 );
+
+		px.clearRect( 0, 0, s.w, s.h );
+
+		// Clous.
+		px.fillStyle = '#5A4770';
+		for ( var row = 0; row < PK_ROWS; row++ ) {
+			var count = row + 2,
+				y     = top + ( row + 0.5 ) * gapY;
+			for ( var i = 0; i < count; i++ ) {
+				var x = s.w / 2 + ( i - ( count - 1 ) / 2 ) * gapX;
+				px.beginPath();
+				px.arc( x, y, 2.6, 0, Math.PI * 2 );
+				px.fill();
+			}
+		}
+
+		// Cases du bas, une par lot.
+		var n = LOTS.length, cw = s.w / n;
+		LOTS.forEach( function ( lot, i ) {
+			var out = null !== lot.cap && lot.awarded >= lot.cap;
+			px.globalAlpha = out ? 0.3 : 1;
+			px.fillStyle   = lotColor( lot );
+			roundPath( px, i * cw + 2, s.h - slotH, cw - 4, slotH - 2, 6 );
+			px.fill();
+			px.globalAlpha = 1;
+
+			px.fillStyle    = ( null === lot.hue || lot.losing ) ? '#9C90AC' : '#150C1D';
+			px.font         = '600 10px "JetBrains Mono", monospace';
+			px.textAlign    = 'center';
+			px.textBaseline = 'middle';
+			var label = String( lot.label );
+			if ( label.length > 9 ) { label = label.slice( 0, 8 ) + '…'; }
+			px.fillText( label, i * cw + cw / 2, s.h - slotH / 2 - 1 );
+
+			if ( pkLanded === i ) {
+				px.strokeStyle = '#F5EFE6';
+				px.lineWidth   = 2;
+				roundPath( px, i * cw + 2, s.h - slotH, cw - 4, slotH - 2, 6 );
+				px.stroke();
+			}
+		} );
+
+		// Bille.
+		if ( pkBall ) {
+			px.fillStyle = '#F5EFE6';
+			px.beginPath();
+			px.arc( pkBall.x, pkBall.y, 6, 0, Math.PI * 2 );
+			px.fill();
+		}
+	}
+
+	/* Suite de déviations gauche/droite menant à la colonne voulue. */
+	function pkPath( targetCol ) {
+		var moves = [], right = Math.max( 0, Math.min( PK_ROWS, targetCol ) );
+		for ( var i = 0; i < PK_ROWS; i++ ) { moves.push( i < right ? 1 : 0 ); }
+		for ( var j = moves.length - 1; j > 0; j-- ) {
+			var k = Math.floor( Math.random() * ( j + 1 ) );
+			var t = moves[ j ]; moves[ j ] = moves[ k ]; moves[ k ] = t;
+		}
+		return moves;
+	}
+
+	function pkDrop( idx, after ) {
+		var s = pkSize();
+		if ( ! s ) { return after(); }
+		var n      = LOTS.length,
+			slotH  = 30,
+			top    = 14,
+			usable = s.h - slotH - top,
+			gapY   = usable / PK_ROWS,
+			gapX   = s.w / ( PK_ROWS + 2 ),
+			// Colonne visée, ramenée à l'échelle du nombre de rangées.
+			col    = Math.round( ( idx + 0.5 ) * PK_ROWS / n ),
+			moves  = pkPath( col ),
+			targetX = ( idx + 0.5 ) * ( s.w / n );
+
+		var pts = [ { x: s.w / 2, y: top - 6 } ], cx = s.w / 2;
+		moves.forEach( function ( m, r ) {
+			cx += ( m ? 1 : -1 ) * gapX / 2;
+			pts.push( { x: cx, y: top + ( r + 0.5 ) * gapY } );
+		} );
+		pts.push( { x: targetX, y: s.h - slotH - 6 } );
+
+		if ( reduced ) {
+			pkBall = pts[ pts.length - 1 ];
+			pkDraw();
+			return after();
+		}
+
+		var seg = 0, t0 = performance.now(), per = 170;
+		( function step( now ) {
+			var p = Math.min( ( now - t0 ) / per, 1 ),
+				a = pts[ seg ],
+				b = pts[ seg + 1 ];
+			// Léger rebond vertical entre deux clous.
+			pkBall = {
+				x: a.x + ( b.x - a.x ) * p,
+				y: a.y + ( b.y - a.y ) * p - Math.sin( p * Math.PI ) * 7
+			};
+			pkDraw();
+			if ( p < 1 ) {
+				requestAnimationFrame( step );
+			} else if ( seg < pts.length - 2 ) {
+				seg++;
+				t0 = now;
+				requestAnimationFrame( step );
+			} else {
+				after();
+			}
+		} )( t0 );
+	}
+
+	if ( pk && $( '#plinkoBtn' ) ) {
+		pkDraw();
+		window.addEventListener( 'resize', function () { if ( ! pkBusy ) { pkDraw(); } } );
+		$( '#plinkoBtn' ).addEventListener( 'click', function () {
+			if ( pkBusy ) { return; }
+			pkBusy = true;
+			var btn = this;
+			btn.disabled = true;
+			pkLanded = -1;
+			$( '#plinkoMsg' ).textContent = '';
+
+			play( function ( lot, code ) {
+				var idx = Math.max( 0, LOTS.indexOf( lot ) );
+				pkDrop( idx, function () {
+					pkLanded = idx;
+					pkBusy   = false;
+					btn.disabled = false;
+					pkDraw();
+					$( '#plinkoMsg' ).textContent = code ? T.win + ' ' + lot.label : T.lose;
+					if ( code ) {
+						renderLots();
+						drawWheel();
+						if ( ! reduced ) { burst(); }
+					}
+				} );
+			} );
+		} );
+	}
+
 	/* ══════════ QUIZ ══════════ */
 	var qi = 0, qOk = 0, qRun = 0;
 	function renderQuiz() {
@@ -769,6 +1043,8 @@
 		if ( $( '#hubText' ) ) { $( '#hubText' ).textContent = brandName ? brandName.slice( 0, 10 ).toUpperCase() : T.spin; }
 		renderLots();
 		drawWheel();
+		buildReels();
+		pkDraw();
 		buildEmbed();
 		if ( ! scratchDone ) { newCard(); }
 	}

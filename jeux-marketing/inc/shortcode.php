@@ -8,6 +8,8 @@
  *   [jeu type="grattage"]
  *   [jeu type="tap"]
  *   [jeu type="quiz"]
+ *   [jeu type="machine"]
+ *   [jeu type="plinko"]
  *   [jeu type="roue" formulaire="oui"]
  *
  * @package JeuxMarketing
@@ -48,6 +50,12 @@ function jmk_shortcode( $atts ) {
 			break;
 		case 'quiz':
 			get_template_part( 'template-parts/game', 'quiz' );
+			break;
+		case 'machine':
+			get_template_part( 'template-parts/game', 'slot' );
+			break;
+		case 'plinko':
+			get_template_part( 'template-parts/game', 'plinko' );
 			break;
 		default:
 			get_template_part( 'template-parts/game', 'wheel' );

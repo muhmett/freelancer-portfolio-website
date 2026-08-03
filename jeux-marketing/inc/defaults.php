@@ -40,6 +40,8 @@ function jmk_defaults() {
 		'game_scratch'  => 1,
 		'game_tap'      => 1,
 		'game_quiz'     => 1,
+		'game_slot'     => 1,
+		'game_plinko'   => 1,
 
 		// Sections affichées.
 		'sec_brand'     => 1,

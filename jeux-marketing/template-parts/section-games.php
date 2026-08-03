@@ -9,7 +9,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-$has_any = jmk_get( 'game_scratch' ) || jmk_get( 'game_tap' ) || jmk_get( 'game_quiz' );
+$has_any = jmk_get( 'game_scratch' ) || jmk_get( 'game_tap' ) || jmk_get( 'game_quiz' )
+	|| jmk_get( 'game_slot' ) || jmk_get( 'game_plinko' );
 if ( ! $has_any ) {
 	return;
 }
@@ -31,6 +32,12 @@ if ( ! $has_any ) {
 			}
 			if ( jmk_get( 'game_quiz' ) ) {
 				get_template_part( 'template-parts/game', 'quiz' );
+			}
+			if ( jmk_get( 'game_slot' ) ) {
+				get_template_part( 'template-parts/game', 'slot' );
+			}
+			if ( jmk_get( 'game_plinko' ) ) {
+				get_template_part( 'template-parts/game', 'plinko' );
 			}
 			?>
 		</div>

@@ -114,7 +114,7 @@ function jmk_sanitize( $in ) {
 
 	// Cases à cocher : absentes = 0.
 	$flags = array(
-		'game_wheel', 'game_scratch', 'game_tap', 'game_quiz',
+		'game_wheel', 'game_scratch', 'game_tap', 'game_quiz', 'game_slot', 'game_plinko',
 		'sec_brand', 'sec_lab', 'sec_leads', 'sec_roi', 'sec_quote', 'sec_specs', 'sec_faq',
 		'one_play',
 	);
@@ -363,6 +363,8 @@ function jmk_settings_page() {
 						jmk_check( 'game_scratch', __( 'Carte à gratter', 'jeux-marketing' ) );
 						jmk_check( 'game_tap', __( 'Tap-to-win', 'jeux-marketing' ) );
 						jmk_check( 'game_quiz', __( 'Quiz de marque', 'jeux-marketing' ) );
+						jmk_check( 'game_slot', __( 'Machine à sous', 'jeux-marketing' ) );
+						jmk_check( 'game_plinko', __( 'Pluie de lots', 'jeux-marketing' ), __( 'La bille tombe entre les clous et se range dans la case du lot.', 'jeux-marketing' ) );
 						?>
 					</div>
 				</div>
