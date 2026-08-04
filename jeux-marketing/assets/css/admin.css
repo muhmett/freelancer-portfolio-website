@@ -80,3 +80,9 @@
   .jmk-lot,.jmk-opt{grid-template-columns:1fr 1fr;gap:10px;padding:14px 0}
   .jmk-lot .jmk-del,.jmk-opt .jmk-del{grid-column:2;justify-self:end}
 }
+
+/* portfolio */
+.jmk-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.jmk-grid-3{display:grid;grid-template-columns:2fr 1fr 1fr;gap:10px}
+@media(max-width:782px){.jmk-grid-2,.jmk-grid-3{grid-template-columns:1fr}}
+.jmk-work-meta p{max-width:640px}

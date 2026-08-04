@@ -44,6 +44,11 @@ function jmk_defaults() {
 		'game_plinko'   => 1,
 
 		// Sections affichées.
+		'sec_about'     => 1,
+		'sec_services'  => 1,
+		'sec_work'      => 1,
+		'sec_process'   => 1,
+		'sec_reviews'   => 1,
 		'sec_brand'     => 1,
 		'sec_lab'       => 1,
 		'sec_leads'     => 1,
@@ -200,6 +205,75 @@ function jmk_defaults() {
 				'c' => 2,
 			),
 		),
+
+		// Portfolio — à propos.
+		'about_title'   => 'Une personne, pas une agence.',
+		'about_text'    => "Je conçois et je livre moi-même les jeux marketing que vous voyez sur cette page. Pas d'intermédiaire, pas de sous-traitance : la personne qui répond à votre message est celle qui écrit le code.
+
+Je travaille surtout avec des boutiques en ligne et des marques qui lancent une campagne courte et veulent en garder les emails. Le jeu n'est jamais le but : il sert à faire entrer des adresses dans votre liste, proprement et sans forcer.
+
+Si votre besoin ne rentre pas dans ce que je sais faire, je le dis tout de suite plutôt que d'apprendre à vos frais.",
+		'about_stats'   => array(
+			array( 'n' => '48 h', 'l' => 'délai de livraison habituel' ),
+			array( 'n' => '6', 'l' => 'mécaniques de jeu disponibles' ),
+			array( 'n' => 'FR · EN · AR', 'l' => 'langues livrées, RTL compris' ),
+			array( 'n' => '100 %', 'l' => 'code source remis au client' ),
+		),
+
+		// Portfolio — packs.
+		'packs'         => array(
+			array(
+				'name'     => 'Essentiel',
+				'price'    => 45,
+				'days'     => 2,
+				'desc'     => 'Un jeu à votre marque, prêt à coller sur votre page.',
+				'items'    => "Une mécanique au choix\nVos couleurs et votre logo\nVos lots et vos probabilités\nFormulaire de capture d'email\nNotice d'une page",
+				'featured' => 0,
+			),
+			array(
+				'name'     => 'Campagne',
+				'price'    => 120,
+				'days'     => 4,
+				'desc'     => 'Le jeu, la collecte et le branchement à vos outils.',
+				'items'    => "Tout l'Essentiel\nDeux mécaniques au choix\nPlafonds par lot et codes promo\nEnvoi vers Mailchimp, Brevo ou votre CRM\nExport CSV des participants\nMise en ligne sur votre site",
+				'featured' => 1,
+			),
+			array(
+				'name'     => 'Sur mesure',
+				'price'    => 260,
+				'days'     => 8,
+				'desc'     => 'Une mécanique qui n\'existe pas encore, ou un dispositif complet.',
+				'items'    => "Tout la Campagne\nMécanique conçue pour votre besoin\nDeuxième langue, arabe RTL compris\nMode borne tactile pour salon ou magasin\nCode source et droits complets\nUn mois de corrections incluses",
+				'featured' => 0,
+			),
+		),
+
+		// Portfolio — déroulé.
+		'process'       => array(
+			array(
+				'q' => 'Vous décrivez la campagne',
+				'a' => 'Vos lots, votre plateforme, votre date de lancement. Trois lignes suffisent pour que je sache si c\'est faisable et en combien de temps.',
+			),
+			array(
+				'q' => 'Je vous envoie une maquette jouable',
+				'a' => 'Pas une image : un lien que vous ouvrez sur votre téléphone et que vous faites tester autour de vous. Les corrections se font à ce moment-là, tant que rien n\'est figé.',
+			),
+			array(
+				'q' => 'On règle les probabilités ensemble',
+				'a' => 'Combien de gros lots au maximum, quelle part de perdants, quels codes promo. C\'est le moment qui décide du coût réel de votre campagne.',
+			),
+			array(
+				'q' => 'Je livre, vous lancez',
+				'a' => 'Le jeu, ses fichiers de configuration, la notice, et le branchement vers l\'outil où vous récupérez les emails. Vous restez propriétaire de tout.',
+			),
+		),
+
+		// Portfolio — avis. Volontairement vide : voir section-reviews.php.
+		'reviews'       => array(),
+
+		// Portfolio — réalisations.
+		'work_title'    => 'Des campagnes déjà en ligne',
+		'work_text'     => 'Chaque fiche indique le secteur, la mécanique utilisée et le résultat mesuré. Les chiffres viennent des tableaux de bord des clients, pas d\'une estimation.',
 
 		// FAQ.
 		'faq'           => array(

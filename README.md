@@ -18,6 +18,10 @@ code.
 | `bin/screenshot.html` | Page qui sert à produire `screenshot.png` |
 | `tests/` | Vérifications de la logique de tirage, sans WordPress |
 
+Le thème fait deux choses : il vend les jeux, et il sert de portfolio. Les
+sections « packs », « réalisations », « déroulé », « à propos » et « avis »
+composent la partie portfolio ; les six jeux jouables en sont la démonstration.
+
 ## Construire l'archive
 
 ```sh
@@ -71,6 +75,12 @@ ne suffirait pas : il resterait lisible dans le code source de la page.
 valeur d'exemple pour un champ de texte laissé vide, mais pas pour les clés
 listées dans `jmk_blankable()`. Sans cela, effacer le numéro WhatsApp le
 remplacerait par celui du thème.
+
+**Les réalisations et les avis ne sont jamais pré-remplis.** `section-work.php`
+et `section-reviews.php` s'effacent tant qu'aucun contenu réel n'a été saisi.
+C'est délibéré : publier des références inventées est un motif de suspension sur
+Fiverr et Upwork, et ce sont précisément les comptes que ce thème cherche à
+protéger avec son mode Fiverr.
 
 **Les polices viennent de Google Fonts.** C'est le point qui reste en tension
 avec l'argument RGPD de la page : pour un client européen strict, il faut

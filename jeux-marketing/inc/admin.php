@@ -60,7 +60,7 @@ function jmk_sanitize( $in ) {
 	$in  = is_array( $in ) ? $in : array();
 
 	// Champs texte simples.
-	$text = array( 'brand_name', 'hero_eyebrow', 'hero_title', 'hero_title_2', 'currency' );
+	$text = array( 'brand_name', 'hero_eyebrow', 'hero_title', 'hero_title_2', 'currency', 'about_title', 'work_title' );
 	foreach ( $text as $k ) {
 		if ( isset( $in[ $k ] ) ) {
 			$out[ $k ] = sanitize_text_field( wp_unslash( $in[ $k ] ) );
@@ -68,7 +68,7 @@ function jmk_sanitize( $in ) {
 	}
 
 	// Zones de texte.
-	foreach ( array( 'hero_text', 'chips' ) as $k ) {
+	foreach ( array( 'hero_text', 'chips', 'about_text', 'work_text' ) as $k ) {
 		if ( isset( $in[ $k ] ) ) {
 			$out[ $k ] = sanitize_textarea_field( wp_unslash( $in[ $k ] ) );
 		}
@@ -116,6 +116,7 @@ function jmk_sanitize( $in ) {
 	$flags = array(
 		'game_wheel', 'game_scratch', 'game_tap', 'game_quiz', 'game_slot', 'game_plinko',
 		'sec_brand', 'sec_lab', 'sec_leads', 'sec_roi', 'sec_quote', 'sec_specs', 'sec_faq',
+		'sec_about', 'sec_services', 'sec_work', 'sec_process', 'sec_reviews',
 		'one_play',
 	);
 	foreach ( $flags as $k ) {
@@ -169,8 +170,42 @@ function jmk_sanitize( $in ) {
 		$out['options'] = $opts;
 	}
 
-	// Blocs question / réponse : quiz, faq, specs.
-	foreach ( array( 'quiz', 'faq', 'specs' ) as $key ) {
+	// Packs.
+	if ( isset( $in['packs'] ) && is_array( $in['packs'] ) ) {
+		$packs = array();
+		foreach ( $in['packs'] as $p ) {
+			$name = sanitize_text_field( wp_unslash( isset( $p['name'] ) ? $p['name'] : '' ) );
+			if ( '' === $name ) {
+				continue;
+			}
+			$packs[] = array(
+				'name'     => $name,
+				'price'    => max( 0, (float) ( isset( $p['price'] ) ? $p['price'] : 0 ) ),
+				'days'     => max( 0, (int) ( isset( $p['days'] ) ? $p['days'] : 0 ) ),
+				'desc'     => sanitize_text_field( wp_unslash( isset( $p['desc'] ) ? $p['desc'] : '' ) ),
+				'items'    => sanitize_textarea_field( wp_unslash( isset( $p['items'] ) ? $p['items'] : '' ) ),
+				'featured' => empty( $p['featured'] ) ? 0 : 1,
+			);
+		}
+		$out['packs'] = $packs;
+	}
+
+	// Chiffres clés de la section « à propos ».
+	if ( isset( $in['about_stats'] ) && is_array( $in['about_stats'] ) ) {
+		$stats = array();
+		foreach ( $in['about_stats'] as $st ) {
+			$n = sanitize_text_field( wp_unslash( isset( $st['n'] ) ? $st['n'] : '' ) );
+			$l = sanitize_text_field( wp_unslash( isset( $st['l'] ) ? $st['l'] : '' ) );
+			if ( '' === $n && '' === $l ) {
+				continue;
+			}
+			$stats[] = array( 'n' => $n, 'l' => $l );
+		}
+		$out['about_stats'] = $stats;
+	}
+
+	// Blocs question / réponse : quiz, faq, specs, déroulé, avis.
+	foreach ( array( 'quiz', 'faq', 'specs', 'process', 'reviews' ) as $key ) {
 		if ( ! isset( $in[ $key ] ) || ! is_array( $in[ $key ] ) ) {
 			continue;
 		}
@@ -256,6 +291,7 @@ function jmk_settings_page() {
 		'lots'    => __( 'Lots et probabilités', 'jeux-marketing' ),
 		'devis'   => __( 'Devis', 'jeux-marketing' ),
 		'textes'  => __( 'Textes', 'jeux-marketing' ),
+		'porte'   => __( 'Portfolio', 'jeux-marketing' ),
 	);
 	?>
 	<div class="wrap jmk-wrap">
@@ -299,6 +335,11 @@ function jmk_settings_page() {
 					<h2><?php esc_html_e( 'Sections affichées', 'jeux-marketing' ); ?></h2>
 					<div class="jmk-checks">
 						<?php
+						jmk_check( 'sec_services', __( 'Tarifs et packs', 'jeux-marketing' ) );
+						jmk_check( 'sec_work', __( 'Réalisations', 'jeux-marketing' ), __( 'Ne s\'affiche que si vous avez saisi au moins une réalisation.', 'jeux-marketing' ) );
+						jmk_check( 'sec_reviews', __( 'Avis clients', 'jeux-marketing' ), __( 'Ne s\'affiche que si vous avez saisi au moins un avis.', 'jeux-marketing' ) );
+						jmk_check( 'sec_process', __( 'Déroulé d\'un projet', 'jeux-marketing' ) );
+						jmk_check( 'sec_about', __( 'À propos', 'jeux-marketing' ) );
 						jmk_check( 'sec_brand', __( 'Aperçu aux couleurs du visiteur', 'jeux-marketing' ) );
 						jmk_check( 'sec_lab', __( 'Réglage des probabilités et simulation', 'jeux-marketing' ) );
 						jmk_check( 'sec_leads', __( 'Formulaire de capture d\'email', 'jeux-marketing' ) );
@@ -536,6 +577,115 @@ function jmk_settings_page() {
 						<?php endforeach; ?>
 					</div>
 					<button type="button" class="button jmk-add" data-add="faq"><?php esc_html_e( 'Ajouter une question', 'jeux-marketing' ); ?></button>
+				</div>
+			</div>
+
+			<!-- PORTFOLIO -->
+			<div class="jmk-pane" data-pane="porte">
+				<div class="jmk-card">
+					<h2><?php esc_html_e( 'Tarifs et packs', 'jeux-marketing' ); ?></h2>
+					<p class="jmk-help"><?php esc_html_e( 'Trois packs suffisent : un prix d\'entrée, un pack complet mis en avant, un pack haut de gamme. Une ligne par élément inclus.', 'jeux-marketing' ); ?></p>
+					<div class="jmk-rep" data-rep="packs">
+						<?php foreach ( (array) jmk_get( 'packs' ) as $i => $pk ) : ?>
+							<div class="jmk-row">
+								<span class="jmk-handle">≡</span>
+								<div class="jmk-row-body">
+									<div class="jmk-grid-3">
+										<input type="text" name="jmk_settings[packs][<?php echo (int) $i; ?>][name]" value="<?php echo esc_attr( $pk['name'] ); ?>" placeholder="<?php esc_attr_e( 'Nom du pack', 'jeux-marketing' ); ?>">
+										<input type="number" min="0" step="1" name="jmk_settings[packs][<?php echo (int) $i; ?>][price]" value="<?php echo esc_attr( $pk['price'] ); ?>" placeholder="<?php esc_attr_e( 'Prix', 'jeux-marketing' ); ?>">
+										<input type="number" min="0" step="1" name="jmk_settings[packs][<?php echo (int) $i; ?>][days]" value="<?php echo (int) $pk['days']; ?>" placeholder="<?php esc_attr_e( 'Jours', 'jeux-marketing' ); ?>">
+									</div>
+									<input type="text" name="jmk_settings[packs][<?php echo (int) $i; ?>][desc]" value="<?php echo esc_attr( $pk['desc'] ); ?>" placeholder="<?php esc_attr_e( 'Une phrase de résumé', 'jeux-marketing' ); ?>">
+									<textarea rows="5" name="jmk_settings[packs][<?php echo (int) $i; ?>][items]" placeholder="<?php esc_attr_e( 'Un élément inclus par ligne', 'jeux-marketing' ); ?>"><?php echo esc_textarea( $pk['items'] ); ?></textarea>
+									<label class="jmk-inline"><input type="checkbox" name="jmk_settings[packs][<?php echo (int) $i; ?>][featured]" value="1" <?php checked( 1, (int) $pk['featured'] ); ?>> <?php esc_html_e( 'Mettre ce pack en avant', 'jeux-marketing' ); ?></label>
+								</div>
+								<button type="button" class="jmk-del" aria-label="<?php esc_attr_e( 'Supprimer', 'jeux-marketing' ); ?>">×</button>
+							</div>
+						<?php endforeach; ?>
+					</div>
+					<button type="button" class="button jmk-add" data-add="packs"><?php esc_html_e( 'Ajouter un pack', 'jeux-marketing' ); ?></button>
+				</div>
+
+				<div class="jmk-card">
+					<h2><?php esc_html_e( 'Déroulé d\'un projet', 'jeux-marketing' ); ?></h2>
+					<p class="jmk-help"><?php esc_html_e( 'Les étapes sont numérotées automatiquement. Quatre suffisent.', 'jeux-marketing' ); ?></p>
+					<div class="jmk-rep" data-rep="process">
+						<?php foreach ( (array) jmk_get( 'process' ) as $i => $st ) : ?>
+							<div class="jmk-row">
+								<span class="jmk-handle">≡</span>
+								<div class="jmk-row-body">
+									<input type="text" name="jmk_settings[process][<?php echo (int) $i; ?>][q]" value="<?php echo esc_attr( $st['q'] ); ?>" placeholder="<?php esc_attr_e( 'Titre de l\'étape', 'jeux-marketing' ); ?>">
+									<textarea rows="3" name="jmk_settings[process][<?php echo (int) $i; ?>][a]"><?php echo esc_textarea( $st['a'] ); ?></textarea>
+								</div>
+								<button type="button" class="jmk-del" aria-label="<?php esc_attr_e( 'Supprimer', 'jeux-marketing' ); ?>">×</button>
+							</div>
+						<?php endforeach; ?>
+					</div>
+					<button type="button" class="button jmk-add" data-add="process"><?php esc_html_e( 'Ajouter une étape', 'jeux-marketing' ); ?></button>
+				</div>
+
+				<div class="jmk-card">
+					<h2><?php esc_html_e( 'À propos', 'jeux-marketing' ); ?></h2>
+					<div class="jmk-grid">
+						<?php jmk_field( 'about_title', __( 'Titre de la section', 'jeux-marketing' ) ); ?>
+					</div>
+					<div class="jmk-field">
+						<label for="jmk-about_text"><?php esc_html_e( 'Texte', 'jeux-marketing' ); ?></label>
+						<textarea id="jmk-about_text" rows="8" name="jmk_settings[about_text]"><?php echo esc_textarea( jmk_get( 'about_text' ) ); ?></textarea>
+						<p class="jmk-help"><?php esc_html_e( 'Séparez les paragraphes par une ligne vide.', 'jeux-marketing' ); ?></p>
+					</div>
+
+					<h3><?php esc_html_e( 'Chiffres clés', 'jeux-marketing' ); ?></h3>
+					<p class="jmk-help"><?php esc_html_e( 'N\'affichez que des chiffres que vous pouvez tenir. « 48 h » engage sur un délai réel.', 'jeux-marketing' ); ?></p>
+					<div class="jmk-rep" data-rep="about_stats">
+						<?php foreach ( (array) jmk_get( 'about_stats' ) as $i => $stt ) : ?>
+							<div class="jmk-row">
+								<span class="jmk-handle">≡</span>
+								<div class="jmk-row-body jmk-grid-2">
+									<input type="text" name="jmk_settings[about_stats][<?php echo (int) $i; ?>][n]" value="<?php echo esc_attr( $stt['n'] ); ?>" placeholder="<?php esc_attr_e( 'Chiffre', 'jeux-marketing' ); ?>">
+									<input type="text" name="jmk_settings[about_stats][<?php echo (int) $i; ?>][l]" value="<?php echo esc_attr( $stt['l'] ); ?>" placeholder="<?php esc_attr_e( 'Ce qu\'il désigne', 'jeux-marketing' ); ?>">
+								</div>
+								<button type="button" class="jmk-del" aria-label="<?php esc_attr_e( 'Supprimer', 'jeux-marketing' ); ?>">×</button>
+							</div>
+						<?php endforeach; ?>
+					</div>
+					<button type="button" class="button jmk-add" data-add="about_stats"><?php esc_html_e( 'Ajouter un chiffre', 'jeux-marketing' ); ?></button>
+				</div>
+
+				<div class="jmk-card">
+					<h2><?php esc_html_e( 'Réalisations', 'jeux-marketing' ); ?></h2>
+					<p class="jmk-help"><?php esc_html_e( 'Les réalisations elles-mêmes s\'ajoutent dans le menu « Réalisations », avec une image et un texte. Ici, seulement l\'intitulé de la section.', 'jeux-marketing' ); ?></p>
+					<div class="jmk-grid">
+						<?php jmk_field( 'work_title', __( 'Titre de la section', 'jeux-marketing' ) ); ?>
+					</div>
+					<div class="jmk-field">
+						<label for="jmk-work_text"><?php esc_html_e( 'Phrase d\'introduction', 'jeux-marketing' ); ?></label>
+						<textarea id="jmk-work_text" rows="3" name="jmk_settings[work_text]"><?php echo esc_textarea( jmk_get( 'work_text' ) ); ?></textarea>
+					</div>
+					<p>
+						<a href="<?php echo esc_url( admin_url( 'post-new.php?post_type=jmk_work' ) ); ?>" class="button"><?php esc_html_e( 'Ajouter une réalisation', 'jeux-marketing' ); ?></a>
+					</p>
+				</div>
+
+				<div class="jmk-card">
+					<h2><?php esc_html_e( 'Avis clients', 'jeux-marketing' ); ?></h2>
+					<div class="jmk-note">
+						<p><strong><?php esc_html_e( 'Vide au départ, et c\'est voulu.', 'jeux-marketing' ); ?></strong>
+						<?php esc_html_e( 'Un avis inventé est un faux témoignage : sur Fiverr comme sur Upwork c\'est un motif de suspension, et un prospect qui demande à parler à la référence vous met en difficulté. N\'ajoutez ici que des phrases réellement écrites par un client. La section reste masquée tant qu\'il n\'y en a aucune.', 'jeux-marketing' ); ?></p>
+					</div>
+					<div class="jmk-rep" data-rep="reviews">
+						<?php foreach ( (array) jmk_get( 'reviews' ) as $i => $rv ) : ?>
+							<div class="jmk-row">
+								<span class="jmk-handle">≡</span>
+								<div class="jmk-row-body">
+									<textarea rows="3" name="jmk_settings[reviews][<?php echo (int) $i; ?>][a]" placeholder="<?php esc_attr_e( 'L\'avis, mot pour mot', 'jeux-marketing' ); ?>"><?php echo esc_textarea( $rv['a'] ); ?></textarea>
+									<input type="text" name="jmk_settings[reviews][<?php echo (int) $i; ?>][q]" value="<?php echo esc_attr( $rv['q'] ); ?>" placeholder="<?php esc_attr_e( 'Qui l\'a dit — prénom, marque, plateforme', 'jeux-marketing' ); ?>">
+								</div>
+								<button type="button" class="jmk-del" aria-label="<?php esc_attr_e( 'Supprimer', 'jeux-marketing' ); ?>">×</button>
+							</div>
+						<?php endforeach; ?>
+					</div>
+					<button type="button" class="button jmk-add" data-add="reviews"><?php esc_html_e( 'Ajouter un avis', 'jeux-marketing' ); ?></button>
 				</div>
 			</div>
 

@@ -12,7 +12,7 @@
 
 ## 2. Le panneau de réglages
 
-Tout se passe dans le menu **Jeux Marketing** de la colonne de gauche. Six onglets.
+Tout se passe dans le menu **Jeux Marketing** de la colonne de gauche. Sept onglets.
 
 ### Général
 - **Mode direct / Mode Fiverr** — le réglage le plus important, voir la section 3
@@ -58,6 +58,20 @@ C'est aussi ici que se règlent les valeurs de départ du calculateur de rentabi
 
 ### Textes
 Titre, paragraphe d'introduction, étiquettes, points techniques et questions fréquentes.
+
+### Portfolio
+Les packs et leurs prix, le déroulé d'un projet, la section « à propos » avec
+ses chiffres clés, l'intitulé des réalisations et les avis clients.
+
+Les réalisations elles-mêmes ne sont pas ici : elles ont leur propre menu
+**Réalisations**, pour pouvoir porter une image, un texte et des champs
+(client, secteur, jeu utilisé, résultat mesuré).
+
+> **Les avis sont vides au départ, et c'est voulu.** Un avis inventé est un faux
+> témoignage : sur Fiverr comme sur Upwork c'est un motif de suspension, et un
+> prospect qui demande à parler à la référence vous met en difficulté. La
+> section reste masquée tant que vous n'avez saisi aucun avis réel. Même chose
+> pour les réalisations.
 
 > Un champ de texte laissé vide reprend la valeur d'exemple du thème. Les champs de contact font exception : effacer le numéro WhatsApp, le lien Fiverr, l'email de notification, le webhook, le lien RGPD ou le nom de marque les efface vraiment. C'est volontaire — un moyen de contact ne doit jamais réapparaître tout seul.
 
@@ -123,11 +137,13 @@ jeux-marketing/
 ├── functions.php              chargement, couleurs, config JS
 ├── front-page.php             page d'accueil
 ├── index.php                  articles et pages classiques
+├── single-jmk_work.php        une réalisation en détail
 ├── header.php / footer.php
 ├── inc/
 │   ├── defaults.php           valeurs par défaut
 │   ├── admin.php              panneau de réglages
 │   ├── leads.php              participants, tirage serveur, export CSV
+│   ├── portfolio.php          réalisations
 │   └── shortcode.php          code court [jeu]
 ├── languages/
 │   └── jeux-marketing.pot     modèle de traduction
@@ -150,6 +166,10 @@ jeux-marketing/
 - [ ] Régler les prix du devis
 - [ ] Tester une partie complète : jouer, remplir le formulaire, vérifier que le participant apparaît dans l'administration
 - [ ] Remettre les compteurs de plafond à zéro avant le lancement réel
+- [ ] Régler les prix des packs dans l'onglet Portfolio
+- [ ] Remplacer le texte « à propos » par le vôtre
+- [ ] Ajouter vos vraies réalisations — et seulement les vraies
+- [ ] N'ajouter que des avis réellement reçus, ou laisser la section vide
 
 ---
 

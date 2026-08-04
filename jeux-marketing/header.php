@@ -53,6 +53,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 			</nav>
 		<?php elseif ( is_front_page() ) : ?>
 			<nav class="topnav" aria-label="<?php esc_attr_e( 'Navigation principale', 'jeux-marketing' ); ?>">
+				<?php if ( jmk_get( 'sec_services' ) ) : ?><a href="#services"><?php esc_html_e( 'Tarifs', 'jeux-marketing' ); ?></a><?php endif; ?>
+				<?php if ( jmk_get( 'sec_work' ) ) : ?><a href="#realisations"><?php esc_html_e( 'Réalisations', 'jeux-marketing' ); ?></a><?php endif; ?>
 				<?php if ( jmk_get( 'sec_brand' ) ) : ?><a href="#marque"><?php esc_html_e( 'Vos couleurs', 'jeux-marketing' ); ?></a><?php endif; ?>
 				<?php if ( jmk_get( 'sec_lab' ) ) : ?><a href="#labo"><?php esc_html_e( 'Probabilités', 'jeux-marketing' ); ?></a><?php endif; ?>
 				<a href="#autres"><?php esc_html_e( 'Jeux', 'jeux-marketing' ); ?></a>

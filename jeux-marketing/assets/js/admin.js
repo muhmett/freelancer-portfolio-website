@@ -61,6 +61,36 @@
 				'<textarea rows="3" name="jmk_settings[faq][' + i + '][a]" placeholder="Réponse"></textarea>' +
 				'</div><button type="button" class="jmk-del">×</button></div>';
 		},
+		packs: function ( i ) {
+			return '<div class="jmk-row"><span class="jmk-handle">≡</span><div class="jmk-row-body">' +
+				'<div class="jmk-grid-3">' +
+				'<input type="text" name="jmk_settings[packs][' + i + '][name]" placeholder="Nom du pack">' +
+				'<input type="number" min="0" step="1" name="jmk_settings[packs][' + i + '][price]" value="45">' +
+				'<input type="number" min="0" step="1" name="jmk_settings[packs][' + i + '][days]" value="2">' +
+				'</div>' +
+				'<input type="text" name="jmk_settings[packs][' + i + '][desc]" placeholder="Une phrase de résumé">' +
+				'<textarea rows="5" name="jmk_settings[packs][' + i + '][items]" placeholder="Un élément inclus par ligne"></textarea>' +
+				'<label class="jmk-inline"><input type="checkbox" name="jmk_settings[packs][' + i + '][featured]" value="1"> Mettre ce pack en avant</label>' +
+				'</div><button type="button" class="jmk-del">×</button></div>';
+		},
+		process: function ( i ) {
+			return '<div class="jmk-row"><span class="jmk-handle">≡</span><div class="jmk-row-body">' +
+				'<input type="text" name="jmk_settings[process][' + i + '][q]" placeholder="Titre de l\'étape">' +
+				'<textarea rows="3" name="jmk_settings[process][' + i + '][a]" placeholder="Ce qui se passe à cette étape"></textarea>' +
+				'</div><button type="button" class="jmk-del">×</button></div>';
+		},
+		about_stats: function ( i ) {
+			return '<div class="jmk-row"><span class="jmk-handle">≡</span><div class="jmk-row-body jmk-grid-2">' +
+				'<input type="text" name="jmk_settings[about_stats][' + i + '][n]" placeholder="Chiffre">' +
+				'<input type="text" name="jmk_settings[about_stats][' + i + '][l]" placeholder="Ce qu\'il désigne">' +
+				'</div><button type="button" class="jmk-del">×</button></div>';
+		},
+		reviews: function ( i ) {
+			return '<div class="jmk-row"><span class="jmk-handle">≡</span><div class="jmk-row-body">' +
+				'<textarea rows="3" name="jmk_settings[reviews][' + i + '][a]" placeholder="L\'avis, mot pour mot"></textarea>' +
+				'<input type="text" name="jmk_settings[reviews][' + i + '][q]" placeholder="Qui l\'a dit — prénom, marque, plateforme">' +
+				'</div><button type="button" class="jmk-del">×</button></div>';
+		},
 		specs: function ( i ) {
 			return '<div class="jmk-row"><span class="jmk-handle">≡</span><div class="jmk-row-body">' +
 				'<input type="text" name="jmk_settings[specs][' + i + '][q]" placeholder="Titre">' +

@@ -55,6 +55,9 @@ get_header();
 <div class="wrap"><div class="divider"></div></div>
 
 <?php
+if ( jmk_get( 'sec_services' ) ) {
+	get_template_part( 'template-parts/section', 'services' );
+}
 if ( jmk_get( 'sec_brand' ) ) {
 	get_template_part( 'template-parts/section', 'brand' );
 }
@@ -65,6 +68,12 @@ get_template_part( 'template-parts/section', 'games' );
 if ( jmk_get( 'sec_leads' ) ) {
 	get_template_part( 'template-parts/section', 'leads' );
 }
+if ( jmk_get( 'sec_work' ) ) {
+	get_template_part( 'template-parts/section', 'work' );
+}
+if ( jmk_get( 'sec_reviews' ) ) {
+	get_template_part( 'template-parts/section', 'reviews' );
+}
 if ( jmk_get( 'sec_roi' ) ) {
 	get_template_part( 'template-parts/section', 'roi' );
 }
@@ -73,6 +82,12 @@ if ( jmk_get( 'sec_quote' ) ) {
 }
 if ( jmk_get( 'sec_specs' ) ) {
 	get_template_part( 'template-parts/section', 'specs' );
+}
+if ( jmk_get( 'sec_process' ) ) {
+	get_template_part( 'template-parts/section', 'process' );
+}
+if ( jmk_get( 'sec_about' ) ) {
+	get_template_part( 'template-parts/section', 'about' );
 }
 if ( jmk_get( 'sec_faq' ) ) {
 	get_template_part( 'template-parts/section', 'faq' );

@@ -17,6 +17,7 @@ require_once JMK_DIR . '/inc/defaults.php';
 require_once JMK_DIR . '/inc/admin.php';
 require_once JMK_DIR . '/inc/leads.php';
 require_once JMK_DIR . '/inc/shortcode.php';
+require_once JMK_DIR . '/inc/portfolio.php';
 
 /**
  * Support du thème.
