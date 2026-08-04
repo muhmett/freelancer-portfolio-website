@@ -8,14 +8,35 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
+
+/**
+ * Boîte cadeau.
+ *
+ * Dessinée en SVG plutôt qu'en image : quelques centaines d'octets, nette à
+ * toutes les tailles, et `currentColor` la fait suivre la couleur de la marque
+ * sans qu'on ait à produire un fichier par teinte.
+ */
+$jmk_gift = '<svg class="gift" viewBox="0 0 24 24" aria-hidden="true" focusable="false">'
+	. '<path d="M8.4 2.1c-1.5-.5-2.9.9-2.3 2.3.4 1 1.6 1.6 3 2 .3.1.6.1.9.2-.3-2-.9-3.8-1.6-4.5z"/>'
+	. '<path d="M15.6 2.1c1.5-.5 2.9.9 2.3 2.3-.4 1-1.6 1.6-3 2-.3.1-.6.1-.9.2.3-2 .9-3.8 1.6-4.5z"/>'
+	. '<path d="M2.6 7h18.8c.6 0 1 .4 1 1v2.2c0 .6-.4 1-1 1H2.6c-.6 0-1-.4-1-1V8c0-.6.4-1 1-1z"/>'
+	. '<path d="M3.6 12.6h16.8V21c0 .6-.4 1-1 1H4.6c-.6 0-1-.4-1-1v-8.4z"/>'
+	. '<path d="M10.7 7h2.6v15h-2.6z" opacity=".4"/>'
+	. '</svg>';
 ?>
 <div class="game-card rv" id="jmk-tap">
 	<h3><?php esc_html_e( 'Tap-to-win', 'jeux-marketing' ); ?>
 		<span class="tag"><?php esc_html_e( 'une boîte', 'jeux-marketing' ); ?></span></h3>
 	<div class="boxes" id="boxes">
-		<button class="box" data-i="0">?</button>
-		<button class="box" data-i="1">?</button>
-		<button class="box" data-i="2">?</button>
+		<?php for ( $jmk_i = 0; $jmk_i < 3; $jmk_i++ ) : ?>
+			<button class="box" data-i="<?php echo (int) $jmk_i; ?>"
+				aria-label="<?php
+					/* translators: %d: numéro de la boîte. */
+					printf( esc_attr__( 'Ouvrir la boîte %d', 'jeux-marketing' ), (int) $jmk_i + 1 );
+				?>"><?php
+					echo $jmk_gift; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- balisage SVG fixe, sans donnée utilisateur.
+				?></button>
+		<?php endfor; ?>
 	</div>
 	<div class="row-inline">
 		<button class="btn btn-ghost" id="tapReset"><?php esc_html_e( 'Rejouer', 'jeux-marketing' ); ?></button>

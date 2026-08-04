@@ -151,6 +151,7 @@ function jmk_js_config() {
 		// plateforme et cela suffit à faire suspendre un compte.
 		'whatsapp'  => ( 'fiverr' === $mode ) ? '' : preg_replace( '/\D/', '', (string) jmk_get( 'whatsapp' ) ),
 		'fiverr'    => esc_url_raw( jmk_get( 'fiverr_url' ) ),
+		'foil'      => JMK_URI . '/assets/img/foil.jpg',
 		'brand'     => (string) jmk_get( 'brand_name' ),
 		'accent'    => (string) jmk_get( 'accent' ),
 		'lang'      => (string) jmk_get( 'lang' ),

@@ -377,18 +377,40 @@
 	var scratching = false, scratchDone = false, scratchLot = null, mTick = 0;
 	var scratchCode = '', scratchPending = false;
 
+	/* Pellicule argentée. Tant qu'elle n'est pas chargée, le dégradé
+	   tient lieu de repli : la carte est jouable immédiatement. */
+	var foil = null;
+	if ( C.foil && sc ) {
+		foil = new Image();
+		foil.onload = function () {
+			if ( ! scratchDone && 0 === mTick ) { sizeScratch(); }
+		};
+		foil.src = C.foil;
+	}
+	function foilReady() {
+		return foil && foil.complete && foil.naturalWidth > 0;
+	}
+
 	function sizeScratch() {
 		if ( ! sx ) { return; }
 		var r = sc.getBoundingClientRect(), d = window.devicePixelRatio || 1;
 		sc.width  = Math.max( 1, r.width * d );
 		sc.height = Math.max( 1, r.height * d );
 		sx.setTransform( d, 0, 0, d, 0, 0 );
-		var g = sx.createLinearGradient( 0, 0, r.width, r.height );
-		g.addColorStop( 0, '#8E95A2' ); g.addColorStop( 0.4, '#C3C9D2' );
-		g.addColorStop( 0.6, '#7E8593' ); g.addColorStop( 1, '#A9B0BB' );
 		sx.globalCompositeOperation = 'source-over';
-		sx.fillStyle = g;
-		sx.fillRect( 0, 0, r.width, r.height );
+		if ( foilReady() ) {
+			// Couvrir la zone sans déformer la texture.
+			var ratio = Math.max( r.width / foil.naturalWidth, r.height / foil.naturalHeight ),
+				dw    = foil.naturalWidth * ratio,
+				dh    = foil.naturalHeight * ratio;
+			sx.drawImage( foil, ( r.width - dw ) / 2, ( r.height - dh ) / 2, dw, dh );
+		} else {
+			var g = sx.createLinearGradient( 0, 0, r.width, r.height );
+			g.addColorStop( 0, '#8E95A2' ); g.addColorStop( 0.4, '#C3C9D2' );
+			g.addColorStop( 0.6, '#7E8593' ); g.addColorStop( 1, '#A9B0BB' );
+			sx.fillStyle = g;
+			sx.fillRect( 0, 0, r.width, r.height );
+		}
 		sx.fillStyle = 'rgba(21,12,29,.34)';
 		sx.font      = '600 13px "JetBrains Mono", monospace';
 		sx.textAlign = 'center';
@@ -455,6 +477,7 @@
 
 	/* ══════════ TAP TO WIN ══════════ */
 	var tapDone = false;
+	var boxFace = ( $( '.box' ) || {} ).innerHTML || '?';
 	$$( '.box' ).forEach( function ( b ) {
 		b.addEventListener( 'click', function () {
 			if ( tapDone ) { return; }
@@ -483,7 +506,7 @@
 	if ( $( '#tapReset' ) ) {
 		$( '#tapReset' ).addEventListener( 'click', function () {
 			tapDone = false;
-			$$( '.box' ).forEach( function ( b ) { b.className = 'box'; b.textContent = '?'; } );
+			$$( '.box' ).forEach( function ( b ) { b.className = 'box'; b.innerHTML = boxFace; } );
 			$( '#tapMsg' ).textContent = '';
 		} );
 	}

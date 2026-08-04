@@ -161,6 +161,9 @@ input[type=color]{width:56px;height:36px;border:1px solid var(--line);border-rad
 .boxes{display:grid;grid-template-columns:repeat(3,1fr);gap:11px}
 .box{aspect-ratio:1;border-radius:12px;border:1px solid var(--line);background:var(--ink-3);display:grid;place-items:center;
   cursor:pointer;font-size:1.8rem;transition:transform .16s,border-color .16s,background .25s;font-family:var(--display);font-weight:800;color:var(--paper)}
+.box .gift{width:46%;height:auto;fill:currentColor;color:var(--accent);opacity:.9;transition:transform .2s,opacity .2s}
+.box:hover:not(.done) .gift{transform:translateY(-2px) scale(1.06);opacity:1}
+.box.done .gift{opacity:.3}
 .box:hover:not(.done){transform:translateY(-5px);border-color:var(--accent)}
 .box.done{cursor:default}
 .box.win{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 16%,transparent);color:var(--accent)}

@@ -82,6 +82,15 @@ C'est délibéré : publier des références inventées est un motif de suspensi
 Fiverr et Upwork, et ce sont précisément les comptes que ce thème cherche à
 protéger avec son mode Fiverr.
 
+**La pellicule de la carte à gratter est une image.** `assets/img/foil.jpg`
+(24 Ko) est une texture de métal brossé générée, redimensionnée et recompressée.
+Elle est peinte sur le canevas dans `sizeScratch()`, et le dégradé CSS d'origine
+reste le repli tant qu'elle n'est pas chargée : la carte est jouable tout de
+suite. C'est le seul endroit du thème où une image bat le CSS — une matière
+avec du grain ne se code pas. Tout le reste (boîte cadeau, icônes) est du SVG
+en `currentColor`, qui suit la couleur de la marque sans produire un fichier
+par teinte.
+
 **Les polices viennent de Google Fonts.** C'est le point qui reste en tension
 avec l'argument RGPD de la page : pour un client européen strict, il faut
 héberger les trois familles dans `assets/fonts/` et remplacer l'appel à
