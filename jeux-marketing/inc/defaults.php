@@ -1,6 +1,15 @@
 <?php
 /**
- * Valeurs par défaut des réglages.
+ * Valeurs par défaut et lecture des réglages.
+ *
+ * Deux familles de réglages :
+ *
+ * - les réglages *techniques* (mode de contact, couleur, sections affichées,
+ *   plafonds…) sont communs à toutes les langues ;
+ * - les réglages *de contenu* (titres, lots, packs, FAQ…) existent une fois
+ *   par langue, et sont stockés sous jmk_settings[<langue>][<clé>].
+ *
+ * Les valeurs livrées viennent de inc/lang/<langue>.php.
  *
  * @package JeuxMarketing
  */
@@ -10,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Réglages par défaut.
+ * Réglages communs à toutes les langues.
  *
  * @return array
  */
@@ -19,21 +28,14 @@ function jmk_defaults() {
 
 		// Contact.
 		'mode'          => 'direct',
-		'whatsapp'      => '212665827222',
+		'whatsapp'      => '',
 		'fiverr_url'    => '',
-		'email'         => '',
+		'email'         => 'old@outlook.fr',
 
 		// Marque.
-		'brand_name'    => '',
+		'brand_name'    => 'anomalydev by Hsk',
 		'accent'        => '#D9A441',
-		'lang'          => 'fr',
-
-		// Textes.
-		'hero_eyebrow'  => 'Démonstration en direct',
-		'hero_title'    => 'Tournez d\'abord.',
-		'hero_title_2'  => 'On parlera ensuite.',
-		'hero_text'     => 'Cette roue n\'est pas une image. Elle tourne, elle respecte des probabilités que vous pouvez modifier vous-même plus bas, et elle envoie l\'email du joueur là où vous travaillez déjà.',
-		'chips'         => "44 Ko au total\nSans dépendance externe\nTactile & clavier\nFR · EN · AR (RTL)\nLivraison 48 h",
+		'lang'          => 'en',
 
 		// Jeux actifs.
 		'game_wheel'    => 1,
@@ -46,6 +48,7 @@ function jmk_defaults() {
 		// Sections affichées.
 		'sec_about'     => 1,
 		'sec_services'  => 1,
+		'sec_skills'    => 1,
 		'sec_work'      => 1,
 		'sec_process'   => 1,
 		'sec_reviews'   => 1,
@@ -62,284 +65,35 @@ function jmk_defaults() {
 		'webhook'       => '',
 		'privacy_url'   => '',
 
-		// Lots.
-		'lots'          => array(
-			array(
-				'label'  => '-10 %',
-				'weight' => 38,
-				'cap'    => 0,
-				'code'   => 'PROMO10',
-				'hue'    => 0,
-				'losing' => 0,
-			),
-			array(
-				'label'  => 'Livraison offerte',
-				'weight' => 24,
-				'cap'    => 0,
-				'code'   => 'LIVRAISON',
-				'hue'    => 38,
-				'losing' => 0,
-			),
-			array(
-				'label'  => '-25 %',
-				'weight' => 11,
-				'cap'    => 0,
-				'code'   => 'PROMO25',
-				'hue'    => -42,
-				'losing' => 0,
-			),
-			array(
-				'label'  => 'Produit offert',
-				'weight' => 2,
-				'cap'    => 5,
-				'code'   => 'CADEAU',
-				'hue'    => 150,
-				'losing' => 0,
-			),
-			array(
-				'label'  => 'Réessayez',
-				'weight' => 25,
-				'cap'    => 0,
-				'code'   => '',
-				'hue'    => 0,
-				'losing' => 1,
-			),
-		),
-
-		// Devis.
-		'options'       => array(
-			array(
-				'label' => 'Jeu principal à votre marque',
-				'price' => 45,
-				'days'  => 2,
-				'on'    => 1,
-				'fixed' => 1,
-			),
-			array(
-				'label' => 'Formulaire de capture d\'email',
-				'price' => 25,
-				'days'  => 0,
-				'on'    => 1,
-				'fixed' => 0,
-			),
-			array(
-				'label' => 'Probabilités et plafonds réglables',
-				'price' => 20,
-				'days'  => 0,
-				'on'    => 1,
-				'fixed' => 0,
-			),
-			array(
-				'label' => 'Connexion Mailchimp / Brevo / Sheets',
-				'price' => 30,
-				'days'  => 1,
-				'on'    => 0,
-				'fixed' => 0,
-			),
-			array(
-				'label' => 'Jeu supplémentaire (grattage, quiz…)',
-				'price' => 45,
-				'days'  => 1,
-				'on'    => 0,
-				'fixed' => 0,
-			),
-			array(
-				'label' => 'Deuxième langue (dont arabe RTL)',
-				'price' => 15,
-				'days'  => 0,
-				'on'    => 0,
-				'fixed' => 0,
-			),
-			array(
-				'label' => 'Mode borne tactile / salon',
-				'price' => 35,
-				'days'  => 1,
-				'on'    => 0,
-				'fixed' => 0,
-			),
-			array(
-				'label' => 'Code source et droits complets',
-				'price' => 40,
-				'days'  => 0,
-				'on'    => 0,
-				'fixed' => 0,
-			),
-			array(
-				'label' => 'Installation sur votre site',
-				'price' => 25,
-				'days'  => 1,
-				'on'    => 0,
-				'fixed' => 0,
-			),
-			array(
-				'label' => 'Livraison express en 24 h',
-				'price' => 25,
-				'days'  => 0,
-				'on'    => 0,
-				'fixed' => 0,
-			),
-		),
+		// Devis et calculateur.
 		'currency'      => '€',
-
-		// Calculateur.
 		'roi_visitors'  => 8000,
 		'roi_part'      => 24,
 		'roi_conv'      => 4,
 		'roi_cart'      => 65,
+	);
+}
 
-		// Quiz.
-		'quiz'          => array(
-			array(
-				'q' => 'Quel format capte le plus d\'emails ?',
-				'a' => "Un pop-up classique\nUn jeu avec un lot à la clé\nUne bannière latérale",
-				'c' => 2,
-			),
-			array(
-				'q' => 'Quand faut-il demander l\'email ?',
-				'a' => "Avant de jouer\nJuste après le résultat\nÀ la fin de la semaine",
-				'c' => 2,
-			),
-			array(
-				'q' => 'Un consentement RGPD valide est…',
-				'a' => "Pré-coché pour simplifier\nExplicite et jamais pré-coché\nImplicite si on joue",
-				'c' => 2,
-			),
-		),
-
-		// Portfolio — à propos.
-		'about_title'   => 'Une personne, pas une agence.',
-		'about_text'    => "Je conçois et je livre moi-même les jeux marketing que vous voyez sur cette page. Pas d'intermédiaire, pas de sous-traitance : la personne qui répond à votre message est celle qui écrit le code.
-
-Je travaille surtout avec des boutiques en ligne et des marques qui lancent une campagne courte et veulent en garder les emails. Le jeu n'est jamais le but : il sert à faire entrer des adresses dans votre liste, proprement et sans forcer.
-
-Si votre besoin ne rentre pas dans ce que je sais faire, je le dis tout de suite plutôt que d'apprendre à vos frais.",
-		'about_stats'   => array(
-			array( 'n' => '48 h', 'l' => 'délai de livraison habituel' ),
-			array( 'n' => '6', 'l' => 'mécaniques de jeu disponibles' ),
-			array( 'n' => 'FR · EN · AR', 'l' => 'langues livrées, RTL compris' ),
-			array( 'n' => '100 %', 'l' => 'code source remis au client' ),
-		),
-
-		// Portfolio — packs.
-		'packs'         => array(
-			array(
-				'name'     => 'Essentiel',
-				'price'    => 45,
-				'days'     => 2,
-				'desc'     => 'Un jeu à votre marque, prêt à coller sur votre page.',
-				'items'    => "Une mécanique au choix\nVos couleurs et votre logo\nVos lots et vos probabilités\nFormulaire de capture d'email\nNotice d'une page",
-				'featured' => 0,
-			),
-			array(
-				'name'     => 'Campagne',
-				'price'    => 120,
-				'days'     => 4,
-				'desc'     => 'Le jeu, la collecte et le branchement à vos outils.',
-				'items'    => "Tout l'Essentiel\nDeux mécaniques au choix\nPlafonds par lot et codes promo\nEnvoi vers Mailchimp, Brevo ou votre CRM\nExport CSV des participants\nMise en ligne sur votre site",
-				'featured' => 1,
-			),
-			array(
-				'name'     => 'Sur mesure',
-				'price'    => 260,
-				'days'     => 8,
-				'desc'     => 'Une mécanique qui n\'existe pas encore, ou un dispositif complet.',
-				'items'    => "Tout la Campagne\nMécanique conçue pour votre besoin\nDeuxième langue, arabe RTL compris\nMode borne tactile pour salon ou magasin\nCode source et droits complets\nUn mois de corrections incluses",
-				'featured' => 0,
-			),
-		),
-
-		// Portfolio — déroulé.
-		'process'       => array(
-			array(
-				'q' => 'Vous décrivez la campagne',
-				'a' => 'Vos lots, votre plateforme, votre date de lancement. Trois lignes suffisent pour que je sache si c\'est faisable et en combien de temps.',
-			),
-			array(
-				'q' => 'Je vous envoie une maquette jouable',
-				'a' => 'Pas une image : un lien que vous ouvrez sur votre téléphone et que vous faites tester autour de vous. Les corrections se font à ce moment-là, tant que rien n\'est figé.',
-			),
-			array(
-				'q' => 'On règle les probabilités ensemble',
-				'a' => 'Combien de gros lots au maximum, quelle part de perdants, quels codes promo. C\'est le moment qui décide du coût réel de votre campagne.',
-			),
-			array(
-				'q' => 'Je livre, vous lancez',
-				'a' => 'Le jeu, ses fichiers de configuration, la notice, et le branchement vers l\'outil où vous récupérez les emails. Vous restez propriétaire de tout.',
-			),
-		),
-
-		// Portfolio — avis. Volontairement vide : voir section-reviews.php.
-		'reviews'       => array(),
-
-		// Portfolio — réalisations.
-		'work_title'    => 'Des campagnes déjà en ligne',
-		'work_text'     => 'Chaque fiche indique le secteur, la mécanique utilisée et le résultat mesuré. Les chiffres viennent des tableaux de bord des clients, pas d\'une estimation.',
-
-		// FAQ.
-		'faq'           => array(
-			array(
-				'q' => 'Puis-je décider qui gagne le gros lot ?',
-				'a' => 'Oui. Chaque lot a sa probabilité et son plafond. Vous pouvez fixer 3 % pour le gros lot, 40 % pour une remise, et limiter à 20 gagnants sur toute la campagne. Tout se règle dans un fichier de configuration, sans toucher au code.',
-			),
-			array(
-				'q' => 'Pourquoi ne pas prendre un plugin à 20 € ?',
-				'a' => 'Un plugin impose WordPress, un design générique et son propre système de lots. Ici le jeu suit votre charte, s\'intègre partout — Shopify, Wix, page HTML, borne tactile — et vous en gardez le contrôle complet, code source inclus.',
-			),
-			array(
-				'q' => 'Le jeu va-t-il ralentir mon site ?',
-				'a' => 'Non. Environ 44 Ko, sans framework de jeu. Il se charge après le contenu principal et n\'affecte ni votre score PageSpeed ni votre référencement.',
-			),
-			array(
-				'q' => 'Où vont les emails collectés ?',
-				'a' => 'Directement dans l\'outil que vous utilisez déjà : Mailchimp, Brevo, Klaviyo, Google Sheets, ou votre CRM via webhook. Une copie reste téléchargeable en CSV. Vous restez propriétaire des données.',
-			),
-			array(
-				'q' => 'Ça fonctionne sur un écran tactile en salon ?',
-				'a' => 'Oui. Mode plein écran, sans connexion internet requise, avec export des participants en fin de journée. Précisez-le avant de commander pour recevoir la bonne version.',
-			),
-			array(
-				'q' => 'Je peux modifier les lots après la livraison ?',
-				'a' => 'Oui. Lots, couleurs et probabilités sont dans un fichier lisible, accompagné d\'une notice d\'une page. Aucune compétence technique nécessaire.',
-			),
-		),
-
-		// Points techniques.
-		'specs'         => array(
-			array(
-				'q' => '44 Ko, un seul fichier',
-				'a' => 'Aucun moteur de jeu, aucune bibliothèque externe. Le jeu se charge après votre contenu principal : votre score PageSpeed et votre référencement ne bougent pas.',
-			),
-			array(
-				'q' => 'Une seule participation',
-				'a' => 'Vérification côté navigateur et déduplication par email côté serveur. Dix parties depuis la même personne ne produisent qu\'un seul participant.',
-			),
-			array(
-				'q' => 'Conforme au RGPD',
-				'a' => 'Case de consentement explicite jamais pré-cochée, lien vers votre politique de confidentialité, export ou suppression des données sur simple demande.',
-			),
-			array(
-				'q' => 'S\'intègre partout',
-				'a' => 'WordPress, Shopify, Wix, Webflow, Systeme.io ou une simple page HTML. Une ligne de code à coller, ou le dossier complet si vous préférez l\'héberger vous-même.',
-			),
-			array(
-				'q' => 'Mode borne tactile',
-				'a' => 'Plein écran, sans connexion internet requise, pensé pour un stand de salon ou un point de vente. Export des participants en fin de journée.',
-			),
-			array(
-				'q' => 'Multilingue et RTL',
-				'a' => 'Français, anglais et arabe, avec inversion complète de la mise en page pour la lecture de droite à gauche. Une langue de plus se déclare dans la configuration.',
-			),
-		),
+/**
+ * Réglages dont le contenu existe une fois par langue.
+ *
+ * @return array
+ */
+function jmk_translatable() {
+	return array(
+		'hero_eyebrow', 'hero_title', 'hero_title_2', 'hero_text', 'chips',
+		'about_title', 'about_text', 'about_stats',
+		'work_title', 'work_text',
+		'lots', 'options', 'packs', 'process', 'skills', 'faq', 'specs', 'quiz', 'reviews',
 	);
 }
 
 /**
  * Réglages pour lesquels « vide » est une valeur volontaire.
  *
- * Pour les textes, un champ laissé vide reprend la valeur d'exemple : c'est
+ * Pour un texte, un champ laissé vide reprend la valeur d'exemple : c'est
  * pratique. Pour un moyen de contact, ce serait dangereux — effacer le
- * numéro WhatsApp doit vraiment l'effacer, sinon le numéro d'exemple du
- * thème reste publié à l'insu du propriétaire du site.
+ * numéro WhatsApp doit vraiment l'effacer.
  *
  * @return array
  */
@@ -348,23 +102,35 @@ function jmk_blankable() {
 }
 
 /**
- * Lit un réglage.
+ * Lit un réglage, dans la langue en cours s'il est traduisible.
  *
- * @param string $key     Clé.
+ * @param string $key      Clé.
  * @param mixed  $fallback Valeur de repli.
+ * @param string $lang     Forcer une langue (sinon : celle de la page).
  * @return mixed
  */
-function jmk_get( $key, $fallback = null ) {
-	$saved    = get_option( 'jmk_settings', array() );
-	$defaults = jmk_defaults();
+function jmk_get( $key, $fallback = null, $lang = null ) {
+	$saved = get_option( 'jmk_settings', array() );
+
+	if ( in_array( $key, jmk_translatable(), true ) ) {
+		$lang = $lang ? $lang : jmk_lang();
+		if ( isset( $saved[ $lang ][ $key ] ) && '' !== $saved[ $lang ][ $key ] ) {
+			return $saved[ $lang ][ $key ];
+		}
+		$pack = jmk_pack( $lang );
+		if ( isset( $pack[ $key ] ) ) {
+			return $pack[ $key ];
+		}
+		$en = jmk_pack( 'en' );
+		return isset( $en[ $key ] ) ? $en[ $key ] : $fallback;
+	}
 
 	if ( isset( $saved[ $key ] ) ) {
 		if ( '' !== $saved[ $key ] || in_array( $key, jmk_blankable(), true ) ) {
 			return $saved[ $key ];
 		}
 	}
-	if ( isset( $defaults[ $key ] ) ) {
-		return $defaults[ $key ];
-	}
-	return $fallback;
+
+	$defaults = jmk_defaults();
+	return isset( $defaults[ $key ] ) ? $defaults[ $key ] : $fallback;
 }

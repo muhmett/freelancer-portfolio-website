@@ -12,23 +12,23 @@ $privacy = jmk_get( 'privacy_url' );
 ?>
 <div class="panel jmk-leadform">
 	<div class="field">
-		<label for="fname"><?php esc_html_e( 'Prénom', 'jeux-marketing' ); ?></label>
-		<input type="text" id="fname" autocomplete="given-name" placeholder="<?php esc_attr_e( 'Camille', 'jeux-marketing' ); ?>">
+		<label for="fname"><?php jmk_e( 'first_name' ); ?></label>
+		<input type="text" id="fname" autocomplete="given-name" placeholder="<?php echo esc_attr( jmk_t( 'name_ph' ) ); ?>">
 	</div>
 	<div class="field">
-		<label for="femail"><?php esc_html_e( 'Email', 'jeux-marketing' ); ?></label>
+		<label for="femail"><?php jmk_e( 'email' ); ?></label>
 		<input type="email" id="femail" autocomplete="email" placeholder="camille@exemple.fr">
 	</div>
 	<div class="consent">
 		<input type="checkbox" id="fconsent">
 		<label for="fconsent" class="consent-label">
-			<?php esc_html_e( 'J\'accepte de recevoir les offres de la marque.', 'jeux-marketing' ); ?>
+			<?php jmk_e( 'consent_text' ); ?>
 			<?php if ( $privacy ) : ?>
-				<a href="<?php echo esc_url( $privacy ); ?>" target="_blank" rel="noopener"><?php esc_html_e( 'Politique de confidentialité', 'jeux-marketing' ); ?></a>.
+				<a href="<?php echo esc_url( $privacy ); ?>" target="_blank" rel="noopener"><?php jmk_e( 'privacy' ); ?></a>.
 			<?php endif; ?>
-			<?php esc_html_e( 'Consentement obligatoire, jamais pré-coché.', 'jeux-marketing' ); ?>
+			<?php jmk_e( 'consent_never' ); ?>
 		</label>
 	</div>
-	<button class="btn" id="sendLead"><?php esc_html_e( 'Recevoir mon code', 'jeux-marketing' ); ?></button>
+	<button class="btn" id="sendLead"><?php jmk_e( 'get_code' ); ?></button>
 	<p class="err" id="leadErr" role="alert"></p>
 </div>

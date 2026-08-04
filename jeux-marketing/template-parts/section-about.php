@@ -15,7 +15,7 @@ $stats = (array) jmk_get( 'about_stats' );
 	<div class="wrap">
 		<div class="about rv">
 			<div>
-				<p class="eyebrow"><?php esc_html_e( 'Qui fait le travail', 'jeux-marketing' ); ?></p>
+				<p class="eyebrow"><?php jmk_e( 'about_eyebrow' ); ?></p>
 				<h2><?php echo esc_html( jmk_get( 'about_title' ) ); ?></h2>
 				<div class="about-text">
 					<?php

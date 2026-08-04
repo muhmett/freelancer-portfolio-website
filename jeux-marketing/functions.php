@@ -13,6 +13,7 @@ define( 'JMK_VERSION', '1.0.0' );
 define( 'JMK_DIR', get_template_directory() );
 define( 'JMK_URI', get_template_directory_uri() );
 
+require_once JMK_DIR . '/inc/i18n.php';
 require_once JMK_DIR . '/inc/defaults.php';
 require_once JMK_DIR . '/inc/admin.php';
 require_once JMK_DIR . '/inc/leads.php';
@@ -154,7 +155,7 @@ function jmk_js_config() {
 		'foil'      => JMK_URI . '/assets/img/foil.jpg',
 		'brand'     => (string) jmk_get( 'brand_name' ),
 		'accent'    => (string) jmk_get( 'accent' ),
-		'lang'      => (string) jmk_get( 'lang' ),
+		'lang'      => jmk_lang(),
 		'onePlay'   => (bool) jmk_get( 'one_play' ),
 		'currency'  => (string) jmk_get( 'currency' ),
 		'lots'      => $clean,
@@ -167,40 +168,38 @@ function jmk_js_config() {
 			'cart'     => (float) jmk_get( 'roi_cart' ),
 		),
 		'i18n'      => array(
-			'win'      => __( 'Vous gagnez :', 'jeux-marketing' ),
-			'lose'     => __( 'Perdu cette fois.', 'jeux-marketing' ),
-			'loseSub'  => __( 'Revenez demain — une partie par jour.', 'jeux-marketing' ),
-			'already'  => __( 'Vous avez déjà joué. Une participation par personne.', 'jeux-marketing' ),
-			'copied'   => __( 'Copié', 'jeux-marketing' ),
-			'copy'     => __( 'Copier le récapitulatif', 'jeux-marketing' ),
-			'copyCode' => __( 'Copier', 'jeux-marketing' ),
-			'scratch'  => __( 'GRATTEZ ICI', 'jeux-marketing' ),
-			'revealed' => __( 'Révélé', 'jeux-marketing' ),
-			'scratched'=> __( '%s %% gratté', 'jeux-marketing' ),
-			'errName'  => __( 'Indiquez un prénom.', 'jeux-marketing' ),
-			'errMail'  => __( 'Cette adresse email n\'est pas valide.', 'jeux-marketing' ),
-			'errCons'  => __( 'Le consentement est obligatoire pour enregistrer une participation.', 'jeux-marketing' ),
-			'errDupe'  => __( 'Cette adresse a déjà participé. Une seule participation par personne.', 'jeux-marketing' ),
-			'saved'    => __( 'Participation enregistrée et code envoyé.', 'jeux-marketing' ),
-			'spin'     => __( 'TOURNEZ', 'jeux-marketing' ),
-			'question' => __( 'Question %1$s / %2$s', 'jeux-marketing' ),
-			'score'    => __( '%1$s / %2$s bonnes réponses', 'jeux-marketing' ),
-			'exhausted'=> __( 'ÉPUISÉ', 'jeux-marketing' ),
-			'waSend'   => __( 'Envoyer ce devis sur WhatsApp', 'jeux-marketing' ),
-			'waChat'   => __( 'Discuter sur WhatsApp', 'jeux-marketing' ),
-			'order'    => __( 'Commander sur Fiverr', 'jeux-marketing' ),
-			'contact'  => __( 'Me contacter', 'jeux-marketing' ),
-			'delay'    => __( 'Délai estimé : %s', 'jeux-marketing' ),
-			'day'      => __( 'jour', 'jeux-marketing' ),
-			'days'     => __( 'jours', 'jeux-marketing' ),
-			'briefHi'  => __( 'Bonjour, je viens de la page de démonstration.', 'jeux-marketing' ),
-			'briefBrand'  => __( 'Marque', 'jeux-marketing' ),
-			'briefColor'  => __( 'Couleur', 'jeux-marketing' ),
-			'briefLang'   => __( 'Langue', 'jeux-marketing' ),
-			'briefConf'   => __( 'Ma configuration :', 'jeux-marketing' ),
-			'briefTotal'  => __( 'Total estimé', 'jeux-marketing' ),
-			'briefEnd'    => __( 'Mes lots et ma plateforme : ', 'jeux-marketing' ),
-			'noLot'       => __( '(à préciser)', 'jeux-marketing' ),
+			'win'      => jmk_t( 'js_win' ),
+			'lose'     => jmk_t( 'js_lose' ),
+			'loseSub'  => jmk_t( 'js_loseSub' ),
+			'already'  => jmk_t( 'js_already' ),
+			'copied'   => jmk_t( 'js_copied' ),
+			'copy'     => jmk_t( 'js_copy' ),
+			'copyCode' => jmk_t( 'copy_short' ),
+			'scratch'  => jmk_t( 'js_scratch' ),
+			'revealed' => jmk_t( 'js_revealed' ),
+			'errName'  => jmk_t( 'js_errName' ),
+			'errMail'  => jmk_t( 'js_errMail' ),
+			'errCons'  => jmk_t( 'js_errCons' ),
+			'errDupe'  => jmk_t( 'js_errDupe' ),
+			'saved'    => jmk_t( 'js_saved' ),
+			'spin'     => jmk_t( 'js_spin' ),
+			'score'    => jmk_t( 'js_score' ),
+			'exhausted' => jmk_t( 'js_exhausted' ),
+			'waSend'   => jmk_t( 'js_waSend' ),
+			'waChat'   => jmk_t( 'js_waChat' ),
+			'order'    => jmk_t( 'js_order' ),
+			'contact'  => jmk_t( 'contact' ),
+			'delay'    => jmk_t( 'js_delay' ),
+			'day'      => jmk_t( 'js_day' ),
+			'days'     => jmk_t( 'js_days' ),
+			'briefHi'  => jmk_t( 'js_briefHi' ),
+			'briefBrand' => jmk_t( 'js_briefBrand' ),
+			'briefColor' => jmk_t( 'js_briefColor' ),
+			'briefLang'  => jmk_t( 'js_briefLang' ),
+			'briefConf'  => jmk_t( 'js_briefConf' ),
+			'briefTotal' => jmk_t( 'js_briefTotal' ),
+			'briefEnd'   => jmk_t( 'js_briefEnd' ),
+			'noLot'      => jmk_t( 'js_noLot' ),
 		),
 	);
 }
@@ -232,9 +231,10 @@ add_action( 'wp_enqueue_scripts', 'jmk_assets' );
  * @return array
  */
 function jmk_body_class( $classes ) {
-	if ( 'ar' === jmk_get( 'lang' ) ) {
+	if ( 'rtl' === jmk_dir() ) {
 		$classes[] = 'jmk-rtl';
 	}
+	$classes[] = 'jmk-lang-' . jmk_lang();
 	return $classes;
 }
 add_filter( 'body_class', 'jmk_body_class' );

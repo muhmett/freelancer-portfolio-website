@@ -28,8 +28,8 @@ if ( ! $reviews ) {
 <section id="avis">
 	<div class="wrap">
 		<div class="sec-head rv">
-			<p class="eyebrow"><?php esc_html_e( 'Ce qu\'ils en disent', 'jeux-marketing' ); ?></p>
-			<h2><?php esc_html_e( 'Les retours, sans retouche', 'jeux-marketing' ); ?></h2>
+			<p class="eyebrow"><?php jmk_e( 'reviews_eyebrow' ); ?></p>
+			<h2><?php jmk_e( 'reviews_h2' ); ?></h2>
 		</div>
 		<div class="reviews rv">
 			<?php foreach ( $reviews as $r ) : ?>

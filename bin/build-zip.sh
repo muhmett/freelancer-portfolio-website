@@ -21,6 +21,14 @@ fi
 # aligné sur les sources.
 php "$root/bin/make-pot.php"
 
+# Les trois langues doivent être présentes, sinon l'archive part incomplète.
+for l in en fr ar; do
+	if [ ! -f "$theme/inc/lang/$l.php" ]; then
+		echo "Langue manquante : inc/lang/$l.php" >&2
+		exit 1
+	fi
+done
+
 rm -rf "$out"
 mkdir -p "$out"
 

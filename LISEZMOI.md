@@ -10,12 +10,38 @@
 
 ---
 
-## 2. Le panneau de réglages
+## 2. Les trois langues
+
+Le site est livré en **anglais, français et arabe**, sans extension à installer.
+L'anglais est la langue d'arrivée par défaut ; le visiteur change avec le
+sélecteur **EN / FR / ع** en haut à droite. Son choix est retenu, et l'adresse
+`?lang=fr` ouvre directement dans une langue — pratique pour un lien envoyé à
+un client précis.
+
+L'arabe bascule toute la page en lecture de droite à gauche.
+
+Ce qui est traduit :
+
+| | |
+|---|---|
+| **Par langue** | Titres, textes, lots, options du devis, packs, déroulé, compétences, FAQ, points techniques, quiz, avis |
+| **Commun aux trois** | Mode de contact, numéro, couleur, sections affichées, plafonds, prix du devis, webhook |
+
+Dans l'administration, une barre **« Contenu affiché en : »** en haut de la page
+choisit la langue que vous modifiez. Modifier le titre en français ne touche ni
+l'anglais ni l'arabe.
+
+> Un contenu que vous n'avez jamais modifié affiche la version livrée dans cette
+> langue. Vous n'êtes donc jamais obligé de tout traduire pour publier.
+
+---
+
+## 3. Le panneau de réglages
 
 Tout se passe dans le menu **Jeux Marketing** de la colonne de gauche. Sept onglets.
 
 ### Général
-- **Mode direct / Mode Fiverr** — le réglage le plus important, voir la section 3
+- **Mode direct / Mode Fiverr** — le réglage le plus important, voir la section 4
 - Numéro WhatsApp, lien Fiverr, email de notification
 - Quelles sections afficher sur la page d'accueil
 - Webhook (Zapier, Make, CRM) et lien vers la politique de confidentialité
@@ -60,8 +86,9 @@ C'est aussi ici que se règlent les valeurs de départ du calculateur de rentabi
 Titre, paragraphe d'introduction, étiquettes, points techniques et questions fréquentes.
 
 ### Portfolio
-Les packs et leurs prix, le déroulé d'un projet, la section « à propos » avec
-ses chiffres clés, l'intitulé des réalisations et les avis clients.
+Les packs et leurs prix, le déroulé d'un projet, les compétences, la section
+« à propos » avec ses chiffres clés, l'intitulé des réalisations et les avis
+clients.
 
 Les réalisations elles-mêmes ne sont pas ici : elles ont leur propre menu
 **Réalisations**, pour pouvoir porter une image, un texte et des champs
@@ -77,7 +104,7 @@ Les réalisations elles-mêmes ne sont pas ici : elles ont leur propre menu
 
 ---
 
-## 3. Les deux modes — à lire avant de publier
+## 4. Les deux modes — à lire avant de publier
 
 Fiverr interdit le partage de coordonnées pour sortir de la plateforme. Un lien menant vers une page où votre numéro WhatsApp est visible peut suffire à faire suspendre un compte.
 
@@ -98,7 +125,7 @@ Le passage d'un mode à l'autre prend deux secondes et ne demande aucune autre m
 
 ---
 
-## 4. Les participants
+## 5. Les participants
 
 Chaque personne qui remplit le formulaire est enregistrée dans **Jeux Marketing → Participants**, avec prénom, email, lot et code.
 
@@ -112,7 +139,7 @@ Le lot enregistré avec un participant est celui que le serveur a tiré, et pas 
 
 ---
 
-## 5. Insérer un jeu dans une autre page
+## 6. Insérer un jeu dans une autre page
 
 Le code court `[jeu]` fonctionne dans n'importe quelle page ou article.
 
@@ -128,7 +155,7 @@ Le code court `[jeu]` fonctionne dans n'importe quelle page ou article.
 
 ---
 
-## 6. Structure des fichiers
+## 7. Structure des fichiers
 
 ```
 jeux-marketing/
@@ -144,6 +171,10 @@ jeux-marketing/
 │   ├── admin.php              panneau de réglages
 │   ├── leads.php              participants, tirage serveur, export CSV
 │   ├── portfolio.php          réalisations
+│   ├── i18n.php               langues, sélecteur, sens d'écriture
+│   ├── lang/en.php            interface et contenu anglais
+│   ├── lang/fr.php            interface et contenu français
+│   ├── lang/ar.php            interface et contenu arabe
 │   └── shortcode.php          code court [jeu]
 ├── languages/
 │   └── jeux-marketing.pot     modèle de traduction
@@ -157,7 +188,7 @@ jeux-marketing/
 
 ---
 
-## 7. Avant de mettre en ligne
+## 8. Avant de mettre en ligne
 
 - [ ] Renseigner le numéro WhatsApp et le lien Fiverr
 - [ ] Choisir le bon mode selon la destination du lien
@@ -170,10 +201,12 @@ jeux-marketing/
 - [ ] Remplacer le texte « à propos » par le vôtre
 - [ ] Ajouter vos vraies réalisations — et seulement les vraies
 - [ ] N'ajouter que des avis réellement reçus, ou laisser la section vide
+- [ ] Relire la page dans les trois langues avec le sélecteur
+- [ ] Vérifier l'arabe sur téléphone : la page doit se lire de droite à gauche
 
 ---
 
-## 8. Ce qui n'est pas inclus
+## 9. Ce qui n'est pas inclus
 
 Pour rester honnête sur le périmètre :
 

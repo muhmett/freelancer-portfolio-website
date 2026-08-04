@@ -25,21 +25,21 @@ $jmk_gift = '<svg class="gift" viewBox="0 0 24 24" aria-hidden="true" focusable=
 	. '</svg>';
 ?>
 <div class="game-card rv" id="jmk-tap">
-	<h3><?php esc_html_e( 'Tap-to-win', 'jeux-marketing' ); ?>
-		<span class="tag"><?php esc_html_e( 'une boîte', 'jeux-marketing' ); ?></span></h3>
+	<h3><?php jmk_e( 'tap_title' ); ?>
+		<span class="tag"><?php jmk_e( 'tap_tag' ); ?></span></h3>
 	<div class="boxes" id="boxes">
 		<?php for ( $jmk_i = 0; $jmk_i < 3; $jmk_i++ ) : ?>
 			<button class="box" data-i="<?php echo (int) $jmk_i; ?>"
 				aria-label="<?php
 					/* translators: %d: numéro de la boîte. */
-					printf( esc_attr__( 'Ouvrir la boîte %d', 'jeux-marketing' ), (int) $jmk_i + 1 );
+					printf( jmk_t( 'open_box' ), (int) $jmk_i + 1 );
 				?>"><?php
 					echo $jmk_gift; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- balisage SVG fixe, sans donnée utilisateur.
 				?></button>
 		<?php endfor; ?>
 	</div>
 	<div class="row-inline">
-		<button class="btn btn-ghost" id="tapReset"><?php esc_html_e( 'Rejouer', 'jeux-marketing' ); ?></button>
-		<span class="small" id="tapMsg"><?php esc_html_e( 'Une seule tentative par joueur.', 'jeux-marketing' ); ?></span>
+		<button class="btn btn-ghost" id="tapReset"><?php jmk_e( 'replay' ); ?></button>
+		<span class="small" id="tapMsg"><?php jmk_e( 'tap_msg' ); ?></span>
 	</div>
 </div>

@@ -17,8 +17,8 @@ if ( ! $faq ) {
 <section id="faq">
 	<div class="wrap">
 		<div class="sec-head rv">
-			<p class="eyebrow"><?php esc_html_e( 'Questions fréquentes', 'jeux-marketing' ); ?></p>
-			<h2><?php esc_html_e( 'Ce qu\'on me demande avant de commander', 'jeux-marketing' ); ?></h2>
+			<p class="eyebrow"><?php jmk_e( 'faq_eyebrow' ); ?></p>
+			<h2><?php jmk_e( 'faq_h2' ); ?></h2>
 		</div>
 		<div class="faq rv">
 			<?php foreach ( $faq as $i => $f ) : ?>

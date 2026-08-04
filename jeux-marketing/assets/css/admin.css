@@ -86,3 +86,12 @@
 .jmk-grid-3{display:grid;grid-template-columns:2fr 1fr 1fr;gap:10px}
 @media(max-width:782px){.jmk-grid-2,.jmk-grid-3{grid-template-columns:1fr}}
 .jmk-work-meta p{max-width:640px}
+
+/* barre de langue */
+.jmk-langbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:14px 0 18px;
+  padding:12px 14px;background:#fff;border:1px solid #dcdcde;border-radius:6px}
+.jmk-langbar>span{font-weight:600}
+.jmk-langbtn{text-decoration:none;padding:5px 12px;border:1px solid #dcdcde;border-radius:999px;
+  color:#3c434a;font-size:13px;line-height:1.6}
+.jmk-langbtn.active{background:#2271b1;border-color:#2271b1;color:#fff}
+.jmk-langbar em{flex:1 1 100%;color:#646970;font-size:12px;font-style:normal;line-height:1.5}

@@ -17,8 +17,8 @@ if ( ! $steps ) {
 <section id="process">
 	<div class="wrap">
 		<div class="sec-head rv">
-			<p class="eyebrow"><?php esc_html_e( 'Comment ça se passe', 'jeux-marketing' ); ?></p>
-			<h2><?php esc_html_e( 'De votre message au jeu en ligne', 'jeux-marketing' ); ?></h2>
+			<p class="eyebrow"><?php jmk_e( 'process_eyebrow' ); ?></p>
+			<h2><?php jmk_e( 'process_h2' ); ?></h2>
 		</div>
 		<ol class="steps rv">
 			<?php foreach ( $steps as $i => $s ) : ?>

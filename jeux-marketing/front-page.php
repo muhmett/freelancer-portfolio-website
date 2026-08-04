@@ -34,10 +34,10 @@ get_header();
 
 			<div class="hero-cta">
 				<?php if ( jmk_get( 'sec_quote' ) ) : ?>
-					<button class="btn" data-scroll="devis"><?php esc_html_e( 'Configurer mon jeu', 'jeux-marketing' ); ?></button>
+					<button class="btn" data-scroll="devis"><?php jmk_e( 'cta_configure' ); ?></button>
 				<?php endif; ?>
 				<?php if ( jmk_get( 'sec_roi' ) ) : ?>
-					<button class="btn btn-ghost" data-scroll="roi"><?php esc_html_e( 'Calculer ce que ça rapporte', 'jeux-marketing' ); ?></button>
+					<button class="btn btn-ghost" data-scroll="roi"><?php jmk_e( 'cta_roi' ); ?></button>
 				<?php endif; ?>
 			</div>
 		</div>
@@ -70,6 +70,9 @@ if ( jmk_get( 'sec_leads' ) ) {
 }
 if ( jmk_get( 'sec_work' ) ) {
 	get_template_part( 'template-parts/section', 'work' );
+}
+if ( jmk_get( 'sec_skills' ) ) {
+	get_template_part( 'template-parts/section', 'skills' );
 }
 if ( jmk_get( 'sec_reviews' ) ) {
 	get_template_part( 'template-parts/section', 'reviews' );

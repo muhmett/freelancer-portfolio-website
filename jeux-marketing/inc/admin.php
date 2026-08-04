@@ -55,9 +55,26 @@ add_action( 'admin_init', 'jmk_register_settings' );
  * @return array
  */
 function jmk_sanitize( $in ) {
-	$old = get_option( 'jmk_settings', jmk_defaults() );
+	$old = get_option( 'jmk_settings', array() );
 	$out = is_array( $old ) ? $old : array();
 	$in  = is_array( $in ) ? $in : array();
+
+	// Le contenu traduisible arrive sous la langue en cours d'édition. On le
+	// remonte à plat le temps du nettoyage, puis on le redescend dans son
+	// compartiment : les deux autres langues ne sont jamais touchées.
+	$lang = isset( $in['__edit_lang'] ) ? sanitize_key( $in['__edit_lang'] ) : jmk_default_lang();
+	if ( ! isset( jmk_langs()[ $lang ] ) ) {
+		$lang = 'en';
+	}
+	unset( $in['__edit_lang'] );
+
+	if ( isset( $in[ $lang ] ) && is_array( $in[ $lang ] ) ) {
+		$in = array_merge( $in, $in[ $lang ] );
+		unset( $in[ $lang ] );
+	}
+
+	$trans = jmk_translatable();
+	$bucket = isset( $out[ $lang ] ) && is_array( $out[ $lang ] ) ? $out[ $lang ] : array();
 
 	// Champs texte simples.
 	$text = array( 'brand_name', 'hero_eyebrow', 'hero_title', 'hero_title_2', 'currency', 'about_title', 'work_title' );
@@ -116,7 +133,7 @@ function jmk_sanitize( $in ) {
 	$flags = array(
 		'game_wheel', 'game_scratch', 'game_tap', 'game_quiz', 'game_slot', 'game_plinko',
 		'sec_brand', 'sec_lab', 'sec_leads', 'sec_roi', 'sec_quote', 'sec_specs', 'sec_faq',
-		'sec_about', 'sec_services', 'sec_work', 'sec_process', 'sec_reviews',
+		'sec_about', 'sec_services', 'sec_work', 'sec_process', 'sec_reviews', 'sec_skills',
 		'one_play',
 	);
 	foreach ( $flags as $k ) {
@@ -205,7 +222,7 @@ function jmk_sanitize( $in ) {
 	}
 
 	// Blocs question / réponse : quiz, faq, specs, déroulé, avis.
-	foreach ( array( 'quiz', 'faq', 'specs', 'process', 'reviews' ) as $key ) {
+	foreach ( array( 'quiz', 'faq', 'specs', 'process', 'reviews', 'skills' ) as $key ) {
 		if ( ! isset( $in[ $key ] ) || ! is_array( $in[ $key ] ) ) {
 			continue;
 		}
@@ -225,6 +242,15 @@ function jmk_sanitize( $in ) {
 		$out[ $key ] = $rows;
 	}
 
+	// Redescendre le contenu traduisible dans sa langue.
+	foreach ( $trans as $k ) {
+		if ( array_key_exists( $k, $out ) ) {
+			$bucket[ $k ] = $out[ $k ];
+			unset( $out[ $k ] );
+		}
+	}
+	$out[ $lang ] = $bucket;
+
 	return $out;
 }
 
@@ -243,6 +269,17 @@ function jmk_admin_assets( $hook ) {
 add_action( 'admin_enqueue_scripts', 'jmk_admin_assets' );
 
 /**
+ * Langue dont on modifie le contenu dans l'administration.
+ *
+ * @return string
+ */
+function jmk_admin_lang() {
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- simple choix d'affichage.
+	$asked = isset( $_GET['jmk_lang'] ) ? sanitize_key( wp_unslash( $_GET['jmk_lang'] ) ) : '';
+	return isset( jmk_langs()[ $asked ] ) ? $asked : jmk_default_lang();
+}
+
+/**
  * Champ texte.
  *
  * @param string $name  Nom.
@@ -250,11 +287,31 @@ add_action( 'admin_enqueue_scripts', 'jmk_admin_assets' );
  * @param string $help  Aide.
  * @param string $type  Type HTML.
  */
-function jmk_field( $name, $label, $help = '', $type = 'text' ) {
-	$val = jmk_get( $name );
+function jmk_field( $name, $label, $help = '', $type = 'text', $lang = null ) {
+	$val = jmk_get( $name, null, $lang );
 	echo '<div class="jmk-field">';
 	echo '<label for="jmk-' . esc_attr( $name ) . '">' . esc_html( $label ) . '</label>';
 	echo '<input type="' . esc_attr( $type ) . '" id="jmk-' . esc_attr( $name ) . '" name="jmk_settings[' . esc_attr( $name ) . ']" value="' . esc_attr( $val ) . '">';
+	if ( $help ) {
+		echo '<p class="jmk-help">' . esc_html( $help ) . '</p>';
+	}
+	echo '</div>';
+}
+
+/**
+ * Champ texte traduisible : le nom porte la langue en cours d'édition.
+ *
+ * @param string $name  Nom.
+ * @param string $label Libellé.
+ * @param string $help  Aide.
+ * @param string $type  Type HTML.
+ */
+function jmk_field_l( $name, $label, $help = '', $type = 'text' ) {
+	$lang = jmk_admin_lang();
+	$val  = jmk_get( $name, null, $lang );
+	echo '<div class="jmk-field">';
+	echo '<label for="jmk-' . esc_attr( $name ) . '">' . esc_html( $label ) . '</label>';
+	echo '<input type="' . esc_attr( $type ) . '" id="jmk-' . esc_attr( $name ) . '" name="jmk_settings[' . esc_attr( $lang ) . '][' . esc_attr( $name ) . ']" value="' . esc_attr( $val ) . '">';
 	if ( $help ) {
 		echo '<p class="jmk-help">' . esc_html( $help ) . '</p>';
 	}
@@ -284,7 +341,8 @@ function jmk_settings_page() {
 	if ( ! current_user_can( 'manage_options' ) ) {
 		return;
 	}
-	$tabs = array(
+	$jmk_el = jmk_admin_lang();
+	$tabs   = array(
 		'general' => __( 'Général', 'jeux-marketing' ),
 		'marque'  => __( 'Marque', 'jeux-marketing' ),
 		'jeux'    => __( 'Jeux', 'jeux-marketing' ),
@@ -299,6 +357,16 @@ function jmk_settings_page() {
 		<p class="jmk-intro"><?php esc_html_e( 'Tout ce qui apparaît sur la page d\'accueil se règle ici. Enregistrez, puis rechargez la page publique pour voir le résultat.', 'jeux-marketing' ); ?></p>
 		<?php settings_errors( 'jmk_settings' ); ?>
 
+		<div class="jmk-langbar">
+			<span><?php esc_html_e( 'Contenu affiché en :', 'jeux-marketing' ); ?></span>
+			<?php foreach ( jmk_langs() as $jmk_code => $jmk_info ) : ?>
+				<a class="jmk-langbtn<?php echo ( $jmk_code === $jmk_el ) ? ' active' : ''; ?>"
+					href="<?php echo esc_url( add_query_arg( 'jmk_lang', $jmk_code, admin_url( 'admin.php?page=jmk-settings' ) ) ); ?>">
+					<?php echo esc_html( $jmk_info['name'] ); ?></a>
+			<?php endforeach; ?>
+			<em><?php esc_html_e( 'Les textes, lots, packs et questions ci-dessous appartiennent à cette langue. Les réglages techniques (contact, couleur, sections, plafonds) sont communs aux trois.', 'jeux-marketing' ); ?></em>
+		</div>
+
 		<nav class="jmk-tabs">
 			<?php foreach ( $tabs as $id => $label ) : ?>
 				<button type="button" class="jmk-tab" data-tab="<?php echo esc_attr( $id ); ?>"><?php echo esc_html( $label ); ?></button>
@@ -307,6 +375,7 @@ function jmk_settings_page() {
 
 		<form method="post" action="options.php">
 			<?php settings_fields( 'jmk_group' ); ?>
+			<input type="hidden" name="jmk_settings[__edit_lang]" value="<?php echo esc_attr( $jmk_el ); ?>">
 
 			<!-- GÉNÉRAL -->
 			<div class="jmk-pane" data-pane="general">
@@ -336,6 +405,7 @@ function jmk_settings_page() {
 					<div class="jmk-checks">
 						<?php
 						jmk_check( 'sec_services', __( 'Tarifs et packs', 'jeux-marketing' ) );
+						jmk_check( 'sec_skills', __( 'Compétences', 'jeux-marketing' ) );
 						jmk_check( 'sec_work', __( 'Réalisations', 'jeux-marketing' ), __( 'Ne s\'affiche que si vous avez saisi au moins une réalisation.', 'jeux-marketing' ) );
 						jmk_check( 'sec_reviews', __( 'Avis clients', 'jeux-marketing' ), __( 'Ne s\'affiche que si vous avez saisi au moins un avis.', 'jeux-marketing' ) );
 						jmk_check( 'sec_process', __( 'Déroulé d\'un projet', 'jeux-marketing' ) );
@@ -414,14 +484,14 @@ function jmk_settings_page() {
 					<h2><?php esc_html_e( 'Questions du quiz', 'jeux-marketing' ); ?></h2>
 					<p class="jmk-help"><?php esc_html_e( 'Une réponse par ligne. Indiquez le numéro de la bonne réponse : 1 pour la première ligne, 2 pour la deuxième, etc.', 'jeux-marketing' ); ?></p>
 					<div class="jmk-rep" data-rep="quiz">
-						<?php foreach ( (array) jmk_get( 'quiz' ) as $i => $q ) : ?>
+						<?php foreach ( (array) jmk_get( 'quiz', null, $jmk_el ) as $i => $q ) : ?>
 							<div class="jmk-row">
 								<span class="jmk-handle">≡</span>
 								<div class="jmk-row-body">
-									<input type="text" name="jmk_settings[quiz][<?php echo (int) $i; ?>][q]" value="<?php echo esc_attr( $q['q'] ); ?>" placeholder="<?php esc_attr_e( 'Question', 'jeux-marketing' ); ?>">
-									<textarea rows="3" name="jmk_settings[quiz][<?php echo (int) $i; ?>][a]" placeholder="<?php esc_attr_e( 'Une réponse par ligne', 'jeux-marketing' ); ?>"><?php echo esc_textarea( $q['a'] ); ?></textarea>
+									<input type="text" name="jmk_settings[<?php echo esc_attr( $jmk_el ); ?>][quiz][<?php echo (int) $i; ?>][q]" value="<?php echo esc_attr( $q['q'] ); ?>" placeholder="<?php esc_attr_e( 'Question', 'jeux-marketing' ); ?>">
+									<textarea rows="3" name="jmk_settings[<?php echo esc_attr( $jmk_el ); ?>][quiz][<?php echo (int) $i; ?>][a]" placeholder="<?php esc_attr_e( 'Une réponse par ligne', 'jeux-marketing' ); ?>"><?php echo esc_textarea( $q['a'] ); ?></textarea>
 									<label class="jmk-inline"><?php esc_html_e( 'Bonne réponse n°', 'jeux-marketing' ); ?>
-										<input type="number" min="1" name="jmk_settings[quiz][<?php echo (int) $i; ?>][c]" value="<?php echo (int) $q['c']; ?>"></label>
+										<input type="number" min="1" name="jmk_settings[<?php echo esc_attr( $jmk_el ); ?>][quiz][<?php echo (int) $i; ?>][c]" value="<?php echo (int) $q['c']; ?>"></label>
 								</div>
 								<button type="button" class="jmk-del" aria-label="<?php esc_attr_e( 'Supprimer', 'jeux-marketing' ); ?>">×</button>
 							</div>
@@ -448,14 +518,14 @@ function jmk_settings_page() {
 					</div>
 
 					<div class="jmk-rep jmk-lots" data-rep="lots">
-						<?php foreach ( (array) jmk_get( 'lots' ) as $i => $lot ) : ?>
+						<?php foreach ( (array) jmk_get( 'lots', null, $jmk_el ) as $i => $lot ) : ?>
 							<div class="jmk-lot">
-								<input type="text" name="jmk_settings[lots][<?php echo (int) $i; ?>][label]" value="<?php echo esc_attr( $lot['label'] ); ?>" placeholder="<?php esc_attr_e( 'Nom du lot', 'jeux-marketing' ); ?>">
-								<input type="number" step="0.1" min="0" class="jmk-weight" name="jmk_settings[lots][<?php echo (int) $i; ?>][weight]" value="<?php echo esc_attr( $lot['weight'] ); ?>">
-								<input type="number" min="0" name="jmk_settings[lots][<?php echo (int) $i; ?>][cap]" value="<?php echo (int) $lot['cap']; ?>" title="<?php esc_attr_e( '0 = illimité', 'jeux-marketing' ); ?>">
-								<input type="text" name="jmk_settings[lots][<?php echo (int) $i; ?>][code]" value="<?php echo esc_attr( $lot['code'] ); ?>" placeholder="PROMO10">
-								<input type="number" step="1" min="-180" max="180" name="jmk_settings[lots][<?php echo (int) $i; ?>][hue]" value="<?php echo esc_attr( $lot['hue'] ); ?>" title="<?php esc_attr_e( 'Décalage de teinte par rapport à la couleur principale', 'jeux-marketing' ); ?>">
-								<label class="jmk-mini"><input type="checkbox" name="jmk_settings[lots][<?php echo (int) $i; ?>][losing]" value="1" <?php checked( 1, (int) $lot['losing'] ); ?>></label>
+								<input type="text" name="jmk_settings[<?php echo esc_attr( $jmk_el ); ?>][lots][<?php echo (int) $i; ?>][label]" value="<?php echo esc_attr( $lot['label'] ); ?>" placeholder="<?php esc_attr_e( 'Nom du lot', 'jeux-marketing' ); ?>">
+								<input type="number" step="0.1" min="0" class="jmk-weight" name="jmk_settings[<?php echo esc_attr( $jmk_el ); ?>][lots][<?php echo (int) $i; ?>][weight]" value="<?php echo esc_attr( $lot['weight'] ); ?>">
+								<input type="number" min="0" name="jmk_settings[<?php echo esc_attr( $jmk_el ); ?>][lots][<?php echo (int) $i; ?>][cap]" value="<?php echo (int) $lot['cap']; ?>" title="<?php esc_attr_e( '0 = illimité', 'jeux-marketing' ); ?>">
+								<input type="text" name="jmk_settings[<?php echo esc_attr( $jmk_el ); ?>][lots][<?php echo (int) $i; ?>][code]" value="<?php echo esc_attr( $lot['code'] ); ?>" placeholder="PROMO10">
+								<input type="number" step="1" min="-180" max="180" name="jmk_settings[<?php echo esc_attr( $jmk_el ); ?>][lots][<?php echo (int) $i; ?>][hue]" value="<?php echo esc_attr( $lot['hue'] ); ?>" title="<?php esc_attr_e( 'Décalage de teinte par rapport à la couleur principale', 'jeux-marketing' ); ?>">
+								<label class="jmk-mini"><input type="checkbox" name="jmk_settings[<?php echo esc_attr( $jmk_el ); ?>][lots][<?php echo (int) $i; ?>][losing]" value="1" <?php checked( 1, (int) $lot['losing'] ); ?>></label>
 								<button type="button" class="jmk-del" aria-label="<?php esc_attr_e( 'Supprimer', 'jeux-marketing' ); ?>">×</button>
 							</div>
 						<?php endforeach; ?>
@@ -495,13 +565,13 @@ function jmk_settings_page() {
 						<span></span>
 					</div>
 					<div class="jmk-rep jmk-opts" data-rep="options">
-						<?php foreach ( (array) jmk_get( 'options' ) as $i => $o ) : ?>
+						<?php foreach ( (array) jmk_get( 'options', null, $jmk_el ) as $i => $o ) : ?>
 							<div class="jmk-opt">
-								<input type="text" name="jmk_settings[options][<?php echo (int) $i; ?>][label]" value="<?php echo esc_attr( $o['label'] ); ?>">
-								<input type="number" step="1" min="0" name="jmk_settings[options][<?php echo (int) $i; ?>][price]" value="<?php echo esc_attr( $o['price'] ); ?>">
-								<input type="number" step="1" min="0" name="jmk_settings[options][<?php echo (int) $i; ?>][days]" value="<?php echo (int) $o['days']; ?>">
-								<label class="jmk-mini"><input type="checkbox" name="jmk_settings[options][<?php echo (int) $i; ?>][on]" value="1" <?php checked( 1, (int) $o['on'] ); ?>></label>
-								<label class="jmk-mini"><input type="checkbox" name="jmk_settings[options][<?php echo (int) $i; ?>][fixed]" value="1" <?php checked( 1, (int) $o['fixed'] ); ?>></label>
+								<input type="text" name="jmk_settings[<?php echo esc_attr( $jmk_el ); ?>][options][<?php echo (int) $i; ?>][label]" value="<?php echo esc_attr( $o['label'] ); ?>">
+								<input type="number" step="1" min="0" name="jmk_settings[<?php echo esc_attr( $jmk_el ); ?>][options][<?php echo (int) $i; ?>][price]" value="<?php echo esc_attr( $o['price'] ); ?>">
+								<input type="number" step="1" min="0" name="jmk_settings[<?php echo esc_attr( $jmk_el ); ?>][options][<?php echo (int) $i; ?>][days]" value="<?php echo (int) $o['days']; ?>">
+								<label class="jmk-mini"><input type="checkbox" name="jmk_settings[<?php echo esc_attr( $jmk_el ); ?>][options][<?php echo (int) $i; ?>][on]" value="1" <?php checked( 1, (int) $o['on'] ); ?>></label>
+								<label class="jmk-mini"><input type="checkbox" name="jmk_settings[<?php echo esc_attr( $jmk_el ); ?>][options][<?php echo (int) $i; ?>][fixed]" value="1" <?php checked( 1, (int) $o['fixed'] ); ?>></label>
 								<button type="button" class="jmk-del" aria-label="<?php esc_attr_e( 'Supprimer', 'jeux-marketing' ); ?>">×</button>
 							</div>
 						<?php endforeach; ?>
@@ -529,18 +599,18 @@ function jmk_settings_page() {
 					<h2><?php esc_html_e( 'Haut de page', 'jeux-marketing' ); ?></h2>
 					<div class="jmk-grid">
 						<?php
-						jmk_field( 'hero_eyebrow', __( 'Petite ligne au-dessus du titre', 'jeux-marketing' ) );
-						jmk_field( 'hero_title', __( 'Titre, première ligne', 'jeux-marketing' ) );
-						jmk_field( 'hero_title_2', __( 'Titre, deuxième ligne (en couleur)', 'jeux-marketing' ) );
+						jmk_field_l( 'hero_eyebrow', __( 'Petite ligne au-dessus du titre', 'jeux-marketing' ) );
+						jmk_field_l( 'hero_title', __( 'Titre, première ligne', 'jeux-marketing' ) );
+						jmk_field_l( 'hero_title_2', __( 'Titre, deuxième ligne (en couleur)', 'jeux-marketing' ) );
 						?>
 					</div>
 					<div class="jmk-field">
 						<label for="jmk-hero_text"><?php esc_html_e( 'Paragraphe d\'introduction', 'jeux-marketing' ); ?></label>
-						<textarea id="jmk-hero_text" rows="3" name="jmk_settings[hero_text]"><?php echo esc_textarea( jmk_get( 'hero_text' ) ); ?></textarea>
+						<textarea id="jmk-hero_text" rows="3" name="jmk_settings[<?php echo esc_attr( $jmk_el ); ?>][hero_text]"><?php echo esc_textarea( jmk_get( 'hero_text', null, $jmk_el ) ); ?></textarea>
 					</div>
 					<div class="jmk-field">
 						<label for="jmk-chips"><?php esc_html_e( 'Étiquettes sous le paragraphe', 'jeux-marketing' ); ?></label>
-						<textarea id="jmk-chips" rows="5" name="jmk_settings[chips]"><?php echo esc_textarea( jmk_get( 'chips' ) ); ?></textarea>
+						<textarea id="jmk-chips" rows="5" name="jmk_settings[<?php echo esc_attr( $jmk_el ); ?>][chips]"><?php echo esc_textarea( jmk_get( 'chips', null, $jmk_el ) ); ?></textarea>
 						<p class="jmk-help"><?php esc_html_e( 'Une étiquette par ligne.', 'jeux-marketing' ); ?></p>
 					</div>
 				</div>
@@ -548,12 +618,12 @@ function jmk_settings_page() {
 				<div class="jmk-card">
 					<h2><?php esc_html_e( 'Points techniques', 'jeux-marketing' ); ?></h2>
 					<div class="jmk-rep" data-rep="specs">
-						<?php foreach ( (array) jmk_get( 'specs' ) as $i => $s ) : ?>
+						<?php foreach ( (array) jmk_get( 'specs', null, $jmk_el ) as $i => $s ) : ?>
 							<div class="jmk-row">
 								<span class="jmk-handle">≡</span>
 								<div class="jmk-row-body">
-									<input type="text" name="jmk_settings[specs][<?php echo (int) $i; ?>][q]" value="<?php echo esc_attr( $s['q'] ); ?>" placeholder="<?php esc_attr_e( 'Titre', 'jeux-marketing' ); ?>">
-									<textarea rows="3" name="jmk_settings[specs][<?php echo (int) $i; ?>][a]"><?php echo esc_textarea( $s['a'] ); ?></textarea>
+									<input type="text" name="jmk_settings[<?php echo esc_attr( $jmk_el ); ?>][specs][<?php echo (int) $i; ?>][q]" value="<?php echo esc_attr( $s['q'] ); ?>" placeholder="<?php esc_attr_e( 'Titre', 'jeux-marketing' ); ?>">
+									<textarea rows="3" name="jmk_settings[<?php echo esc_attr( $jmk_el ); ?>][specs][<?php echo (int) $i; ?>][a]"><?php echo esc_textarea( $s['a'] ); ?></textarea>
 								</div>
 								<button type="button" class="jmk-del" aria-label="<?php esc_attr_e( 'Supprimer', 'jeux-marketing' ); ?>">×</button>
 							</div>
@@ -565,12 +635,12 @@ function jmk_settings_page() {
 				<div class="jmk-card">
 					<h2><?php esc_html_e( 'Questions fréquentes', 'jeux-marketing' ); ?></h2>
 					<div class="jmk-rep" data-rep="faq">
-						<?php foreach ( (array) jmk_get( 'faq' ) as $i => $f ) : ?>
+						<?php foreach ( (array) jmk_get( 'faq', null, $jmk_el ) as $i => $f ) : ?>
 							<div class="jmk-row">
 								<span class="jmk-handle">≡</span>
 								<div class="jmk-row-body">
-									<input type="text" name="jmk_settings[faq][<?php echo (int) $i; ?>][q]" value="<?php echo esc_attr( $f['q'] ); ?>" placeholder="<?php esc_attr_e( 'Question', 'jeux-marketing' ); ?>">
-									<textarea rows="3" name="jmk_settings[faq][<?php echo (int) $i; ?>][a]"><?php echo esc_textarea( $f['a'] ); ?></textarea>
+									<input type="text" name="jmk_settings[<?php echo esc_attr( $jmk_el ); ?>][faq][<?php echo (int) $i; ?>][q]" value="<?php echo esc_attr( $f['q'] ); ?>" placeholder="<?php esc_attr_e( 'Question', 'jeux-marketing' ); ?>">
+									<textarea rows="3" name="jmk_settings[<?php echo esc_attr( $jmk_el ); ?>][faq][<?php echo (int) $i; ?>][a]"><?php echo esc_textarea( $f['a'] ); ?></textarea>
 								</div>
 								<button type="button" class="jmk-del" aria-label="<?php esc_attr_e( 'Supprimer', 'jeux-marketing' ); ?>">×</button>
 							</div>
@@ -586,18 +656,18 @@ function jmk_settings_page() {
 					<h2><?php esc_html_e( 'Tarifs et packs', 'jeux-marketing' ); ?></h2>
 					<p class="jmk-help"><?php esc_html_e( 'Trois packs suffisent : un prix d\'entrée, un pack complet mis en avant, un pack haut de gamme. Une ligne par élément inclus.', 'jeux-marketing' ); ?></p>
 					<div class="jmk-rep" data-rep="packs">
-						<?php foreach ( (array) jmk_get( 'packs' ) as $i => $pk ) : ?>
+						<?php foreach ( (array) jmk_get( 'packs', null, $jmk_el ) as $i => $pk ) : ?>
 							<div class="jmk-row">
 								<span class="jmk-handle">≡</span>
 								<div class="jmk-row-body">
 									<div class="jmk-grid-3">
-										<input type="text" name="jmk_settings[packs][<?php echo (int) $i; ?>][name]" value="<?php echo esc_attr( $pk['name'] ); ?>" placeholder="<?php esc_attr_e( 'Nom du pack', 'jeux-marketing' ); ?>">
-										<input type="number" min="0" step="1" name="jmk_settings[packs][<?php echo (int) $i; ?>][price]" value="<?php echo esc_attr( $pk['price'] ); ?>" placeholder="<?php esc_attr_e( 'Prix', 'jeux-marketing' ); ?>">
-										<input type="number" min="0" step="1" name="jmk_settings[packs][<?php echo (int) $i; ?>][days]" value="<?php echo (int) $pk['days']; ?>" placeholder="<?php esc_attr_e( 'Jours', 'jeux-marketing' ); ?>">
+										<input type="text" name="jmk_settings[<?php echo esc_attr( $jmk_el ); ?>][packs][<?php echo (int) $i; ?>][name]" value="<?php echo esc_attr( $pk['name'] ); ?>" placeholder="<?php esc_attr_e( 'Nom du pack', 'jeux-marketing' ); ?>">
+										<input type="number" min="0" step="1" name="jmk_settings[<?php echo esc_attr( $jmk_el ); ?>][packs][<?php echo (int) $i; ?>][price]" value="<?php echo esc_attr( $pk['price'] ); ?>" placeholder="<?php esc_attr_e( 'Prix', 'jeux-marketing' ); ?>">
+										<input type="number" min="0" step="1" name="jmk_settings[<?php echo esc_attr( $jmk_el ); ?>][packs][<?php echo (int) $i; ?>][days]" value="<?php echo (int) $pk['days']; ?>" placeholder="<?php esc_attr_e( 'Jours', 'jeux-marketing' ); ?>">
 									</div>
-									<input type="text" name="jmk_settings[packs][<?php echo (int) $i; ?>][desc]" value="<?php echo esc_attr( $pk['desc'] ); ?>" placeholder="<?php esc_attr_e( 'Une phrase de résumé', 'jeux-marketing' ); ?>">
-									<textarea rows="5" name="jmk_settings[packs][<?php echo (int) $i; ?>][items]" placeholder="<?php esc_attr_e( 'Un élément inclus par ligne', 'jeux-marketing' ); ?>"><?php echo esc_textarea( $pk['items'] ); ?></textarea>
-									<label class="jmk-inline"><input type="checkbox" name="jmk_settings[packs][<?php echo (int) $i; ?>][featured]" value="1" <?php checked( 1, (int) $pk['featured'] ); ?>> <?php esc_html_e( 'Mettre ce pack en avant', 'jeux-marketing' ); ?></label>
+									<input type="text" name="jmk_settings[<?php echo esc_attr( $jmk_el ); ?>][packs][<?php echo (int) $i; ?>][desc]" value="<?php echo esc_attr( $pk['desc'] ); ?>" placeholder="<?php esc_attr_e( 'Une phrase de résumé', 'jeux-marketing' ); ?>">
+									<textarea rows="5" name="jmk_settings[<?php echo esc_attr( $jmk_el ); ?>][packs][<?php echo (int) $i; ?>][items]" placeholder="<?php esc_attr_e( 'Un élément inclus par ligne', 'jeux-marketing' ); ?>"><?php echo esc_textarea( $pk['items'] ); ?></textarea>
+									<label class="jmk-inline"><input type="checkbox" name="jmk_settings[<?php echo esc_attr( $jmk_el ); ?>][packs][<?php echo (int) $i; ?>][featured]" value="1" <?php checked( 1, (int) $pk['featured'] ); ?>> <?php esc_html_e( 'Mettre ce pack en avant', 'jeux-marketing' ); ?></label>
 								</div>
 								<button type="button" class="jmk-del" aria-label="<?php esc_attr_e( 'Supprimer', 'jeux-marketing' ); ?>">×</button>
 							</div>
@@ -610,12 +680,12 @@ function jmk_settings_page() {
 					<h2><?php esc_html_e( 'Déroulé d\'un projet', 'jeux-marketing' ); ?></h2>
 					<p class="jmk-help"><?php esc_html_e( 'Les étapes sont numérotées automatiquement. Quatre suffisent.', 'jeux-marketing' ); ?></p>
 					<div class="jmk-rep" data-rep="process">
-						<?php foreach ( (array) jmk_get( 'process' ) as $i => $st ) : ?>
+						<?php foreach ( (array) jmk_get( 'process', null, $jmk_el ) as $i => $st ) : ?>
 							<div class="jmk-row">
 								<span class="jmk-handle">≡</span>
 								<div class="jmk-row-body">
-									<input type="text" name="jmk_settings[process][<?php echo (int) $i; ?>][q]" value="<?php echo esc_attr( $st['q'] ); ?>" placeholder="<?php esc_attr_e( 'Titre de l\'étape', 'jeux-marketing' ); ?>">
-									<textarea rows="3" name="jmk_settings[process][<?php echo (int) $i; ?>][a]"><?php echo esc_textarea( $st['a'] ); ?></textarea>
+									<input type="text" name="jmk_settings[<?php echo esc_attr( $jmk_el ); ?>][process][<?php echo (int) $i; ?>][q]" value="<?php echo esc_attr( $st['q'] ); ?>" placeholder="<?php esc_attr_e( 'Titre de l\'étape', 'jeux-marketing' ); ?>">
+									<textarea rows="3" name="jmk_settings[<?php echo esc_attr( $jmk_el ); ?>][process][<?php echo (int) $i; ?>][a]"><?php echo esc_textarea( $st['a'] ); ?></textarea>
 								</div>
 								<button type="button" class="jmk-del" aria-label="<?php esc_attr_e( 'Supprimer', 'jeux-marketing' ); ?>">×</button>
 							</div>
@@ -627,23 +697,23 @@ function jmk_settings_page() {
 				<div class="jmk-card">
 					<h2><?php esc_html_e( 'À propos', 'jeux-marketing' ); ?></h2>
 					<div class="jmk-grid">
-						<?php jmk_field( 'about_title', __( 'Titre de la section', 'jeux-marketing' ) ); ?>
+						<?php jmk_field_l( 'about_title', __( 'Titre de la section', 'jeux-marketing' ) ); ?>
 					</div>
 					<div class="jmk-field">
 						<label for="jmk-about_text"><?php esc_html_e( 'Texte', 'jeux-marketing' ); ?></label>
-						<textarea id="jmk-about_text" rows="8" name="jmk_settings[about_text]"><?php echo esc_textarea( jmk_get( 'about_text' ) ); ?></textarea>
+						<textarea id="jmk-about_text" rows="8" name="jmk_settings[<?php echo esc_attr( $jmk_el ); ?>][about_text]"><?php echo esc_textarea( jmk_get( 'about_text', null, $jmk_el ) ); ?></textarea>
 						<p class="jmk-help"><?php esc_html_e( 'Séparez les paragraphes par une ligne vide.', 'jeux-marketing' ); ?></p>
 					</div>
 
 					<h3><?php esc_html_e( 'Chiffres clés', 'jeux-marketing' ); ?></h3>
 					<p class="jmk-help"><?php esc_html_e( 'N\'affichez que des chiffres que vous pouvez tenir. « 48 h » engage sur un délai réel.', 'jeux-marketing' ); ?></p>
 					<div class="jmk-rep" data-rep="about_stats">
-						<?php foreach ( (array) jmk_get( 'about_stats' ) as $i => $stt ) : ?>
+						<?php foreach ( (array) jmk_get( 'about_stats', null, $jmk_el ) as $i => $stt ) : ?>
 							<div class="jmk-row">
 								<span class="jmk-handle">≡</span>
 								<div class="jmk-row-body jmk-grid-2">
-									<input type="text" name="jmk_settings[about_stats][<?php echo (int) $i; ?>][n]" value="<?php echo esc_attr( $stt['n'] ); ?>" placeholder="<?php esc_attr_e( 'Chiffre', 'jeux-marketing' ); ?>">
-									<input type="text" name="jmk_settings[about_stats][<?php echo (int) $i; ?>][l]" value="<?php echo esc_attr( $stt['l'] ); ?>" placeholder="<?php esc_attr_e( 'Ce qu\'il désigne', 'jeux-marketing' ); ?>">
+									<input type="text" name="jmk_settings[<?php echo esc_attr( $jmk_el ); ?>][about_stats][<?php echo (int) $i; ?>][n]" value="<?php echo esc_attr( $stt['n'] ); ?>" placeholder="<?php esc_attr_e( 'Chiffre', 'jeux-marketing' ); ?>">
+									<input type="text" name="jmk_settings[<?php echo esc_attr( $jmk_el ); ?>][about_stats][<?php echo (int) $i; ?>][l]" value="<?php echo esc_attr( $stt['l'] ); ?>" placeholder="<?php esc_attr_e( 'Ce qu\'il désigne', 'jeux-marketing' ); ?>">
 								</div>
 								<button type="button" class="jmk-del" aria-label="<?php esc_attr_e( 'Supprimer', 'jeux-marketing' ); ?>">×</button>
 							</div>
@@ -653,14 +723,32 @@ function jmk_settings_page() {
 				</div>
 
 				<div class="jmk-card">
+					<h2><?php esc_html_e( 'Compétences', 'jeux-marketing' ); ?></h2>
+					<p class="jmk-help"><?php esc_html_e( 'Un groupe par ligne de la grille : un titre, puis un outil par ligne. N\'y mettez que ce que vous savez maintenir après la livraison.', 'jeux-marketing' ); ?></p>
+					<div class="jmk-rep" data-rep="skills">
+						<?php foreach ( (array) jmk_get( 'skills', null, $jmk_el ) as $i => $sk ) : ?>
+							<div class="jmk-row">
+								<span class="jmk-handle">≡</span>
+								<div class="jmk-row-body">
+									<input type="text" name="jmk_settings[<?php echo esc_attr( $jmk_el ); ?>][skills][<?php echo (int) $i; ?>][q]" value="<?php echo esc_attr( $sk['q'] ); ?>" placeholder="<?php esc_attr_e( 'Titre du groupe', 'jeux-marketing' ); ?>">
+									<textarea rows="5" name="jmk_settings[<?php echo esc_attr( $jmk_el ); ?>][skills][<?php echo (int) $i; ?>][a]" placeholder="<?php esc_attr_e( 'Un outil par ligne', 'jeux-marketing' ); ?>"><?php echo esc_textarea( $sk['a'] ); ?></textarea>
+								</div>
+								<button type="button" class="jmk-del" aria-label="<?php esc_attr_e( 'Supprimer', 'jeux-marketing' ); ?>">×</button>
+							</div>
+						<?php endforeach; ?>
+					</div>
+					<button type="button" class="button jmk-add" data-add="skills"><?php esc_html_e( 'Ajouter un groupe', 'jeux-marketing' ); ?></button>
+				</div>
+
+				<div class="jmk-card">
 					<h2><?php esc_html_e( 'Réalisations', 'jeux-marketing' ); ?></h2>
 					<p class="jmk-help"><?php esc_html_e( 'Les réalisations elles-mêmes s\'ajoutent dans le menu « Réalisations », avec une image et un texte. Ici, seulement l\'intitulé de la section.', 'jeux-marketing' ); ?></p>
 					<div class="jmk-grid">
-						<?php jmk_field( 'work_title', __( 'Titre de la section', 'jeux-marketing' ) ); ?>
+						<?php jmk_field_l( 'work_title', __( 'Titre de la section', 'jeux-marketing' ) ); ?>
 					</div>
 					<div class="jmk-field">
 						<label for="jmk-work_text"><?php esc_html_e( 'Phrase d\'introduction', 'jeux-marketing' ); ?></label>
-						<textarea id="jmk-work_text" rows="3" name="jmk_settings[work_text]"><?php echo esc_textarea( jmk_get( 'work_text' ) ); ?></textarea>
+						<textarea id="jmk-work_text" rows="3" name="jmk_settings[<?php echo esc_attr( $jmk_el ); ?>][work_text]"><?php echo esc_textarea( jmk_get( 'work_text', null, $jmk_el ) ); ?></textarea>
 					</div>
 					<p>
 						<a href="<?php echo esc_url( admin_url( 'post-new.php?post_type=jmk_work' ) ); ?>" class="button"><?php esc_html_e( 'Ajouter une réalisation', 'jeux-marketing' ); ?></a>
@@ -674,12 +762,12 @@ function jmk_settings_page() {
 						<?php esc_html_e( 'Un avis inventé est un faux témoignage : sur Fiverr comme sur Upwork c\'est un motif de suspension, et un prospect qui demande à parler à la référence vous met en difficulté. N\'ajoutez ici que des phrases réellement écrites par un client. La section reste masquée tant qu\'il n\'y en a aucune.', 'jeux-marketing' ); ?></p>
 					</div>
 					<div class="jmk-rep" data-rep="reviews">
-						<?php foreach ( (array) jmk_get( 'reviews' ) as $i => $rv ) : ?>
+						<?php foreach ( (array) jmk_get( 'reviews', null, $jmk_el ) as $i => $rv ) : ?>
 							<div class="jmk-row">
 								<span class="jmk-handle">≡</span>
 								<div class="jmk-row-body">
-									<textarea rows="3" name="jmk_settings[reviews][<?php echo (int) $i; ?>][a]" placeholder="<?php esc_attr_e( 'L\'avis, mot pour mot', 'jeux-marketing' ); ?>"><?php echo esc_textarea( $rv['a'] ); ?></textarea>
-									<input type="text" name="jmk_settings[reviews][<?php echo (int) $i; ?>][q]" value="<?php echo esc_attr( $rv['q'] ); ?>" placeholder="<?php esc_attr_e( 'Qui l\'a dit — prénom, marque, plateforme', 'jeux-marketing' ); ?>">
+									<textarea rows="3" name="jmk_settings[<?php echo esc_attr( $jmk_el ); ?>][reviews][<?php echo (int) $i; ?>][a]" placeholder="<?php esc_attr_e( 'L\'avis, mot pour mot', 'jeux-marketing' ); ?>"><?php echo esc_textarea( $rv['a'] ); ?></textarea>
+									<input type="text" name="jmk_settings[<?php echo esc_attr( $jmk_el ); ?>][reviews][<?php echo (int) $i; ?>][q]" value="<?php echo esc_attr( $rv['q'] ); ?>" placeholder="<?php esc_attr_e( 'Qui l\'a dit — prénom, marque, plateforme', 'jeux-marketing' ); ?>">
 								</div>
 								<button type="button" class="jmk-del" aria-label="<?php esc_attr_e( 'Supprimer', 'jeux-marketing' ); ?>">×</button>
 							</div>

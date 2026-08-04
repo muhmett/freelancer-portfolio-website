@@ -40,13 +40,13 @@ get_header();
 
 		the_posts_pagination(
 			array(
-				'prev_text' => __( 'Précédent', 'jeux-marketing' ),
-				'next_text' => __( 'Suivant', 'jeux-marketing' ),
+				'prev_text' => jmk_t( 'prev' ),
+				'next_text' => jmk_t( 'next' ),
 			)
 		);
 		?>
 	<?php else : ?>
-		<p><?php esc_html_e( 'Rien à afficher pour l\'instant.', 'jeux-marketing' ); ?></p>
+		<p><?php jmk_e( 'nothing' ); ?></p>
 	<?php endif; ?>
 </div>
 

@@ -18,9 +18,9 @@ $currency = jmk_get( 'currency' );
 <section id="services">
 	<div class="wrap">
 		<div class="sec-head rv">
-			<p class="eyebrow"><?php esc_html_e( 'Ce que je livre', 'jeux-marketing' ); ?></p>
-			<h2><?php esc_html_e( 'Trois façons de travailler ensemble', 'jeux-marketing' ); ?></h2>
-			<p class="lede"><?php esc_html_e( 'Prix fermes, périmètre écrit. Ce qui n\'est pas dans la liste n\'est pas dans le prix — vous savez exactement ce que vous achetez.', 'jeux-marketing' ); ?></p>
+			<p class="eyebrow"><?php jmk_e( 'services_eyebrow' ); ?></p>
+			<h2><?php jmk_e( 'services_h2' ); ?></h2>
+			<p class="lede"><?php jmk_e( 'services_lede' ); ?></p>
 		</div>
 
 		<div class="packs rv">
@@ -30,7 +30,7 @@ $currency = jmk_get( 'currency' );
 				?>
 				<article class="pack<?php echo ! empty( $p['featured'] ) ? ' pack-star' : ''; ?>">
 					<?php if ( ! empty( $p['featured'] ) ) : ?>
-						<span class="pack-flag"><?php esc_html_e( 'le plus demandé', 'jeux-marketing' ); ?></span>
+						<span class="pack-flag"><?php jmk_e( 'most_wanted' ); ?></span>
 					<?php endif; ?>
 					<h3><?php echo esc_html( $p['name'] ); ?></h3>
 					<p class="pack-price"><?php echo esc_html( $p['price'] ); ?><span><?php echo esc_html( $currency ); ?></span></p>
@@ -45,17 +45,17 @@ $currency = jmk_get( 'currency' );
 					<?php if ( ! empty( $p['days'] ) ) : ?>
 						<p class="pack-days"><?php
 							/* translators: %s: nombre de jours. */
-							printf( esc_html__( 'Livré en %s jours', 'jeux-marketing' ), esc_html( $p['days'] ) );
+							printf( jmk_t( 'delivered_in' ), esc_html( $p['days'] ) );
 						?></p>
 					<?php endif; ?>
 					<button class="btn<?php echo empty( $p['featured'] ) ? ' btn-ghost' : ''; ?>" data-scroll="devis">
-						<?php esc_html_e( 'Composer ce pack', 'jeux-marketing' ); ?>
+						<?php jmk_e( 'compose_pack' ); ?>
 					</button>
 				</article>
 			<?php endforeach; ?>
 		</div>
 
-		<p class="small mt-16"><?php esc_html_e( 'Un besoin qui ne rentre dans aucune case ? Décrivez-le, je réponds si c\'est faisable et en combien de temps — y compris quand la réponse est non.', 'jeux-marketing' ); ?></p>
+		<p class="small mt-16"><?php jmk_e( 'services_note' ); ?></p>
 	</div>
 </section>
 <div class="wrap"><div class="divider"></div></div>

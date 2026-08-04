@@ -23,7 +23,7 @@ get_header();
 		$link   = get_post_meta( get_the_ID(), 'jmk_link', true );
 		?>
 		<article <?php post_class( 'jmk-article work-single' ); ?>>
-			<p class="eyebrow"><?php esc_html_e( 'Réalisation', 'jeux-marketing' ); ?></p>
+			<p class="eyebrow"><?php jmk_e( 'realisation' ); ?></p>
 			<h1 class="jmk-article-title"><?php the_title(); ?></h1>
 
 			<?php if ( $client || $sector || $game ) : ?>
@@ -47,14 +47,14 @@ get_header();
 			<?php if ( $link ) : ?>
 				<p class="mt-24">
 					<a class="btn btn-ghost" href="<?php echo esc_url( $link ); ?>" target="_blank" rel="noopener">
-						<?php esc_html_e( 'Voir la campagne', 'jeux-marketing' ); ?>
+						<?php jmk_e( 'view_campaign' ); ?>
 					</a>
 				</p>
 			<?php endif; ?>
 
 			<p class="mt-24">
 				<a href="<?php echo esc_url( home_url( '/' ) ); ?>#realisations">
-					<?php esc_html_e( '← Toutes les réalisations', 'jeux-marketing' ); ?>
+					<?php jmk_e( 'all_realisations' ); ?>
 				</a>
 			</p>
 		</article>

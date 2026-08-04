@@ -8,8 +8,12 @@
  */
 
 require __DIR__ . '/wp-stubs.php';
-require __DIR__ . '/../jeux-marketing/inc/defaults.php';
-require __DIR__ . '/../jeux-marketing/inc/leads.php';
+
+define( 'JMK_DIR', dirname( __DIR__ ) . '/jeux-marketing' );
+
+require JMK_DIR . '/inc/i18n.php';
+require JMK_DIR . '/inc/defaults.php';
+require JMK_DIR . '/inc/leads.php';
 
 $failures = 0;
 
@@ -38,8 +42,8 @@ function reset_state() {
 
 echo "\njmk_get — un contact effacé le reste\n";
 reset_state();
-ok( '212665827222' === jmk_get( 'whatsapp' ), 'sans réglage, le numéro d\'exemple s\'applique' );
-update_option( 'jmk_settings', array( 'whatsapp' => '', 'hero_title' => '' ) );
+ok( '' === jmk_get( 'whatsapp' ), 'sans réglage, aucun numéro n\'est publié' );
+update_option( 'jmk_settings', array( 'whatsapp' => '', 'en' => array( 'hero_title' => '' ) ) );
 ok( '' === jmk_get( 'whatsapp' ), 'numéro effacé volontairement : reste vide' );
 ok( '' !== jmk_get( 'hero_title' ), 'texte laissé vide : reprend l\'exemple' );
 
@@ -48,9 +52,11 @@ reset_state();
 update_option(
 	'jmk_settings',
 	array(
-		'lots' => array(
-			array( 'label' => 'Rare', 'weight' => 50, 'cap' => 3, 'code' => 'RARE', 'hue' => 0, 'losing' => 0 ),
-			array( 'label' => 'Perdu', 'weight' => 50, 'cap' => 0, 'code' => '', 'hue' => 0, 'losing' => 1 ),
+		'en' => array(
+			'lots' => array(
+				array( 'label' => 'Rare', 'weight' => 50, 'cap' => 3, 'code' => 'RARE', 'hue' => 0, 'losing' => 0 ),
+				array( 'label' => 'Perdu', 'weight' => 50, 'cap' => 0, 'code' => '', 'hue' => 0, 'losing' => 1 ),
+			),
 		),
 	)
 );
@@ -70,9 +76,11 @@ reset_state();
 update_option(
 	'jmk_settings',
 	array(
-		'lots' => array(
-			array( 'label' => 'Souvent', 'weight' => 80, 'cap' => 0, 'code' => 'A', 'hue' => 0, 'losing' => 0 ),
-			array( 'label' => 'Rare', 'weight' => 20, 'cap' => 0, 'code' => 'B', 'hue' => 0, 'losing' => 0 ),
+		'en' => array(
+			'lots' => array(
+				array( 'label' => 'Souvent', 'weight' => 80, 'cap' => 0, 'code' => 'A', 'hue' => 0, 'losing' => 0 ),
+				array( 'label' => 'Rare', 'weight' => 20, 'cap' => 0, 'code' => 'B', 'hue' => 0, 'losing' => 0 ),
+			),
 		),
 	)
 );
@@ -86,7 +94,7 @@ ok( $share > 74 && $share < 86, sprintf( 'poids 80/20 → environ 80%% (obtenu :
 
 echo "\njmk_draw — aucun lot configuré\n";
 reset_state();
-update_option( 'jmk_settings', array( 'lots' => array() ) );
+update_option( 'jmk_settings', array( 'en' => array( 'lots' => array( array( 'label' => '', 'weight' => 0, 'cap' => 0, 'code' => '', 'hue' => 0, 'losing' => 1 ) ) ) ) );
 list( $idx, $lot ) = jmk_draw();
 ok( isset( $lot['label'], $lot['code'] ), 'renvoie un lot neutre au lieu d\'échouer' );
 ok( ! empty( $lot['losing'] ), 'ce lot neutre est perdant' );

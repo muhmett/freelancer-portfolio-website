@@ -18,9 +18,9 @@ if ( ! $has_any ) {
 <section id="autres">
 	<div class="wrap">
 		<div class="sec-head rv">
-			<p class="eyebrow"><?php esc_html_e( 'Le même moteur, d\'autres formats', 'jeux-marketing' ); ?></p>
-			<h2><?php esc_html_e( 'Plusieurs mécaniques, une seule configuration', 'jeux-marketing' ); ?></h2>
-			<p class="lede"><?php esc_html_e( 'Les lots, les probabilités et la capture d\'email sont partagés. Changer de jeu ne change pas votre paramétrage.', 'jeux-marketing' ); ?></p>
+			<p class="eyebrow"><?php jmk_e( 'games_eyebrow' ); ?></p>
+			<h2><?php jmk_e( 'games_h2' ); ?></h2>
+			<p class="lede"><?php jmk_e( 'games_lede' ); ?></p>
 		</div>
 		<div class="games">
 			<?php

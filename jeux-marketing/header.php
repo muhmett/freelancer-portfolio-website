@@ -10,7 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 ?>
 <!DOCTYPE html>
-<html <?php language_attributes(); ?>>
+<html lang="<?php echo esc_attr( jmk_langs()[ jmk_lang() ]['html'] ); ?>" dir="<?php echo esc_attr( jmk_dir() ); ?>">
 <head>
 	<meta charset="<?php bloginfo( 'charset' ); ?>">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -21,7 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 <canvas id="jmk-confetti" aria-hidden="true"></canvas>
 
-<a class="jmk-skip" href="#jmk-main"><?php esc_html_e( 'Aller au contenu', 'jeux-marketing' ); ?></a>
+<a class="jmk-skip" href="#jmk-main"><?php jmk_e( 'skip' ); ?></a>
 
 <header class="topbar">
 	<div class="wrap">
@@ -38,7 +38,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		</div>
 
 		<?php if ( has_nav_menu( 'primary' ) ) : ?>
-			<nav class="topnav" aria-label="<?php esc_attr_e( 'Navigation principale', 'jeux-marketing' ); ?>">
+			<nav class="topnav" aria-label="<?php echo esc_attr( jmk_t( 'nav_main' ) ); ?>">
 				<?php
 				wp_nav_menu(
 					array(
@@ -52,18 +52,22 @@ if ( ! defined( 'ABSPATH' ) ) {
 				?>
 			</nav>
 		<?php elseif ( is_front_page() ) : ?>
-			<nav class="topnav" aria-label="<?php esc_attr_e( 'Navigation principale', 'jeux-marketing' ); ?>">
-				<?php if ( jmk_get( 'sec_services' ) ) : ?><a href="#services"><?php esc_html_e( 'Tarifs', 'jeux-marketing' ); ?></a><?php endif; ?>
-				<?php if ( jmk_get( 'sec_work' ) ) : ?><a href="#realisations"><?php esc_html_e( 'Réalisations', 'jeux-marketing' ); ?></a><?php endif; ?>
-				<?php if ( jmk_get( 'sec_brand' ) ) : ?><a href="#marque"><?php esc_html_e( 'Vos couleurs', 'jeux-marketing' ); ?></a><?php endif; ?>
-				<?php if ( jmk_get( 'sec_lab' ) ) : ?><a href="#labo"><?php esc_html_e( 'Probabilités', 'jeux-marketing' ); ?></a><?php endif; ?>
-				<a href="#autres"><?php esc_html_e( 'Jeux', 'jeux-marketing' ); ?></a>
-				<?php if ( jmk_get( 'sec_roi' ) ) : ?><a href="#roi"><?php esc_html_e( 'Rentabilité', 'jeux-marketing' ); ?></a><?php endif; ?>
-				<?php if ( jmk_get( 'sec_quote' ) ) : ?><a href="#devis"><?php esc_html_e( 'Devis', 'jeux-marketing' ); ?></a><?php endif; ?>
+			<nav class="topnav" aria-label="<?php echo esc_attr( jmk_t( 'nav_main' ) ); ?>">
+				<?php if ( jmk_get( 'sec_services' ) ) : ?><a href="#services"><?php jmk_e( 'nav_prices' ); ?></a><?php endif; ?>
+				<?php if ( jmk_get( 'sec_work' ) ) : ?><a href="#realisations"><?php jmk_e( 'nav_work' ); ?></a><?php endif; ?>
+				<?php if ( jmk_get( 'sec_skills' ) ) : ?><a href="#competences"><?php jmk_e( 'nav_skills' ); ?></a><?php endif; ?>
+				<?php if ( jmk_get( 'sec_brand' ) ) : ?><a href="#marque"><?php jmk_e( 'nav_brand' ); ?></a><?php endif; ?>
+				<?php if ( jmk_get( 'sec_lab' ) ) : ?><a href="#labo"><?php jmk_e( 'nav_lab' ); ?></a><?php endif; ?>
+				<a href="#autres"><?php jmk_e( 'nav_games' ); ?></a>
+				<?php if ( jmk_get( 'sec_roi' ) ) : ?><a href="#roi"><?php jmk_e( 'nav_roi' ); ?></a><?php endif; ?>
+				<?php if ( jmk_get( 'sec_quote' ) ) : ?><a href="#devis"><?php jmk_e( 'nav_quote' ); ?></a><?php endif; ?>
 			</nav>
 		<?php endif; ?>
 
-		<button class="btn btn-ghost" id="topCta"><?php esc_html_e( 'Me contacter', 'jeux-marketing' ); ?></button>
+		<div class="topbar-end">
+			<?php jmk_lang_switcher(); ?>
+			<button class="btn btn-ghost" id="topCta"><?php jmk_e( 'contact' ); ?></button>
+		</div>
 	</div>
 	<div class="progress" id="prog" aria-hidden="true"></div>
 </header>

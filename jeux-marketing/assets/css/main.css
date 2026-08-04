@@ -357,3 +357,60 @@ select{cursor:pointer}
 .review blockquote::after{content:'»';color:var(--accent);margin-inline-start:5px}
 .review figcaption{margin-top:15px;font-family:var(--mono);font-size:.66rem;letter-spacing:.08em;
   text-transform:uppercase;color:var(--muted)}
+
+/* ── langues ── */
+.topbar-end{display:flex;align-items:center;gap:12px}
+.jmk-langs{display:flex;gap:2px;border:1px solid var(--line);border-radius:8px;padding:2px}
+.jmk-langs a{font-family:var(--mono);font-size:.66rem;font-weight:700;letter-spacing:.06em;
+  color:var(--muted);text-decoration:none;padding:5px 8px;border-radius:6px;transition:.15s;line-height:1}
+.jmk-langs a:hover{color:var(--paper)}
+.jmk-langs a[aria-current=true]{background:var(--accent);color:var(--accent-ink)}
+
+/* ── compétences ── */
+.skills{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:24px}
+.skill{border-top:2px solid var(--accent);padding-top:15px}
+.skill h3{margin-bottom:12px}
+.skill-tags{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:7px}
+.skill-tags li{font-family:var(--mono);font-size:.68rem;letter-spacing:.03em;color:#CFC3DC;
+  border:1px solid var(--line);border-radius:999px;padding:5px 11px;background:var(--ink-2)}
+
+/* ── lecture de droite à gauche ── */
+.jmk-rtl .accent-text{background:linear-gradient(-96deg,var(--accent),var(--accent-2) 46%,var(--rose));
+  -webkit-background-clip:text;background-clip:text}
+.jmk-rtl .divider{background:linear-gradient(-90deg,var(--line),transparent)}
+.jmk-rtl .spec-item,.jmk-rtl .skill{border-top-color:var(--accent)}
+.jmk-rtl .codebox{direction:ltr;text-align:left}
+.jmk-rtl .sheet table,.jmk-rtl .mono,.jmk-rtl .pack-price,.jmk-rtl .kpi .n,
+.jmk-rtl .about-stats .n,.jmk-rtl .total .n{direction:ltr;unicode-bidi:isolate}
+.jmk-rtl .step-n{direction:ltr}
+.jmk-rtl .needle{left:auto;right:50%;transform:translateX(50%)}
+.jmk-rtl .needle.tick{animation:tick-rtl .09s ease}
+@keyframes tick-rtl{50%{transform:translateX(50%) rotate(13deg)}}
+.jmk-rtl .hub{left:auto;right:50%;transform:translate(50%,-50%)}
+.jmk-rtl .review blockquote::before{content:'»'}
+.jmk-rtl .review blockquote::after{content:'«'}
+
+/* Typographie arabe.
+   Deux réglages hérités du latin cassent l'arabe : l'interlettrage, qui
+   sépare des lettres censées être liées, et l'interligne serré, qui coupe
+   les hampes et les points. Les deux sont neutralisés ici. */
+.jmk-rtl .eyebrow,.jmk-rtl .chip,.jmk-rtl .tag,.jmk-rtl .pack-days,.jmk-rtl .pack-flag,
+.jmk-rtl .work-meta,.jmk-rtl .review figcaption,.jmk-rtl .sheet-bar,.jmk-rtl .sheet th,
+.jmk-rtl .lot-sub,.jmk-rtl .cap-flag,.jmk-rtl .skill-tags li,.jmk-rtl .legend,
+.jmk-rtl .hub,.jmk-rtl .result .code,.jmk-rtl .simnum,.jmk-rtl .pct{
+  letter-spacing:0;text-transform:none}
+.jmk-rtl h1{line-height:1.32;letter-spacing:0}
+.jmk-rtl h2{line-height:1.3;letter-spacing:0}
+.jmk-rtl h3{line-height:1.4;letter-spacing:0}
+.jmk-rtl .eyebrow{line-height:1.7}
+.jmk-rtl .pack-price,.jmk-rtl .kpi .n,.jmk-rtl .about-stats .n,.jmk-rtl .total .n{letter-spacing:0}
+.jmk-rtl .btn{letter-spacing:0}
+.jmk-rtl .accent-text{padding-bottom:.08em}
+/* La police monospace n'a pas de glyphes arabes : chaque lettre retombe
+   sur une police système différente et perd ses liaisons. On la réserve
+   donc au latin et aux chiffres, et l'arabe passe à la police de texte. */
+.jmk-rtl .eyebrow,.jmk-rtl .chip,.jmk-rtl .tag,.jmk-rtl .pack-days,.jmk-rtl .pack-flag,
+.jmk-rtl .work-meta,.jmk-rtl .review figcaption,.jmk-rtl .sheet-bar,.jmk-rtl .sheet th,
+.jmk-rtl .lot-sub,.jmk-rtl .cap-flag,.jmk-rtl .legend,.jmk-rtl .hub{
+  font-family:var(--body)}
+.jmk-rtl .eyebrow{font-weight:700}

@@ -17,8 +17,8 @@ if ( ! $specs ) {
 <section id="specs">
 	<div class="wrap">
 		<div class="sec-head rv">
-			<p class="eyebrow"><?php esc_html_e( 'Sous le capot', 'jeux-marketing' ); ?></p>
-			<h2><?php esc_html_e( 'Ce qui compte une fois le jeu en ligne', 'jeux-marketing' ); ?></h2>
+			<p class="eyebrow"><?php jmk_e( 'specs_eyebrow' ); ?></p>
+			<h2><?php jmk_e( 'specs_h2' ); ?></h2>
 		</div>
 		<div class="spec rv">
 			<?php foreach ( $specs as $s ) : ?>

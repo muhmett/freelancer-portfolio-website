@@ -11,6 +11,7 @@
 
 define( 'ABSPATH', __DIR__ );
 define( 'HOUR_IN_SECONDS', 3600 );
+define( 'YEAR_IN_SECONDS', 31536000 );
 
 $GLOBALS['jmk_options']    = array();
 $GLOBALS['jmk_transients'] = array();
@@ -124,4 +125,26 @@ function home_url() {
 }
 function current_user_can( $c ) {
 	return true;
+}
+
+function sanitize_key( $k ) {
+	return preg_replace( '/[^a-z0-9_\-]/', '', strtolower( (string) $k ) );
+}
+function is_admin() {
+	return false;
+}
+function is_ssl() {
+	return false;
+}
+function esc_html( $s ) {
+	return htmlspecialchars( (string) $s, ENT_QUOTES );
+}
+function esc_attr( $s ) {
+	return htmlspecialchars( (string) $s, ENT_QUOTES );
+}
+function esc_url( $s ) {
+	return (string) $s;
+}
+function add_query_arg() {
+	return '';
 }

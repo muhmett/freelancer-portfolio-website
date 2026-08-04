@@ -10,35 +10,19 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Domain: jeux-marketing\n"
 
-#: jeux-marketing/functions.php:187
-msgid "%1$s / %2$s bonnes réponses"
-msgstr ""
-
-#: jeux-marketing/functions.php:179
-msgid "%s %% gratté"
-msgstr ""
-
-#: jeux-marketing/functions.php:203
-msgid "(à préciser)"
-msgstr ""
-
-#: jeux-marketing/inc/admin.php:455
+#: jeux-marketing/inc/admin.php:525
 msgid "0 = illimité"
 msgstr ""
 
-#: jeux-marketing/template-parts/game-slot.php:14
-msgid "3 rouleaux"
-msgstr ""
-
-#: jeux-marketing/inc/admin.php:703 jeux-marketing/inc/leads.php:315
+#: jeux-marketing/inc/admin.php:791 jeux-marketing/inc/leads.php:315
 msgid "Action non autorisée."
 msgstr ""
 
-#: jeux-marketing/inc/admin.php:362
+#: jeux-marketing/inc/admin.php:432
 msgid "Affiché à côté de la case de consentement. Obligatoire pour le RGPD."
 msgstr ""
 
-#: jeux-marketing/inc/admin.php:403
+#: jeux-marketing/inc/admin.php:473
 msgid "Affichée en haut de page. Décochez pour la retirer entièrement."
 msgstr ""
 
@@ -46,59 +30,51 @@ msgstr ""
 msgid "Ajouter"
 msgstr ""
 
-#: jeux-marketing/inc/admin.php:688
+#: jeux-marketing/inc/admin.php:776
 msgid "Ajouter un avis"
 msgstr ""
 
-#: jeux-marketing/inc/admin.php:652
+#: jeux-marketing/inc/admin.php:722
 msgid "Ajouter un chiffre"
 msgstr ""
 
-#: jeux-marketing/inc/admin.php:464
+#: jeux-marketing/inc/admin.php:740
+msgid "Ajouter un groupe"
+msgstr ""
+
+#: jeux-marketing/inc/admin.php:534
 msgid "Ajouter un lot"
 msgstr ""
 
-#: jeux-marketing/inc/admin.php:606
+#: jeux-marketing/inc/admin.php:676
 msgid "Ajouter un pack"
 msgstr ""
 
-#: jeux-marketing/inc/admin.php:562
+#: jeux-marketing/inc/admin.php:632
 msgid "Ajouter un point"
 msgstr ""
 
-#: jeux-marketing/inc/admin.php:509
+#: jeux-marketing/inc/admin.php:579
 msgid "Ajouter une option"
 msgstr ""
 
-#: jeux-marketing/inc/admin.php:430 jeux-marketing/inc/admin.php:579
+#: jeux-marketing/inc/admin.php:500 jeux-marketing/inc/admin.php:649
 msgid "Ajouter une question"
 msgstr ""
 
-#: jeux-marketing/inc/admin.php:666 jeux-marketing/inc/portfolio.php:28
+#: jeux-marketing/inc/admin.php:754 jeux-marketing/inc/portfolio.php:28
 msgid "Ajouter une réalisation"
 msgstr ""
 
-#: jeux-marketing/inc/admin.php:624
+#: jeux-marketing/inc/admin.php:694
 msgid "Ajouter une étape"
 msgstr ""
 
-#: jeux-marketing/template-parts/section-roi.php:17
-msgid "Ajustez les chiffres avec les vôtres. Les valeurs par défaut sont des moyennes observées sur ce type de campagne, pas des promesses."
-msgstr ""
-
-#: jeux-marketing/header.php:24
-msgid "Aller au contenu"
-msgstr ""
-
-#: jeux-marketing/template-parts/section-roi.php:44
-msgid "Amortissement calculé sur le montant du devis. Un jeu se paie une fois, la liste d'emails reste à vous."
-msgstr ""
-
-#: jeux-marketing/inc/admin.php:343
+#: jeux-marketing/inc/admin.php:413
 msgid "Aperçu aux couleurs du visiteur"
 msgstr ""
 
-#: jeux-marketing/inc/leads.php:25 jeux-marketing/template-parts/section-leads.php:38
+#: jeux-marketing/inc/leads.php:25
 msgid "Aucun participant pour l'instant."
 msgstr ""
 
@@ -106,91 +82,47 @@ msgstr ""
 msgid "Aucune réalisation pour l'instant."
 msgstr ""
 
-#: jeux-marketing/template-parts/section-roi.php:15
-msgid "Avant de commander"
-msgstr ""
-
-#: jeux-marketing/inc/admin.php:340 jeux-marketing/inc/admin.php:671
+#: jeux-marketing/inc/admin.php:410 jeux-marketing/inc/admin.php:759
 msgid "Avis clients"
 msgstr ""
 
-#: jeux-marketing/functions.php:196
-msgid "Bonjour, je viens de la page de démonstration."
-msgstr ""
-
-#: jeux-marketing/inc/admin.php:423
+#: jeux-marketing/inc/admin.php:493
 msgid "Bonne réponse n°"
 msgstr ""
 
-#: jeux-marketing/inc/admin.php:320
+#: jeux-marketing/inc/admin.php:389
 msgid "Bouton WhatsApp visible partout. Pour TikTok, Facebook, LinkedIn, prospection."
 msgstr ""
 
-#: jeux-marketing/inc/admin.php:346
+#: jeux-marketing/inc/admin.php:416
 msgid "Calculateur de rentabilité"
 msgstr ""
 
-#: jeux-marketing/front-page.php:40
-msgid "Calculer ce que ça rapporte"
-msgstr ""
-
-#: jeux-marketing/template-parts/form-lead.php:16
-msgid "Camille"
-msgstr ""
-
-#: jeux-marketing/inc/admin.php:404 jeux-marketing/template-parts/game-scratch.php:13
+#: jeux-marketing/inc/admin.php:474
 msgid "Carte à gratter"
 msgstr ""
 
-#: jeux-marketing/inc/admin.php:646
+#: jeux-marketing/inc/admin.php:716
 msgid "Ce qu'il désigne"
 msgstr ""
 
-#: jeux-marketing/template-parts/section-reviews.php:31
-msgid "Ce qu'ils en disent"
-msgstr ""
-
-#: jeux-marketing/template-parts/section-faq.php:21
-msgid "Ce qu'on me demande avant de commander"
-msgstr ""
-
-#: jeux-marketing/template-parts/section-services.php:21
-msgid "Ce que je livre"
-msgstr ""
-
-#: jeux-marketing/template-parts/section-leads.php:15
-msgid "Ce que le jeu produit vraiment"
-msgstr ""
-
-#: jeux-marketing/template-parts/section-specs.php:21
-msgid "Ce qui compte une fois le jeu en ligne"
-msgstr ""
-
-#: jeux-marketing/functions.php:183 jeux-marketing/inc/leads.php:190
+#: jeux-marketing/inc/leads.php:190
 msgid "Cette adresse a déjà participé. Une seule participation par personne."
 msgstr ""
 
-#: jeux-marketing/functions.php:181 jeux-marketing/inc/leads.php:174
+#: jeux-marketing/inc/leads.php:174
 msgid "Cette adresse email n'est pas valide."
 msgstr ""
 
-#: jeux-marketing/template-parts/game-plinko.php:22
-msgid "Chaque case a sa probabilité, comme la roue."
-msgstr ""
-
-#: jeux-marketing/inc/admin.php:361
+#: jeux-marketing/inc/admin.php:431
 msgid "Chaque participant y est envoyé en JSON. Laissez vide pour ne rien envoyer."
 msgstr ""
 
-#: jeux-marketing/template-parts/section-leads.php:43
-msgid "Chaque participation est enregistrée dans WordPress, exportable en CSV, et peut être transmise à Mailchimp, Brevo, Klaviyo ou votre CRM par webhook."
-msgstr ""
-
-#: jeux-marketing/inc/admin.php:645
+#: jeux-marketing/inc/admin.php:715
 msgid "Chiffre"
 msgstr ""
 
-#: jeux-marketing/inc/admin.php:638
+#: jeux-marketing/inc/admin.php:708
 msgid "Chiffres clés"
 msgstr ""
 
@@ -202,79 +134,35 @@ msgstr ""
 msgid "Client ou marque"
 msgstr ""
 
-#: jeux-marketing/template-parts/section-quote.php:17
-msgid "Cochez ce dont vous avez besoin. Le récapitulatif complet part avec vous — plus besoin de tout réécrire."
-msgstr ""
-
-#: jeux-marketing/inc/admin.php:493
+#: jeux-marketing/inc/admin.php:563
 msgid "Cochée"
 msgstr ""
 
-#: jeux-marketing/inc/leads.php:277 jeux-marketing/template-parts/section-leads.php:34
+#: jeux-marketing/inc/leads.php:277
 msgid "Code"
 msgstr ""
 
-#: jeux-marketing/template-parts/section-quote.php:37
-msgid "Code d'intégration généré"
-msgstr ""
-
-#: jeux-marketing/inc/admin.php:444
+#: jeux-marketing/inc/admin.php:514
 msgid "Code promo"
 msgstr ""
 
-#: jeux-marketing/template-parts/section-roi.php:16
-msgid "Combien ça rapporte, concrètement ?"
-msgstr ""
-
-#: jeux-marketing/functions.php:191
-msgid "Commander sur Fiverr"
-msgstr ""
-
-#: jeux-marketing/inc/admin.php:314
+#: jeux-marketing/inc/admin.php:383
 msgid "Comment vous contacte-t-on ?"
 msgstr ""
 
-#: jeux-marketing/template-parts/section-process.php:20
-msgid "Comment ça se passe"
-msgstr ""
-
-#: jeux-marketing/template-parts/section-services.php:52
-msgid "Composer ce pack"
-msgstr ""
-
-#: jeux-marketing/template-parts/section-quote.php:16
-msgid "Composez votre jeu, obtenez le prix"
-msgstr ""
-
-#: jeux-marketing/inc/admin.php:716
+#: jeux-marketing/inc/admin.php:804
 msgid "Compteurs de plafond remis à zéro."
 msgstr ""
 
-#: jeux-marketing/front-page.php:37
-msgid "Configurer mon jeu"
+#: jeux-marketing/inc/admin.php:408 jeux-marketing/inc/admin.php:726
+msgid "Compétences"
 msgstr ""
 
-#: jeux-marketing/template-parts/form-lead.php:29
-msgid "Consentement obligatoire, jamais pré-coché."
+#: jeux-marketing/inc/admin.php:361
+msgid "Contenu affiché en :"
 msgstr ""
 
-#: jeux-marketing/functions.php:176 jeux-marketing/template-parts/section-quote.php:38
-msgid "Copier"
-msgstr ""
-
-#: jeux-marketing/functions.php:175
-msgid "Copier le récapitulatif"
-msgstr ""
-
-#: jeux-marketing/functions.php:174
-msgid "Copié"
-msgstr ""
-
-#: jeux-marketing/functions.php:198
-msgid "Couleur"
-msgstr ""
-
-#: jeux-marketing/inc/admin.php:375 jeux-marketing/template-parts/section-brand.php:27
+#: jeux-marketing/inc/admin.php:445
 msgid "Couleur principale"
 msgstr ""
 
@@ -282,39 +170,19 @@ msgstr ""
 msgid "Date"
 msgstr ""
 
-#: jeux-marketing/template-parts/section-process.php:21
-msgid "De votre message au jeu en ligne"
-msgstr ""
-
-#: jeux-marketing/header.php:62 jeux-marketing/inc/admin.php:292
+#: jeux-marketing/inc/admin.php:350
 msgid "Devis"
 msgstr ""
 
-#: jeux-marketing/inc/admin.php:347 jeux-marketing/template-parts/section-quote.php:15
+#: jeux-marketing/inc/admin.php:417
 msgid "Devis instantané"
 msgstr ""
 
-#: jeux-marketing/functions.php:190
-msgid "Discuter sur WhatsApp"
-msgstr ""
-
-#: jeux-marketing/inc/admin.php:457
+#: jeux-marketing/inc/admin.php:527
 msgid "Décalage de teinte par rapport à la couleur principale"
 msgstr ""
 
-#: jeux-marketing/template-parts/section-cta.php:16
-msgid "Décrivez votre campagne, je réponds en deux lignes"
-msgstr ""
-
-#: jeux-marketing/functions.php:193
-msgid "Délai estimé : %s"
-msgstr ""
-
-#: jeux-marketing/footer.php:20
-msgid "Démonstration technique — les lots et la marque affichés sont donnés à titre d'exemple."
-msgstr ""
-
-#: jeux-marketing/inc/admin.php:341 jeux-marketing/inc/admin.php:610
+#: jeux-marketing/inc/admin.php:411 jeux-marketing/inc/admin.php:680
 msgid "Déroulé d'un projet"
 msgstr ""
 
@@ -322,15 +190,15 @@ msgstr ""
 msgid "Détails de la réalisation"
 msgstr ""
 
-#: jeux-marketing/inc/leads.php:275 jeux-marketing/template-parts/form-lead.php:19 jeux-marketing/template-parts/section-leads.php:32
+#: jeux-marketing/inc/leads.php:275
 msgid "Email"
 msgstr ""
 
-#: jeux-marketing/inc/admin.php:329
+#: jeux-marketing/inc/admin.php:398
 msgid "Email de notification"
 msgstr ""
 
-#: jeux-marketing/inc/admin.php:519 jeux-marketing/template-parts/section-roi.php:30
+#: jeux-marketing/inc/admin.php:589
 msgid "Email vers client (%)"
 msgstr ""
 
@@ -338,23 +206,11 @@ msgstr ""
 msgid "Enregistrement impossible. Réessayez."
 msgstr ""
 
-#: jeux-marketing/inc/admin.php:692
+#: jeux-marketing/inc/admin.php:780
 msgid "Enregistrer les réglages"
 msgstr ""
 
-#: jeux-marketing/template-parts/section-brand.php:18
-msgid "Entrez le nom de votre marque et choisissez votre couleur. Toute la page se réaccorde en direct — c'est exactement ce que vous recevrez."
-msgstr ""
-
-#: jeux-marketing/functions.php:189
-msgid "Envoyer ce devis sur WhatsApp"
-msgstr ""
-
-#: jeux-marketing/template-parts/section-brand.php:15
-msgid "Essayez tout de suite"
-msgstr ""
-
-#: jeux-marketing/inc/admin.php:391
+#: jeux-marketing/inc/admin.php:461
 msgid "Exemple : € — MAD — $"
 msgstr ""
 
@@ -362,63 +218,47 @@ msgstr ""
 msgid "Exporter tous les participants en CSV"
 msgstr ""
 
-#: jeux-marketing/inc/admin.php:315
+#: jeux-marketing/inc/admin.php:384
 msgid "Fiverr interdit le partage de coordonnées. Publiez deux versions du site : l'une en mode WhatsApp pour vos réseaux sociaux, l'autre en mode Fiverr pour le lien de votre annonce."
 msgstr ""
 
-#: jeux-marketing/inc/admin.php:327
+#: jeux-marketing/inc/admin.php:396
 msgid "Format international, chiffres uniquement. Exemple : 212665827222"
 msgstr ""
 
-#: jeux-marketing/inc/admin.php:345
+#: jeux-marketing/inc/admin.php:415
 msgid "Formulaire de capture d'email"
 msgstr ""
 
-#: jeux-marketing/template-parts/section-brand.php:40
-msgid "Français"
-msgstr ""
-
-#: jeux-marketing/functions.php:177
-msgid "GRATTEZ ICI"
-msgstr ""
-
-#: jeux-marketing/inc/admin.php:288
+#: jeux-marketing/inc/admin.php:346
 msgid "Général"
 msgstr ""
 
-#: jeux-marketing/inc/admin.php:529
+#: jeux-marketing/inc/admin.php:599
 msgid "Haut de page"
 msgstr ""
 
-#: jeux-marketing/template-parts/section-leads.php:30
-msgid "Horodatage"
-msgstr ""
-
-#: jeux-marketing/inc/admin.php:371
+#: jeux-marketing/inc/admin.php:441
 msgid "Identité affichée"
 msgstr ""
 
-#: jeux-marketing/inc/admin.php:149
+#: jeux-marketing/inc/admin.php:166
 msgid "Il faut au moins deux lots. Les lots précédents ont été conservés."
 msgstr ""
 
-#: jeux-marketing/functions.php:180 jeux-marketing/inc/leads.php:171
+#: jeux-marketing/inc/leads.php:171
 msgid "Indiquez un prénom."
 msgstr ""
 
-#: jeux-marketing/inc/admin.php:490
+#: jeux-marketing/inc/admin.php:560
 msgid "Intitulé"
-msgstr ""
-
-#: jeux-marketing/template-parts/form-lead.php:25
-msgid "J'accepte de recevoir les offres de la marque."
 msgstr ""
 
 #: jeux-marketing/inc/portfolio.php:54
 msgid "Jeu utilisé"
 msgstr ""
 
-#: jeux-marketing/header.php:60 jeux-marketing/inc/admin.php:290
+#: jeux-marketing/inc/admin.php:348
 msgid "Jeux"
 msgstr ""
 
@@ -426,79 +266,39 @@ msgstr ""
 msgid "Jeux Marketing"
 msgstr ""
 
-#: jeux-marketing/inc/admin.php:400
+#: jeux-marketing/inc/admin.php:470
 msgid "Jeux visibles sur la page"
 msgstr ""
 
-#: jeux-marketing/inc/admin.php:492 jeux-marketing/inc/admin.php:596
+#: jeux-marketing/inc/admin.php:562 jeux-marketing/inc/admin.php:666
 msgid "Jours"
 msgstr ""
 
-#: jeux-marketing/inc/admin.php:389
+#: jeux-marketing/inc/admin.php:459
 msgid "L'arabe bascule automatiquement la page en lecture de droite à gauche."
 msgstr ""
 
-#: jeux-marketing/inc/admin.php:681
+#: jeux-marketing/inc/admin.php:769
 msgid "L'avis, mot pour mot"
 msgstr ""
 
-#: jeux-marketing/template-parts/section-leads.php:17
-msgid "L'email est le produit."
-msgstr ""
-
-#: jeux-marketing/inc/admin.php:408
+#: jeux-marketing/inc/admin.php:478
 msgid "La bille tombe entre les clous et se range dans la case du lot."
 msgstr ""
 
-#: jeux-marketing/template-parts/section-lab.php:15
-msgid "La question que tout le monde pose"
-msgstr ""
-
-#: jeux-marketing/template-parts/section-lab.php:26
-msgid "La taille visuelle d'un segment n'est pas sa probabilité. C'est volontaire : un gros lot reste bien visible sur la roue tout en n'étant tiré que rarement."
-msgstr ""
-
-#: jeux-marketing/inc/admin.php:373
+#: jeux-marketing/inc/admin.php:443
 msgid "Laissez vide pour afficher « Jeux marketing HTML5 »."
 msgstr ""
 
-#: jeux-marketing/template-parts/game-slot.php:22
-msgid "Lancer"
-msgstr ""
-
-#: jeux-marketing/template-parts/game-wheel.php:20
-msgid "Lancer la roue"
-msgstr ""
-
-#: jeux-marketing/template-parts/section-lab.php:34
-msgid "Lancez la simulation pour comparer les probabilités configurées aux résultats réellement obtenus."
-msgstr ""
-
-#: jeux-marketing/functions.php:199
-msgid "Langue"
-msgstr ""
-
-#: jeux-marketing/inc/admin.php:380 jeux-marketing/template-parts/section-brand.php:38
+#: jeux-marketing/inc/admin.php:450
 msgid "Langue du jeu"
 msgstr ""
 
-#: jeux-marketing/functions.php:182
-msgid "Le consentement est obligatoire pour enregistrer une participation."
-msgstr ""
-
-#: jeux-marketing/inc/admin.php:393
+#: jeux-marketing/inc/admin.php:463
 msgid "Le logo se règle dans Apparence puis Personnaliser."
 msgstr ""
 
-#: jeux-marketing/template-parts/section-leads.php:16
-msgid "Le lot est le prétexte."
-msgstr ""
-
-#: jeux-marketing/template-parts/section-games.php:21
-msgid "Le même moteur, d'autres formats"
-msgstr ""
-
-#: jeux-marketing/inc/admin.php:438
+#: jeux-marketing/inc/admin.php:508
 msgid "Le poids n'est pas un pourcentage : c'est une part relative. Un lot à 40 face à un lot à 10 sort quatre fois plus souvent. Le pourcentage réel est calculé et affiché en bas."
 msgstr ""
 
@@ -506,31 +306,27 @@ msgstr ""
 msgid "Le résultat mesuré est ce qui convainc : « 1 240 emails en 3 semaines » vaut mieux que « campagne réussie ». N'écrivez que des chiffres que vous pouvez montrer."
 msgstr ""
 
-#: jeux-marketing/inc/admin.php:514
+#: jeux-marketing/inc/admin.php:584
 msgid "Le visiteur peut les modifier. Ce sont seulement les chiffres affichés à l'arrivée."
 msgstr ""
 
-#: jeux-marketing/template-parts/section-games.php:23
-msgid "Les lots, les probabilités et la capture d'email sont partagés. Changer de jeu ne change pas votre paramétrage."
-msgstr ""
-
-#: jeux-marketing/template-parts/section-reviews.php:32
-msgid "Les retours, sans retouche"
-msgstr ""
-
-#: jeux-marketing/inc/admin.php:657
+#: jeux-marketing/inc/admin.php:745
 msgid "Les réalisations elles-mêmes s'ajoutent dans le menu « Réalisations », avec une image et un texte. Ici, seulement l'intitulé de la section."
 msgstr ""
 
-#: jeux-marketing/inc/admin.php:611
+#: jeux-marketing/inc/admin.php:367
+msgid "Les textes, lots, packs et questions ci-dessous appartiennent à cette langue. Les réglages techniques (contact, couleur, sections, plafonds) sont communs aux trois."
+msgstr ""
+
+#: jeux-marketing/inc/admin.php:681
 msgid "Les étapes sont numérotées automatiquement. Quatre suffisent."
 msgstr ""
 
-#: jeux-marketing/inc/admin.php:441
+#: jeux-marketing/inc/admin.php:511
 msgid "Libellé"
 msgstr ""
 
-#: jeux-marketing/inc/admin.php:328
+#: jeux-marketing/inc/admin.php:397
 msgid "Lien de votre annonce Fiverr"
 msgstr ""
 
@@ -538,59 +334,35 @@ msgstr ""
 msgid "Lien vers la campagne"
 msgstr ""
 
-#: jeux-marketing/inc/admin.php:362
+#: jeux-marketing/inc/admin.php:432
 msgid "Lien vers la politique de confidentialité"
 msgstr ""
 
-#: jeux-marketing/template-parts/section-services.php:48
-msgid "Livré en %s jours"
-msgstr ""
-
-#: jeux-marketing/inc/leads.php:276 jeux-marketing/template-parts/section-leads.php:33
+#: jeux-marketing/inc/leads.php:276
 msgid "Lot"
 msgstr ""
 
-#: jeux-marketing/inc/admin.php:291 jeux-marketing/inc/admin.php:437
+#: jeux-marketing/inc/admin.php:349 jeux-marketing/inc/admin.php:507
 msgid "Lots et probabilités"
 msgstr ""
 
-#: jeux-marketing/template-parts/game-plinko.php:20
-msgid "Lâcher la bille"
-msgstr ""
-
-#: jeux-marketing/functions.php:200
-msgid "Ma configuration :"
-msgstr ""
-
-#: jeux-marketing/inc/admin.php:407 jeux-marketing/template-parts/game-slot.php:13
+#: jeux-marketing/inc/admin.php:477
 msgid "Machine à sous"
 msgstr ""
 
-#: jeux-marketing/template-parts/section-brand.php:24
-msgid "Maison Solène"
-msgstr ""
-
-#: jeux-marketing/functions.php:197 jeux-marketing/inc/admin.php:289
+#: jeux-marketing/inc/admin.php:347
 msgid "Marque"
 msgstr ""
 
-#: jeux-marketing/functions.php:192 jeux-marketing/header.php:66
-msgid "Me contacter"
-msgstr ""
-
-#: jeux-marketing/functions.php:202
-msgid "Mes lots et ma plateforme : "
-msgstr ""
-
-#: jeux-marketing/inc/admin.php:600
+#: jeux-marketing/inc/admin.php:670
 msgid "Mettre ce pack en avant"
 msgstr ""
 
-#: jeux-marketing/inc/admin.php:322
+#: jeux-marketing/inc/admin.php:391
 msgid "Mode Fiverr"
 msgstr ""
 
-#: jeux-marketing/inc/admin.php:319
+#: jeux-marketing/inc/admin.php:388
 msgid "Mode direct"
 msgstr ""
 
@@ -598,35 +370,31 @@ msgstr ""
 msgid "Modifier la réalisation"
 msgstr ""
 
-#: jeux-marketing/inc/admin.php:639
+#: jeux-marketing/inc/admin.php:709
 msgid "N'affichez que des chiffres que vous pouvez tenir. « 48 h » engage sur un délai réel."
 msgstr ""
 
-#: jeux-marketing/functions.php:35 jeux-marketing/header.php:41 jeux-marketing/header.php:55
+#: jeux-marketing/functions.php:36
 msgid "Navigation principale"
 msgstr ""
 
-#: jeux-marketing/inc/admin.php:340
+#: jeux-marketing/inc/admin.php:410
 msgid "Ne s'affiche que si vous avez saisi au moins un avis."
 msgstr ""
 
-#: jeux-marketing/inc/admin.php:339
+#: jeux-marketing/inc/admin.php:409
 msgid "Ne s'affiche que si vous avez saisi au moins une réalisation."
 msgstr ""
 
-#: jeux-marketing/inc/admin.php:373
+#: jeux-marketing/inc/admin.php:443
 msgid "Nom affiché en haut du site"
 msgstr ""
 
-#: jeux-marketing/template-parts/section-brand.php:23
-msgid "Nom de votre marque"
-msgstr ""
-
-#: jeux-marketing/inc/admin.php:453
+#: jeux-marketing/inc/admin.php:523
 msgid "Nom du lot"
 msgstr ""
 
-#: jeux-marketing/inc/admin.php:594
+#: jeux-marketing/inc/admin.php:664
 msgid "Nom du pack"
 msgstr ""
 
@@ -634,35 +402,19 @@ msgstr ""
 msgid "Nouveau participant"
 msgstr ""
 
-#: jeux-marketing/template-parts/game-scratch.php:25
-msgid "Nouvelle carte"
-msgstr ""
-
-#: jeux-marketing/inc/admin.php:327
+#: jeux-marketing/inc/admin.php:396
 msgid "Numéro WhatsApp"
 msgstr ""
 
-#: jeux-marketing/inc/admin.php:487
+#: jeux-marketing/inc/admin.php:557
 msgid "Options et tarifs"
 msgstr ""
 
-#: jeux-marketing/template-parts/section-lab.php:17
-msgid "Oui. Déplacez les curseurs : la roue plus haut obéit immédiatement. Puis lancez la simulation — 1 000 tours joués d'un coup — pour vérifier que le tirage respecte vraiment vos réglages."
-msgstr ""
-
-#: jeux-marketing/template-parts/game-tap.php:35
-msgid "Ouvrir la boîte %d"
-msgstr ""
-
-#: jeux-marketing/template-parts/section-brand.php:34
-msgid "Palettes prêtes"
-msgstr ""
-
-#: jeux-marketing/inc/admin.php:520 jeux-marketing/template-parts/section-roi.php:34
+#: jeux-marketing/inc/admin.php:590
 msgid "Panier moyen"
 msgstr ""
 
-#: jeux-marketing/inc/admin.php:538
+#: jeux-marketing/inc/admin.php:608
 msgid "Paragraphe d'introduction"
 msgstr ""
 
@@ -674,91 +426,51 @@ msgstr ""
 msgid "Participants"
 msgstr ""
 
-#: jeux-marketing/functions.php:184 jeux-marketing/inc/leads.php:254
+#: jeux-marketing/inc/leads.php:254
 msgid "Participation enregistrée et code envoyé."
 msgstr ""
 
-#: jeux-marketing/inc/admin.php:446 jeux-marketing/inc/admin.php:473
+#: jeux-marketing/inc/admin.php:516 jeux-marketing/inc/admin.php:543
 msgid "Perdant"
 msgstr ""
 
-#: jeux-marketing/functions.php:171
-msgid "Perdu cette fois."
-msgstr ""
-
-#: jeux-marketing/inc/admin.php:532
+#: jeux-marketing/inc/admin.php:602
 msgid "Petite ligne au-dessus du titre"
 msgstr ""
 
-#: jeux-marketing/inc/admin.php:662
+#: jeux-marketing/inc/admin.php:750
 msgid "Phrase d'introduction"
 msgstr ""
 
-#: jeux-marketing/inc/admin.php:443 jeux-marketing/inc/admin.php:472
+#: jeux-marketing/inc/admin.php:513 jeux-marketing/inc/admin.php:542
 msgid "Plafond"
 msgstr ""
 
-#: jeux-marketing/template-parts/section-lab.php:44
-msgid "Plafonnement d'un lot"
-msgstr ""
-
-#: jeux-marketing/template-parts/game-plinko.php:17
-msgid "Plateau de billes : la bille tombe dans la case du lot gagné."
-msgstr ""
-
-#: jeux-marketing/inc/admin.php:408 jeux-marketing/template-parts/game-plinko.php:13
+#: jeux-marketing/inc/admin.php:478
 msgid "Pluie de lots"
 msgstr ""
 
-#: jeux-marketing/template-parts/section-games.php:22
-msgid "Plusieurs mécaniques, une seule configuration"
-msgstr ""
-
-#: jeux-marketing/inc/admin.php:442
+#: jeux-marketing/inc/admin.php:512
 msgid "Poids"
 msgstr ""
 
-#: jeux-marketing/inc/admin.php:348 jeux-marketing/inc/admin.php:549
+#: jeux-marketing/inc/admin.php:418 jeux-marketing/inc/admin.php:619
 msgid "Points techniques"
 msgstr ""
 
-#: jeux-marketing/footer.php:18 jeux-marketing/template-parts/form-lead.php:27
-msgid "Politique de confidentialité"
-msgstr ""
-
-#: jeux-marketing/inc/admin.php:294
+#: jeux-marketing/inc/admin.php:352
 msgid "Portfolio"
 msgstr ""
 
-#: jeux-marketing/inc/admin.php:491 jeux-marketing/inc/admin.php:595
+#: jeux-marketing/inc/admin.php:561 jeux-marketing/inc/admin.php:665
 msgid "Prix"
 msgstr ""
 
-#: jeux-marketing/template-parts/section-services.php:23
-msgid "Prix fermes, périmètre écrit. Ce qui n'est pas dans la liste n'est pas dans le prix — vous savez exactement ce que vous achetez."
-msgstr ""
-
-#: jeux-marketing/template-parts/section-quote.php:32
-msgid "Prix indicatif hors taxes. Le devis final est confirmé après un échange de deux minutes sur vos lots et votre plateforme."
-msgstr ""
-
-#: jeux-marketing/header.php:59
-msgid "Probabilités"
-msgstr ""
-
-#: jeux-marketing/inc/admin.php:467
+#: jeux-marketing/inc/admin.php:537
 msgid "Probabilités réelles"
 msgstr ""
 
-#: jeux-marketing/template-parts/section-cta.php:15
-msgid "Prochaine étape"
-msgstr ""
-
-#: jeux-marketing/index.php:43
-msgid "Précédent"
-msgstr ""
-
-#: jeux-marketing/inc/leads.php:274 jeux-marketing/template-parts/form-lead.php:15 jeux-marketing/template-parts/section-leads.php:31
+#: jeux-marketing/inc/leads.php:274
 msgid "Prénom"
 msgstr ""
 
@@ -766,36 +478,24 @@ msgstr ""
 msgid "Prénom : %1$s\nEmail : %2$s\nLot : %3$s\nCode : %4$s"
 msgstr ""
 
-#: jeux-marketing/inc/admin.php:421 jeux-marketing/inc/admin.php:572
+#: jeux-marketing/inc/admin.php:491 jeux-marketing/inc/admin.php:642
 msgid "Question"
 msgstr ""
 
-#: jeux-marketing/functions.php:186
-msgid "Question %1$s / %2$s"
-msgstr ""
-
-#: jeux-marketing/inc/admin.php:414
+#: jeux-marketing/inc/admin.php:484
 msgid "Questions du quiz"
 msgstr ""
 
-#: jeux-marketing/inc/admin.php:349 jeux-marketing/inc/admin.php:566 jeux-marketing/template-parts/section-faq.php:20
+#: jeux-marketing/inc/admin.php:419 jeux-marketing/inc/admin.php:636
 msgid "Questions fréquentes"
 msgstr ""
 
-#: jeux-marketing/template-parts/section-about.php:18
-msgid "Qui fait le travail"
-msgstr ""
-
-#: jeux-marketing/inc/admin.php:682
+#: jeux-marketing/inc/admin.php:770
 msgid "Qui l'a dit — prénom, marque, plateforme"
 msgstr ""
 
-#: jeux-marketing/inc/admin.php:406 jeux-marketing/template-parts/game-quiz.php:13
+#: jeux-marketing/inc/admin.php:476
 msgid "Quiz de marque"
-msgstr ""
-
-#: jeux-marketing/template-parts/form-lead.php:32
-msgid "Recevoir mon code"
 msgstr ""
 
 #: jeux-marketing/inc/leads.php:24
@@ -806,60 +506,31 @@ msgstr ""
 msgid "Rechercher une réalisation"
 msgstr ""
 
-#: jeux-marketing/template-parts/game-quiz.php:16
-msgid "Recommencer"
-msgstr ""
-
-#: jeux-marketing/template-parts/game-tap.php:42 jeux-marketing/template-parts/game-wheel.php:22
-msgid "Rejouer"
-msgstr ""
-
-#: jeux-marketing/inc/admin.php:478
+#: jeux-marketing/inc/admin.php:548
 msgid "Remettre les compteurs de plafond à zéro"
 msgstr ""
 
-#: jeux-marketing/template-parts/section-leads.php:18
-msgid "Remplissez le formulaire : la ligne apparaît immédiatement à droite et le participant est enregistré dans votre administration."
-msgstr ""
-
-#: jeux-marketing/header.php:61
-msgid "Rentabilité"
-msgstr ""
-
-#: jeux-marketing/functions.php:172
-msgid "Revenez demain — une partie par jour."
-msgstr ""
-
-#: jeux-marketing/index.php:49
-msgid "Rien à afficher pour l'instant."
-msgstr ""
-
-#: jeux-marketing/inc/admin.php:403 jeux-marketing/template-parts/game-wheel.php:17
+#: jeux-marketing/inc/admin.php:473
 msgid "Roue de la fortune"
 msgstr ""
 
-#: jeux-marketing/inc/admin.php:355
+#: jeux-marketing/inc/admin.php:425
 msgid "Règles et destination des emails"
 msgstr ""
 
-#: jeux-marketing/inc/portfolio.php:25 jeux-marketing/single-jmk_work.php:26
+#: jeux-marketing/inc/portfolio.php:25
 msgid "Réalisation"
 msgstr ""
 
-#: jeux-marketing/header.php:57 jeux-marketing/inc/admin.php:339 jeux-marketing/inc/admin.php:656 jeux-marketing/inc/portfolio.php:24
-#: jeux-marketing/inc/portfolio.php:26 jeux-marketing/template-parts/section-work.php:31
+#: jeux-marketing/inc/admin.php:409 jeux-marketing/inc/admin.php:744 jeux-marketing/inc/portfolio.php:24 jeux-marketing/inc/portfolio.php:26
 msgid "Réalisations"
 msgstr ""
 
-#: jeux-marketing/template-parts/section-lab.php:22
-msgid "Réglage des lots"
-msgstr ""
-
-#: jeux-marketing/inc/admin.php:344
+#: jeux-marketing/inc/admin.php:414
 msgid "Réglage des probabilités et simulation"
 msgstr ""
 
-#: jeux-marketing/inc/admin.php:27 jeux-marketing/inc/admin.php:28 jeux-marketing/inc/admin.php:298
+#: jeux-marketing/inc/admin.php:27 jeux-marketing/inc/admin.php:28 jeux-marketing/inc/admin.php:356
 msgid "Réglages du jeu"
 msgstr ""
 
@@ -871,340 +542,184 @@ msgstr ""
 msgid "Résultat mesuré"
 msgstr ""
 
-#: jeux-marketing/functions.php:178
-msgid "Révélé"
-msgstr ""
-
 #: jeux-marketing/inc/portfolio.php:53
 msgid "Secteur"
 msgstr ""
 
-#: jeux-marketing/inc/admin.php:335
+#: jeux-marketing/inc/admin.php:404
 msgid "Sections affichées"
 msgstr ""
 
-#: jeux-marketing/template-parts/section-lab.php:31
-msgid "Simuler 1 000 tours"
-msgstr ""
-
-#: jeux-marketing/template-parts/section-specs.php:20
-msgid "Sous le capot"
-msgstr ""
-
-#: jeux-marketing/index.php:44
-msgid "Suivant"
-msgstr ""
-
-#: jeux-marketing/inc/admin.php:426 jeux-marketing/inc/admin.php:459 jeux-marketing/inc/admin.php:505 jeux-marketing/inc/admin.php:558
-#: jeux-marketing/inc/admin.php:575 jeux-marketing/inc/admin.php:602 jeux-marketing/inc/admin.php:620 jeux-marketing/inc/admin.php:648
-#: jeux-marketing/inc/admin.php:684
+#: jeux-marketing/inc/admin.php:496 jeux-marketing/inc/admin.php:529 jeux-marketing/inc/admin.php:575 jeux-marketing/inc/admin.php:628
+#: jeux-marketing/inc/admin.php:645 jeux-marketing/inc/admin.php:672 jeux-marketing/inc/admin.php:690 jeux-marketing/inc/admin.php:718
+#: jeux-marketing/inc/admin.php:736 jeux-marketing/inc/admin.php:772
 msgid "Supprimer"
 msgstr ""
 
-#: jeux-marketing/inc/admin.php:391
+#: jeux-marketing/inc/admin.php:461
 msgid "Symbole monétaire"
 msgstr ""
 
-#: jeux-marketing/inc/admin.php:635
+#: jeux-marketing/inc/admin.php:705
 msgid "Séparez les paragraphes par une ligne vide."
 msgstr ""
 
-#: jeux-marketing/functions.php:185 jeux-marketing/template-parts/game-wheel.php:18
-msgid "TOURNEZ"
-msgstr ""
-
-#: jeux-marketing/inc/admin.php:405 jeux-marketing/template-parts/game-tap.php:28
+#: jeux-marketing/inc/admin.php:475
 msgid "Tap-to-win"
 msgstr ""
 
-#: jeux-marketing/header.php:56
-msgid "Tarifs"
-msgstr ""
-
-#: jeux-marketing/inc/admin.php:338 jeux-marketing/inc/admin.php:586
+#: jeux-marketing/inc/admin.php:407 jeux-marketing/inc/admin.php:656
 msgid "Tarifs et packs"
 msgstr ""
 
-#: jeux-marketing/inc/admin.php:518 jeux-marketing/template-parts/section-roi.php:26
+#: jeux-marketing/inc/admin.php:588
 msgid "Taux de participation (%)"
 msgstr ""
 
-#: jeux-marketing/inc/admin.php:445 jeux-marketing/inc/admin.php:474
+#: jeux-marketing/inc/admin.php:515 jeux-marketing/inc/admin.php:544
 msgid "Teinte"
 msgstr ""
 
-#: jeux-marketing/inc/admin.php:633
+#: jeux-marketing/inc/admin.php:703
 msgid "Texte"
 msgstr ""
 
-#: jeux-marketing/inc/admin.php:293
+#: jeux-marketing/inc/admin.php:351
 msgid "Textes"
 msgstr ""
 
-#: jeux-marketing/inc/admin.php:555
+#: jeux-marketing/inc/admin.php:625
 msgid "Titre"
 msgstr ""
 
-#: jeux-marketing/inc/admin.php:617
+#: jeux-marketing/inc/admin.php:687
 msgid "Titre de l'étape"
 msgstr ""
 
-#: jeux-marketing/inc/admin.php:630 jeux-marketing/inc/admin.php:659
+#: jeux-marketing/inc/admin.php:700 jeux-marketing/inc/admin.php:747
 msgid "Titre de la section"
 msgstr ""
 
-#: jeux-marketing/inc/admin.php:534
+#: jeux-marketing/inc/admin.php:733
+msgid "Titre du groupe"
+msgstr ""
+
+#: jeux-marketing/inc/admin.php:604
 msgid "Titre, deuxième ligne (en couleur)"
 msgstr ""
 
-#: jeux-marketing/inc/admin.php:533
+#: jeux-marketing/inc/admin.php:603
 msgid "Titre, première ligne"
 msgstr ""
 
-#: jeux-marketing/functions.php:201 jeux-marketing/template-parts/section-quote.php:27
-msgid "Total estimé"
-msgstr ""
-
-#: jeux-marketing/inc/admin.php:299
+#: jeux-marketing/inc/admin.php:357
 msgid "Tout ce qui apparaît sur la page d'accueil se règle ici. Enregistrez, puis rechargez la page publique pour voir le résultat."
 msgstr ""
 
-#: jeux-marketing/template-parts/section-services.php:22
-msgid "Trois façons de travailler ensemble"
-msgstr ""
-
-#: jeux-marketing/inc/admin.php:587
+#: jeux-marketing/inc/admin.php:657
 msgid "Trois packs suffisent : un prix d'entrée, un pack complet mis en avant, un pack haut de gamme. Une ligne par élément inclus."
 msgstr ""
 
-#: jeux-marketing/template-parts/game-slot.php:16
-msgid "Trois rouleaux de machine à sous"
-msgstr ""
-
-#: jeux-marketing/template-parts/game-slot.php:24
-msgid "Trois symboles identiques et le lot est à vous."
-msgstr ""
-
-#: jeux-marketing/inc/admin.php:674
+#: jeux-marketing/inc/admin.php:762
 msgid "Un avis inventé est un faux témoignage : sur Fiverr comme sur Upwork c'est un motif de suspension, et un prospect qui demande à parler à la référence vous met en difficulté. N'ajoutez ici que des phrases réellement écrites par un client. La section reste masquée tant qu'il n'y en a aucune."
 msgstr ""
 
-#: jeux-marketing/template-parts/section-services.php:58
-msgid "Un besoin qui ne rentre dans aucune case ? Décrivez-le, je réponds si c'est faisable et en combien de temps — y compris quand la réponse est non."
+#: jeux-marketing/inc/admin.php:727
+msgid "Un groupe par ligne de la grille : un titre, puis un outil par ligne. N'y mettez que ce que vous savez maintenir après la livraison."
 msgstr ""
 
-#: jeux-marketing/inc/admin.php:599
+#: jeux-marketing/inc/admin.php:734
+msgid "Un outil par ligne"
+msgstr ""
+
+#: jeux-marketing/inc/admin.php:669
 msgid "Un élément inclus par ligne"
 msgstr ""
 
-#: jeux-marketing/template-parts/section-lab.php:47
-msgid "Une fois le stock épuisé, le lot est retiré du tirage et les probabilités des autres se réajustent seules. Personne ne peut gagner un lot qui n'existe plus."
-msgstr ""
-
-#: jeux-marketing/inc/admin.php:598
+#: jeux-marketing/inc/admin.php:668
 msgid "Une phrase de résumé"
 msgstr ""
 
-#: jeux-marketing/inc/admin.php:422
+#: jeux-marketing/inc/admin.php:492
 msgid "Une réponse par ligne"
 msgstr ""
 
-#: jeux-marketing/inc/admin.php:415
+#: jeux-marketing/inc/admin.php:485
 msgid "Une réponse par ligne. Indiquez le numéro de la bonne réponse : 1 pour la première ligne, 2 pour la deuxième, etc."
 msgstr ""
 
-#: jeux-marketing/inc/admin.php:357
+#: jeux-marketing/inc/admin.php:427
 msgid "Une seule participation par personne"
 msgstr ""
 
-#: jeux-marketing/template-parts/game-tap.php:43
-msgid "Une seule tentative par joueur."
-msgstr ""
-
-#: jeux-marketing/inc/admin.php:544
+#: jeux-marketing/inc/admin.php:614
 msgid "Une étiquette par ligne."
 msgstr ""
 
-#: jeux-marketing/inc/admin.php:328
+#: jeux-marketing/inc/admin.php:397
 msgid "Utilisé uniquement en mode Fiverr."
 msgstr ""
 
-#: jeux-marketing/inc/admin.php:377
+#: jeux-marketing/inc/admin.php:447
 msgid "Utilisée par la roue, les boutons et tous les accents de la page."
 msgstr ""
 
-#: jeux-marketing/inc/admin.php:513
+#: jeux-marketing/inc/admin.php:583
 msgid "Valeurs de départ du calculateur"
 msgstr ""
 
-#: jeux-marketing/inc/admin.php:494
+#: jeux-marketing/inc/admin.php:564
 msgid "Verrouillée"
 msgstr ""
 
-#: jeux-marketing/inc/admin.php:673
+#: jeux-marketing/inc/admin.php:761
 msgid "Vide au départ, et c'est voulu."
 msgstr ""
 
-#: jeux-marketing/inc/admin.php:517 jeux-marketing/template-parts/section-roi.php:22
+#: jeux-marketing/inc/admin.php:587
 msgid "Visiteurs par mois"
 msgstr ""
 
-#: jeux-marketing/template-parts/section-quote.php:41
-msgid "Voilà tout ce que vous aurez à coller sur votre page. Le reste vit dans un fichier de configuration lisible, modifiable après la livraison."
-msgstr ""
-
-#: jeux-marketing/single-jmk_work.php:50
-msgid "Voir la campagne"
-msgstr ""
-
-#: jeux-marketing/header.php:58
-msgid "Vos couleurs"
-msgstr ""
-
-#: jeux-marketing/template-parts/section-cta.php:17
-msgid "Vos lots, votre plateforme et la date de lancement suffisent pour savoir si c'est faisable et en combien de temps."
-msgstr ""
-
-#: jeux-marketing/template-parts/section-quote.php:22
-msgid "Votre configuration"
-msgstr ""
-
-#: jeux-marketing/functions.php:173
-msgid "Vous avez déjà joué. Une participation par personne."
-msgstr ""
-
-#: jeux-marketing/functions.php:170
-msgid "Vous gagnez :"
-msgstr ""
-
-#: jeux-marketing/inc/admin.php:329
+#: jeux-marketing/inc/admin.php:398
 msgid "Vous recevez un message à chaque nouveau participant. Laissez vide pour désactiver."
 msgstr ""
 
-#: jeux-marketing/template-parts/section-brand.php:16
-msgid "Voyez la roue à"
-msgstr ""
-
-#: jeux-marketing/template-parts/section-lab.php:30
-msgid "Vérification"
-msgstr ""
-
-#: jeux-marketing/inc/admin.php:357
+#: jeux-marketing/inc/admin.php:427
 msgid "Vérification navigateur, plus déduplication par email côté serveur."
 msgstr ""
 
-#: jeux-marketing/inc/admin.php:361
+#: jeux-marketing/inc/admin.php:431
 msgid "Webhook (Zapier, Make, CRM…)"
 msgstr ""
 
-#: jeux-marketing/inc/admin.php:323
+#: jeux-marketing/inc/admin.php:392
 msgid "WhatsApp entièrement masqué, bouton « Commander sur Fiverr ». Pour le lien de votre annonce."
 msgstr ""
 
-#: jeux-marketing/template-parts/section-roi.php:42
-msgid "amortissement du jeu"
-msgstr ""
-
-#: jeux-marketing/inc/admin.php:473
+#: jeux-marketing/inc/admin.php:543
 msgid "ce lot n'attribue aucun code. C'est la case « Réessayez »."
 msgstr ""
 
-#: jeux-marketing/template-parts/section-roi.php:41
-msgid "chiffre d'affaires / mois"
-msgstr ""
-
-#: jeux-marketing/template-parts/section-quote.php:23
-msgid "devis"
-msgstr ""
-
-#: jeux-marketing/inc/admin.php:474
+#: jeux-marketing/inc/admin.php:544
 msgid "décalage de couleur par rapport à la couleur principale, entre -180 et 180. Laissez 0 pour utiliser la couleur principale telle quelle."
 msgstr ""
 
-#: jeux-marketing/template-parts/section-roi.php:39
-msgid "emails collectés / mois"
-msgstr ""
-
-#: jeux-marketing/template-parts/game-scratch.php:14
-msgid "grattez"
-msgstr ""
-
-#: jeux-marketing/functions.php:194
-msgid "jour"
-msgstr ""
-
-#: jeux-marketing/functions.php:195
-msgid "jours"
-msgstr ""
-
-#: jeux-marketing/template-parts/game-plinko.php:14
-msgid "la bille décide"
-msgstr ""
-
-#: jeux-marketing/template-parts/section-services.php:33
-msgid "le plus demandé"
-msgstr ""
-
-#: jeux-marketing/inc/admin.php:472
+#: jeux-marketing/inc/admin.php:542
 msgid "nombre maximum de fois où ce lot peut être gagné sur toute la campagne. 0 signifie illimité. Une fois atteint, le lot est retiré du tirage et les autres probabilités se réajustent automatiquement."
 msgstr ""
 
-#: jeux-marketing/template-parts/section-lab.php:37
-msgid "obtenu sur 1 000 tirages"
-msgstr ""
-
-#: jeux-marketing/template-parts/section-leads.php:25
-msgid "participants — synchronisation active"
-msgstr ""
-
-#: jeux-marketing/template-parts/section-lab.php:45
-msgid "stock · max"
-msgstr ""
-
-#: jeux-marketing/template-parts/game-tap.php:29
-msgid "une boîte"
-msgstr ""
-
-#: jeux-marketing/template-parts/section-lab.php:38
-msgid "valeur configurée"
-msgstr ""
-
-#: jeux-marketing/template-parts/section-roi.php:40
-msgid "ventes attribuées / mois"
-msgstr ""
-
-#: jeux-marketing/template-parts/section-brand.php:17
-msgid "vos couleurs"
-msgstr ""
-
-#: jeux-marketing/template-parts/game-scratch.php:18
-msgid "votre lot"
-msgstr ""
-
-#: jeux-marketing/inc/admin.php:488
+#: jeux-marketing/inc/admin.php:558
 msgid "« Cochée » signifie sélectionnée d'avance pour le visiteur. « Verrouillée » signifie qu'il ne peut pas la décocher : à réserver à votre prestation de base."
 msgstr ""
 
-#: jeux-marketing/template-parts/section-lab.php:16
-msgid "« Est-ce que je contrôle qui gagne ? »"
-msgstr ""
-
-#: jeux-marketing/inc/admin.php:479
+#: jeux-marketing/inc/admin.php:549
 msgid "À faire au lancement de chaque nouvelle campagne."
 msgstr ""
 
-#: jeux-marketing/inc/admin.php:342 jeux-marketing/inc/admin.php:628
+#: jeux-marketing/inc/admin.php:412 jeux-marketing/inc/admin.php:698
 msgid "À propos"
 msgstr ""
 
-#: jeux-marketing/functions.php:188
-msgid "ÉPUISÉ"
-msgstr ""
-
-#: jeux-marketing/inc/admin.php:542
+#: jeux-marketing/inc/admin.php:612
 msgid "Étiquettes sous le paragraphe"
-msgstr ""
-
-#: jeux-marketing/single-jmk_work.php:57
-msgid "← Toutes les réalisations"
 msgstr ""

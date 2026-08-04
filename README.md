@@ -16,7 +16,7 @@ code.
 | `bin/build-zip.sh` | Produit `dist/jeux-marketing.zip`, le fichier à téléverser |
 | `bin/make-pot.php` | Régénère `languages/jeux-marketing.pot` depuis les sources |
 | `bin/screenshot.html` | Page qui sert à produire `screenshot.png` |
-| `tests/` | Vérifications de la logique de tirage, sans WordPress |
+| `tests/` | Vérifications, sans WordPress |
 
 Le thème fait deux choses : il vend les jeux, et il sert de portfolio. Les
 sections « packs », « réalisations », « déroulé », « à propos » et « avis »
@@ -35,6 +35,7 @@ Le script régénère le fichier de traduction puis écrit
 
 ```sh
 php tests/test-draw.php     # logique de tirage
+php tests/test-i18n.php     # les trois langues
 tests/run-e2e.sh           # les six jeux dans un navigateur
 ```
 
@@ -90,6 +91,25 @@ suite. C'est le seul endroit du thème où une image bat le CSS — une matière
 avec du grain ne se code pas. Tout le reste (boîte cadeau, icônes) est du SVG
 en `currentColor`, qui suit la couleur de la marque sans produire un fichier
 par teinte.
+
+**Les trois langues ne dépendent d'aucune extension.** Le thème est vendu : on
+ne peut pas exiger du client qu'il installe WPML pour voir sa page en anglais.
+`inc/i18n.php` porte donc la mécanique, `inc/lang/*.php` les dictionnaires. Ces
+trois fichiers sont générés une première fois par un script, mais **c'est la
+version du dépôt qui fait foi** : les corrections se font directement dedans.
+
+`jmk_get()` distingue deux familles de réglages. Le contenu (`jmk_translatable()`)
+vit sous `jmk_settings[<langue>][<clé>]` ; la configuration technique reste à
+plat. `jmk_sanitize()` remonte le contenu soumis, le nettoie, puis le redescend
+dans le seul compartiment de la langue éditée — les deux autres ne sont jamais
+réécrites.
+
+**L'arabe demande plus que `direction: rtl`.** Deux réglages hérités du latin le
+cassent : l'interlettrage, qui sépare des lettres censées être liées, et
+l'interligne serré, qui coupe les hampes. La police monospace, elle, n'a aucun
+glyphe arabe — chaque caractère retombe sur une police système différente et
+perd ses liaisons. Les trois sont neutralisés dans le bloc `.jmk-rtl` de
+`main.css` ; y toucher casse l'arabe sans rien changer aux deux autres langues.
 
 **Les polices viennent de Google Fonts.** C'est le point qui reste en tension
 avec l'argument RGPD de la page : pour un client européen strict, il faut

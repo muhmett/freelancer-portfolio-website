@@ -28,7 +28,7 @@ if ( ! $works ) {
 <section id="realisations">
 	<div class="wrap">
 		<div class="sec-head rv">
-			<p class="eyebrow"><?php esc_html_e( 'Réalisations', 'jeux-marketing' ); ?></p>
+			<p class="eyebrow"><?php jmk_e( 'nav_work' ); ?></p>
 			<h2><?php echo esc_html( jmk_get( 'work_title' ) ); ?></h2>
 			<p class="lede"><?php echo esc_html( jmk_get( 'work_text' ) ); ?></p>
 		</div>
