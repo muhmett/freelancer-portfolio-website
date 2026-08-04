@@ -152,7 +152,7 @@ function jmk_js_config() {
 		// plateforme et cela suffit à faire suspendre un compte.
 		'whatsapp'  => ( 'fiverr' === $mode ) ? '' : preg_replace( '/\D/', '', (string) jmk_get( 'whatsapp' ) ),
 		'fiverr'    => esc_url_raw( jmk_get( 'fiverr_url' ) ),
-		'foil'      => JMK_URI . '/assets/img/foil.jpg',
+		'foil'      => JMK_URI . '/assets/img/foil.jpg?v=' . jmk_asset_version( 'assets/img/foil.jpg' ),
 		'brand'     => (string) jmk_get( 'brand_name' ),
 		'accent'    => (string) jmk_get( 'accent' ),
 		'lang'      => jmk_lang(),
@@ -205,6 +205,22 @@ function jmk_js_config() {
 }
 
 /**
+ * Version d'un fichier du thème, tirée de sa date de modification.
+ *
+ * JMK_VERSION ne bouge qu'aux versions publiées : entre deux, un
+ * navigateur ou une extension de cache continuerait de servir l'ancien
+ * fichier, et la mise à jour n'arriverait jamais chez le client.
+ *
+ * @param string $rel Chemin relatif au thème.
+ * @return string
+ */
+function jmk_asset_version( $rel ) {
+	$file = JMK_DIR . '/' . ltrim( $rel, '/' );
+	$time = is_readable( $file ) ? filemtime( $file ) : 0;
+	return $time ? JMK_VERSION . '.' . $time : JMK_VERSION;
+}
+
+/**
  * Chargement des styles et scripts publics.
  */
 function jmk_assets() {
@@ -214,12 +230,12 @@ function jmk_assets() {
 		array(),
 		null
 	);
-	wp_enqueue_style( 'jmk-main', JMK_URI . '/assets/css/main.css', array( 'jmk-fonts' ), JMK_VERSION );
+	wp_enqueue_style( 'jmk-main', JMK_URI . '/assets/css/main.css', array( 'jmk-fonts' ), jmk_asset_version( 'assets/css/main.css' ) );
 	wp_add_inline_style( 'jmk-main', jmk_inline_css() );
 
 	wp_enqueue_style( 'jeux-marketing-style', get_stylesheet_uri(), array( 'jmk-main' ), JMK_VERSION );
 
-	wp_enqueue_script( 'jmk-app', JMK_URI . '/assets/js/app.js', array(), JMK_VERSION, true );
+	wp_enqueue_script( 'jmk-app', JMK_URI . '/assets/js/app.js', array(), jmk_asset_version( 'assets/js/app.js' ), true );
 	wp_localize_script( 'jmk-app', 'JMK', jmk_js_config() );
 }
 add_action( 'wp_enqueue_scripts', 'jmk_assets' );

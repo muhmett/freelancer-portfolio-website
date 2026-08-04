@@ -54,6 +54,10 @@ Le logo se règle dans **Apparence → Personnaliser**.
 ### Jeux
 Activer ou désactiver les six jeux : la roue, la carte à gratter, le tap-to-win,
 le quiz, la machine à sous et la pluie de lots.
+
+La roue reste en haut de page. Les cinq autres sont présentés en **carrousel** :
+un jeu à la fois sur téléphone, trois côte à côte sur grand écran. On y navigue
+au doigt, aux flèches, aux puces sous le carrousel, ou aux touches ← et →.
 Les questions du quiz se modifient dans le même onglet.
 
 Tous partagent les mêmes lots, les mêmes probabilités et les mêmes plafonds.

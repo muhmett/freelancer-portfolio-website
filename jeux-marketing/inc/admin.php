@@ -263,8 +263,8 @@ function jmk_admin_assets( $hook ) {
 	if ( false === strpos( $hook, 'jmk-settings' ) ) {
 		return;
 	}
-	wp_enqueue_style( 'jmk-admin', JMK_URI . '/assets/css/admin.css', array(), JMK_VERSION );
-	wp_enqueue_script( 'jmk-admin', JMK_URI . '/assets/js/admin.js', array(), JMK_VERSION, true );
+	wp_enqueue_style( 'jmk-admin', JMK_URI . '/assets/css/admin.css', array(), jmk_asset_version( 'assets/css/admin.css' ) );
+	wp_enqueue_script( 'jmk-admin', JMK_URI . '/assets/js/admin.js', array(), jmk_asset_version( 'assets/js/admin.js' ), true );
 }
 add_action( 'admin_enqueue_scripts', 'jmk_admin_assets' );
 

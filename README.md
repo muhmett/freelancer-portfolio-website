@@ -111,6 +111,25 @@ glyphe arabe — chaque caractère retombe sur une police système différente e
 perd ses liaisons. Les trois sont neutralisés dans le bloc `.jmk-rtl` de
 `main.css` ; y toucher casse l'arabe sans rien changer aux deux autres langues.
 
+**Ce qui se mesure se redessine, jamais une seule fois.** Un canevas construit
+alors que son conteneur mesure zéro reste vide pour toujours — vue de carrousel
+encore hors champ, feuille de style pas encore appliquée, onglet ouvert en
+arrière-plan. `refreshGames()` reconstruit donc rouleaux, plateau et pellicule
+dès que la taille devient réelle, et il est rappelé sur quatre signaux :
+`IntersectionObserver` par carte, fin de défilement du carrousel, `resize`, et
+`load` / `document.fonts.ready`. C'est ce qui manquait quand les deux jeux
+sortaient vides sur une installation réelle alors qu'ils passaient en test.
+
+**Les fichiers portent leur date de modification.** `jmk_asset_version()` ajoute
+`filemtime()` à la version des styles et scripts. Sans cela, `JMK_VERSION` ne
+bouge qu'aux versions publiées et une extension de cache continue de servir
+l'ancien fichier : la correction n'arrive jamais chez le client.
+
+**Le titre du haut se découpe en mots, sauf le dégradé.** `.accent-text` se peint
+par `background-clip` sur son propre élément ; le découper en `<span>` rend le
+texte invisible, puisque les enfants héritent d'une couleur transparente sans
+fond. Il est donc animé d'un bloc.
+
 **Les polices viennent de Google Fonts.** C'est le point qui reste en tension
 avec l'argument RGPD de la page : pour un client européen strict, il faut
 héberger les trois familles dans `assets/fonts/` et remplacer l'appel à

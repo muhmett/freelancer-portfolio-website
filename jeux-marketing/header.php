@@ -19,6 +19,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 <body <?php body_class(); ?>>
 <?php wp_body_open(); ?>
 
+<div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
+
 <canvas id="jmk-confetti" aria-hidden="true"></canvas>
 
 <a class="jmk-skip" href="#jmk-main"><?php jmk_e( 'skip' ); ?></a>

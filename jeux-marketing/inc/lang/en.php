@@ -155,6 +155,7 @@ return array(
 		'skills_h2'          => "What I actually work with",
 		'skills_lede'        => "No logo wall. Only tools I have shipped something real with, and that I can maintain after delivery.",
 		'skip'               => "Skip to content",
+		'slide_of'           => "Slide %1\$d of %2\$d — %3\$s",
 		'slot_aria'          => "Three slot machine reels",
 		'slot_msg'           => "Three matching symbols and the prize is yours.",
 		'slot_tag'           => "3 reels",

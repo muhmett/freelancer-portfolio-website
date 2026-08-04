@@ -1133,6 +1133,175 @@
 		p.style.width = ( h > 0 ? ( window.scrollY / h ) * 100 : 0 ) + '%';
 	}, { passive: true } );
 
+	/* ══════════ CARROUSEL DES JEUX ══════════ */
+	var track = $( '#gamesTrack' );
+	if ( track ) {
+		var slides = $$( '#gamesTrack .carousel-slide' ),
+			dots   = $$( '#gamesDots .carousel-dot' ),
+			prevB  = $( '#gamesPrev' ),
+			nextB  = $( '#gamesNext' ),
+			atSlide = 0;
+
+		function slideAt() {
+			// La vue la plus proche du centre du cadre.
+			var mid = track.scrollLeft + track.clientWidth / 2, best = 0, dist = Infinity;
+			slides.forEach( function ( s, i ) {
+				var c = s.offsetLeft + s.offsetWidth / 2, d = Math.abs( c - mid );
+				if ( d < dist ) { dist = d; best = i; }
+			} );
+			return best;
+		}
+
+		function syncNav() {
+			atSlide = slideAt();
+			dots.forEach( function ( d, i ) {
+				var on = ( i === atSlide );
+				d.classList.toggle( 'active', on );
+				d.setAttribute( 'aria-current', on ? 'true' : 'false' );
+			} );
+			// En lecture de droite à gauche, scrollLeft devient négatif.
+			var max = track.scrollWidth - track.clientWidth - 1;
+			var pos = Math.abs( track.scrollLeft );
+			if ( prevB ) { prevB.disabled = pos <= 1; }
+			if ( nextB ) { nextB.disabled = pos >= max; }
+		}
+
+		function goTo( i ) {
+			var s = slides[ Math.max( 0, Math.min( slides.length - 1, i ) ) ];
+			if ( ! s ) { return; }
+			track.scrollTo( {
+				left: s.offsetLeft - ( track.clientWidth - s.offsetWidth ) / 2,
+				behavior: reduced ? 'auto' : 'smooth'
+			} );
+		}
+
+		if ( prevB ) { prevB.addEventListener( 'click', function () { goTo( atSlide - 1 ); } ); }
+		if ( nextB ) { nextB.addEventListener( 'click', function () { goTo( atSlide + 1 ); } ); }
+		dots.forEach( function ( d ) {
+			d.addEventListener( 'click', function () { goTo( Number( d.dataset.go ) ); } );
+		} );
+
+		track.addEventListener( 'keydown', function ( e ) {
+			if ( 'ArrowRight' === e.key ) { e.preventDefault(); goTo( atSlide + 1 ); }
+			if ( 'ArrowLeft' === e.key )  { e.preventDefault(); goTo( atSlide - 1 ); }
+		} );
+
+		var scrollTick = null;
+		track.addEventListener( 'scroll', function () {
+			clearTimeout( scrollTick );
+			// Une vue qui arrive peut n'avoir jamais eu de taille : on la
+			// redessine une fois immobile.
+			scrollTick = setTimeout( function () { syncNav(); refreshGames(); }, 90 );
+		}, { passive: true } );
+
+		syncNav();
+	}
+
+	/**
+	 * Redessine ce qui dépend d'une taille à l'écran.
+	 *
+	 * Un canevas construit alors que son conteneur mesurait zéro — vue de
+	 * carrousel encore hors champ, feuille de style pas encore appliquée,
+	 * onglet ouvert en arrière-plan — reste vide pour toujours. Tout ce qui
+	 * se mesure est donc reconstruit dès que la taille devient réelle,
+	 * plutôt qu'une seule fois au chargement.
+	 */
+	function refreshGames() {
+		var reels = $( '#reels' );
+		if ( reels && reels.clientWidth > 0 && ! reels.querySelector( '.cell' ) ) {
+			buildReels();
+		}
+		if ( pk && pk.clientWidth > 0 && ! pkBusy ) {
+			pkDraw();
+		}
+		if ( sc && sc.clientWidth > 0 && ! scratchDone && 0 === mTick ) {
+			sizeScratch();
+		}
+	}
+
+	// Chaque jeu se (re)construit dès qu'il entre réellement à l'écran.
+	if ( 'IntersectionObserver' in window ) {
+		var gio = new IntersectionObserver( function ( es ) {
+			es.forEach( function ( e ) { if ( e.isIntersecting ) { refreshGames(); } } );
+		}, { threshold: 0.05 } );
+		$$( '.game-card' ).forEach( function ( el ) { gio.observe( el ); } );
+	}
+
+	// Et à chaque changement de largeur, sans marteler.
+	var sizeTick = null;
+	window.addEventListener( 'resize', function () {
+		clearTimeout( sizeTick );
+		sizeTick = setTimeout( refreshGames, 140 );
+	} );
+
+	// Filet de sécurité : polices et feuilles de style arrivent après nous.
+	window.addEventListener( 'load', refreshGames );
+	if ( document.fonts && document.fonts.ready ) {
+		document.fonts.ready.then( refreshGames );
+	}
+
+	/* ══════════ ANIMATIONS DE LA PAGE ══════════ */
+
+	// Titre du haut : un span par mot, pour une entrée décalée.
+	var h1 = $( '.hero h1' );
+	if ( h1 && ! reduced ) {
+		var wIndex = 0;
+		var walk = function ( node ) {
+			Array.prototype.slice.call( node.childNodes ).forEach( function ( n ) {
+				// Le texte en dégradé se peint via background-clip sur son
+				// propre élément : le découper en mots le rend invisible.
+				// On l'anime donc d'un bloc, sans y descendre.
+				if ( 1 === n.nodeType && n.classList && n.classList.contains( 'accent-text' ) ) {
+					n.classList.add( 'w' );
+					n.style.animationDelay = ( 0.12 + ( wIndex++ ) * 0.075 ) + 's';
+					return;
+				}
+				if ( 3 === n.nodeType ) {
+					var frag = document.createDocumentFragment();
+					String( n.textContent ).split( /(\s+)/ ).forEach( function ( part ) {
+						if ( ! part.trim() ) { frag.appendChild( document.createTextNode( part ) ); return; }
+						var sp = document.createElement( 'span' );
+						sp.className = 'w';
+						sp.textContent = part;
+						sp.style.animationDelay = ( 0.12 + ( wIndex++ ) * 0.075 ) + 's';
+						frag.appendChild( sp );
+					} );
+					n.parentNode.replaceChild( frag, n );
+				} else if ( 1 === n.nodeType && 'BR' !== n.tagName ) {
+					walk( n );
+				}
+			} );
+		};
+		walk( h1 );
+	}
+
+	// Révélation décalée pour les grilles.
+	$$( '.packs, .works, .skills, .steps, .spec, .reviews, .kpis, .about-stats' )
+		.forEach( function ( el ) { el.classList.add( 'stagger' ); } );
+
+	var sio = new IntersectionObserver( function ( es ) {
+		es.forEach( function ( e ) {
+			if ( e.isIntersecting ) { e.target.classList.add( 'in' ); sio.unobserve( e.target ); }
+		} );
+	}, { threshold: 0.08 } );
+	$$( '.stagger' ).forEach( function ( el ) { sio.observe( el ); } );
+
+	// Les cartes s'inclinent légèrement vers le curseur.
+	if ( ! reduced && window.matchMedia( '(hover: hover)' ).matches ) {
+		$$( '.pack, .work' ).forEach( function ( card ) {
+			card.classList.add( 'tilt' );
+			card.addEventListener( 'mousemove', function ( e ) {
+				var r = card.getBoundingClientRect(),
+					x = ( e.clientX - r.left ) / r.width - 0.5,
+					y = ( e.clientY - r.top ) / r.height - 0.5;
+				card.style.transform =
+					'perspective(900px) rotateX(' + ( -y * 4 ).toFixed( 2 ) + 'deg) rotateY(' +
+					( x * 5 ).toFixed( 2 ) + 'deg) translateY(-3px)';
+			} );
+			card.addEventListener( 'mouseleave', function () { card.style.transform = ''; } );
+		} );
+	}
+
 	/* démarrage */
 	renderLots();
 	drawWheel();
@@ -1140,4 +1309,5 @@
 	renderQuiz();
 	renderOpts();
 	updateQuote();
+	refreshGames();
 } )();

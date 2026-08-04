@@ -155,6 +155,7 @@ return array(
 		'skills_h2'          => "Ce avec quoi je travaille vraiment",
 		'skills_lede'        => "Pas de mur de logos. Uniquement des outils avec lesquels j'ai livré quelque chose de réel, et que je sais maintenir après la livraison.",
 		'skip'               => "Aller au contenu",
+		'slide_of'           => "Vue %1\$d sur %2\$d — %3\$s",
 		'slot_aria'          => "Trois rouleaux de machine à sous",
 		'slot_msg'           => "Trois symboles identiques et le lot est à vous.",
 		'slot_tag'           => "3 rouleaux",
