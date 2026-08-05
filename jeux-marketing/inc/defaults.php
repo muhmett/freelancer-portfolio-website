@@ -35,7 +35,7 @@ function jmk_defaults() {
 		// Marque.
 		'brand_name'    => 'anomalydev by Hsk',
 		'accent'        => '#D9A441',
-		'skin'          => 'elegant',
+		'skin'          => 'arcade',
 		'lang'          => 'en',
 
 		// Jeux actifs.
