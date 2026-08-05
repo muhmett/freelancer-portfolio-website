@@ -112,6 +112,9 @@ function jmk_sanitize( $in ) {
 	if ( isset( $in['mode'] ) ) {
 		$out['mode'] = in_array( $in['mode'], array( 'direct', 'fiverr' ), true ) ? $in['mode'] : 'direct';
 	}
+	if ( isset( $in['skin'] ) ) {
+		$out['skin'] = in_array( $in['skin'], array( 'elegant', 'arcade' ), true ) ? $in['skin'] : 'elegant';
+	}
 	if ( isset( $in['lang'] ) ) {
 		$out['lang'] = in_array( $in['lang'], array( 'fr', 'en', 'ar' ), true ) ? $in['lang'] : 'fr';
 	}
@@ -461,6 +464,20 @@ function jmk_settings_page() {
 						<?php jmk_field( 'currency', __( 'Symbole monétaire', 'jeux-marketing' ), __( 'Exemple : € — MAD — $', 'jeux-marketing' ) ); ?>
 					</div>
 					<p class="jmk-help"><?php esc_html_e( 'Le logo se règle dans Apparence puis Personnaliser.', 'jeux-marketing' ); ?></p>
+				</div>
+
+				<div class="jmk-card">
+					<h2><?php esc_html_e( 'Style visuel', 'jeux-marketing' ); ?></h2>
+					<p class="jmk-help"><?php esc_html_e( 'Deux habillages du même jeu. Le style ne change ni les lots, ni les probabilités, ni la capture d\'email : uniquement l\'apparence.', 'jeux-marketing' ); ?></p>
+					<?php $jmk_skin = jmk_get( 'skin' ); ?>
+					<div class="jmk-radio">
+						<label><input type="radio" name="jmk_settings[skin]" value="elegant" <?php checked( 'elegant', $jmk_skin ); ?>>
+							<strong><?php esc_html_e( 'Sobre', 'jeux-marketing' ); ?></strong>
+							<em><?php esc_html_e( 'Fond sombre, or discret, formes nettes. Pour une marque haut de gamme, un cabinet, une boutique de créateur.', 'jeux-marketing' ); ?></em></label>
+						<label><input type="radio" name="jmk_settings[skin]" value="arcade" <?php checked( 'arcade', $jmk_skin ); ?>>
+							<strong><?php esc_html_e( 'Fête foraine', 'jeux-marketing' ); ?></strong>
+							<em><?php esc_html_e( 'Violet saturé, or épais, ampoules autour de la roue, boutons bombés. Pour une promotion grand public, un jeu-concours de marque, un stand de salon.', 'jeux-marketing' ); ?></em></label>
+					</div>
 				</div>
 			</div>
 

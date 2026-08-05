@@ -155,6 +155,7 @@ function jmk_js_config() {
 		'foil'      => JMK_URI . '/assets/img/foil.jpg?v=' . jmk_asset_version( 'assets/img/foil.jpg' ),
 		'brand'     => (string) jmk_get( 'brand_name' ),
 		'accent'    => (string) jmk_get( 'accent' ),
+		'skin'      => (string) jmk_get( 'skin' ),
 		'lang'      => jmk_lang(),
 		'onePlay'   => (bool) jmk_get( 'one_play' ),
 		'currency'  => (string) jmk_get( 'currency' ),
@@ -251,6 +252,7 @@ function jmk_body_class( $classes ) {
 		$classes[] = 'jmk-rtl';
 	}
 	$classes[] = 'jmk-lang-' . jmk_lang();
+	$classes[] = 'jmk-skin-' . jmk_get( 'skin' );
 	return $classes;
 }
 add_filter( 'body_class', 'jmk_body_class' );

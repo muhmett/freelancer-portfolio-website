@@ -47,7 +47,16 @@ Tout se passe dans le menu **Jeux Marketing** de la colonne de gauche. Sept ongl
 - Webhook (Zapier, Make, CRM) et lien vers la politique de confidentialité
 
 ### Marque
-Nom affiché, couleur principale, langue, symbole monétaire.
+Nom affiché, couleur principale, langue, symbole monétaire, et le **style
+visuel** :
+
+| Style | À quoi il ressemble | Pour qui |
+|---|---|---|
+| **Sobre** | Fond sombre, or discret, formes nettes | Marque haut de gamme, cabinet, boutique de créateur |
+| **Fête foraine** | Violet saturé, or épais, ampoules autour de la roue, boutons bombés | Promotion grand public, jeu-concours de marque, stand de salon |
+
+Le style ne touche ni aux lots, ni aux probabilités, ni à la capture d'email :
+uniquement l'apparence. On peut basculer à tout moment.
 La couleur se propage à toute la page : roue, boutons, accents, graphiques.
 Le logo se règle dans **Apparence → Personnaliser**.
 

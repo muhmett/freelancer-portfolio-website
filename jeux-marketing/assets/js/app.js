@@ -48,7 +48,7 @@
 	}
 	function lotColor( lot ) {
 		if ( null === lot.hue || lot.losing ) {
-			return '#3A2B4D';
+			return ( 'arcade' === C.skin ) ? '#4C2A9B' : '#3A2B4D';
 		}
 		var c = hexToHsl( brandColor );
 		return hsl( c[ 0 ] + lot.hue, Math.max( 35, Math.min( 88, c[ 1 ] ) ), Math.max( 38, Math.min( 66, c[ 2 ] ) ) );
@@ -115,48 +115,131 @@
 	var cv = $( '#wheel' ), ctx = cv ? cv.getContext( '2d' ) : null, R = cv ? cv.width / 2 : 0;
 	var rotation = 0, spinning = false, hasPlayed = false, drawToken = '';
 
+	var ARCADE = ( 'arcade' === C.skin );
+	// En habillage arcade, la couronne d'ampoules occupe le bord : la zone
+	// des segments recule d'autant.
+	var RIM  = ARCADE ? 46 : 6;
+	var bulb = 0;
+
+	/**
+	 * Couronne d'ampoules, comme sur une vraie roue de fête foraine.
+	 *
+	 * Dessinée hors de la rotation : les ampoules restent fixes pendant que
+	 * la roue tourne, et c'est ce qui rend le mouvement lisible.
+	 *
+	 * @param {number} n Nombre d'ampoules.
+	 */
+	function drawRim( n ) {
+		var band = ctx.createLinearGradient( -R, -R, R, R );
+		band.addColorStop( 0, '#F7DE9B' );
+		band.addColorStop( 0.34, '#D9A441' );
+		band.addColorStop( 0.62, '#8C5F14' );
+		band.addColorStop( 1, '#F0C96B' );
+		ctx.beginPath();
+		ctx.arc( 0, 0, R - 3, 0, Math.PI * 2 );
+		ctx.arc( 0, 0, R - RIM + 4, 0, Math.PI * 2, true );
+		ctx.fillStyle = band;
+		ctx.fill( 'evenodd' );
+
+		var ring = ( R - RIM / 2 ) + 1;
+		for ( var i = 0; i < n; i++ ) {
+			var a  = ( i / n ) * Math.PI * 2 - Math.PI / 2,
+				x  = Math.cos( a ) * ring,
+				y  = Math.sin( a ) * ring,
+				on = ( ( i + bulb ) % 2 === 0 );
+			ctx.beginPath();
+			ctx.arc( x, y, RIM * 0.20, 0, Math.PI * 2 );
+			ctx.fillStyle = on ? '#FFF6D8' : '#B98A2E';
+			ctx.fill();
+			if ( on ) {
+				var glow = ctx.createRadialGradient( x, y, 0, x, y, RIM * 0.52 );
+				glow.addColorStop( 0, 'rgba(255,246,216,.75)' );
+				glow.addColorStop( 1, 'rgba(255,246,216,0)' );
+				ctx.beginPath();
+				ctx.arc( x, y, RIM * 0.52, 0, Math.PI * 2 );
+				ctx.fillStyle = glow;
+				ctx.fill();
+			}
+		}
+	}
+
 	function drawWheel() {
 		if ( ! ctx ) { return; }
-		var n = LOTS.length, seg = ( Math.PI * 2 ) / n;
+		var n = LOTS.length, seg = ( Math.PI * 2 ) / n, rad = R - RIM;
 		ctx.clearRect( 0, 0, cv.width, cv.height );
 		ctx.save();
 		ctx.translate( R, R );
+
+		if ( ARCADE ) {
+			drawRim( Math.max( 16, n * 4 ) );
+		}
+
+		ctx.save();
 		ctx.rotate( rotation );
 		LOTS.forEach( function ( lot, i ) {
 			var a0  = -Math.PI / 2 + i * seg,
 				out = null !== lot.cap && lot.awarded >= lot.cap;
 			ctx.beginPath();
 			ctx.moveTo( 0, 0 );
-			ctx.arc( 0, 0, R - 6, a0, a0 + seg );
+			ctx.arc( 0, 0, rad, a0, a0 + seg );
 			ctx.closePath();
 			ctx.fillStyle   = lotColor( lot );
 			ctx.globalAlpha = out ? 0.28 : 1;
 			ctx.fill();
 			ctx.globalAlpha = 1;
-			ctx.lineWidth   = 3;
-			ctx.strokeStyle = '#150C1D';
+
+			if ( ARCADE && ! out ) {
+				// Un voile clair vers l'extérieur donne le relief bombé.
+				var gl = ctx.createRadialGradient( 0, 0, rad * 0.18, 0, 0, rad );
+				gl.addColorStop( 0, 'rgba(255,255,255,.26)' );
+				gl.addColorStop( 0.55, 'rgba(255,255,255,.05)' );
+				gl.addColorStop( 1, 'rgba(0,0,0,.24)' );
+				ctx.beginPath();
+				ctx.moveTo( 0, 0 );
+				ctx.arc( 0, 0, rad, a0, a0 + seg );
+				ctx.closePath();
+				ctx.fillStyle = gl;
+				ctx.fill();
+			}
+
+			ctx.lineWidth   = ARCADE ? 5 : 3;
+			ctx.strokeStyle = ARCADE ? '#7A4E0B' : '#150C1D';
 			ctx.stroke();
 
 			ctx.save();
 			ctx.rotate( a0 + seg / 2 );
 			ctx.textAlign    = 'right';
 			ctx.textBaseline = 'middle';
-			ctx.fillStyle    = ( null === lot.hue || lot.losing ) ? '#9C90AC' : '#150C1D';
-			ctx.font         = '700 40px "Bricolage Grotesque", sans-serif';
-			var w = String( lot.label ).split( ' ' );
+			ctx.font         = ( ARCADE ? '800 ' : '700 ' ) + '40px "Bricolage Grotesque", sans-serif';
+			var ink = ( null === lot.hue || lot.losing )
+				? ( ARCADE ? '#D9C9FF' : '#9C90AC' )
+				: '#150C1D';
+			var w   = String( lot.label ).split( ' ' );
+			var lightOutline = ARCADE && ! lot.losing && null !== lot.hue;
+			var put = function ( txt, dy ) {
+				if ( lightOutline ) {
+					ctx.lineWidth   = 5;
+					ctx.strokeStyle = 'rgba(255,255,255,.55)';
+					ctx.lineJoin    = 'round';
+					ctx.strokeText( txt, rad - 44, dy );
+				}
+				ctx.fillStyle = ink;
+				ctx.fillText( txt, rad - 44, dy );
+			};
 			if ( w.length > 1 && lot.label.length > 10 ) {
-				ctx.fillText( w[ 0 ], R - 56, -24 );
-				ctx.fillText( w.slice( 1 ).join( ' ' ), R - 56, 24 );
+				put( w[ 0 ], -24 );
+				put( w.slice( 1 ).join( ' ' ), 24 );
 			} else {
-				ctx.fillText( lot.label, R - 56, 0 );
+				put( lot.label, 0 );
 			}
 			if ( out ) {
 				ctx.font      = '700 21px "JetBrains Mono", monospace';
 				ctx.fillStyle = '#F2506B';
-				ctx.fillText( T.exhausted, R - 56, 54 );
+				ctx.fillText( T.exhausted, rad - 44, 54 );
 			}
 			ctx.restore();
 		} );
+		ctx.restore();
 		ctx.restore();
 	}
 
@@ -175,6 +258,7 @@
 			var cur = Math.floor( ( ( ( -rotation ) % ( Math.PI * 2 ) + Math.PI * 2 ) % ( Math.PI * 2 ) ) / seg );
 			if ( cur !== lastSeg && p < 0.985 && ! reduced ) {
 				lastSeg = cur;
+				bulb ^= 1;
 				var nd = $( '#needle' );
 				if ( nd ) {
 					nd.classList.remove( 'tick' );

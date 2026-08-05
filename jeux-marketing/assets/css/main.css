@@ -526,3 +526,128 @@ select{cursor:pointer}
   .hero-cta .btn:first-child::after{animation:none;display:none}
   .carousel-track{scroll-behavior:auto}
 }
+
+/* ══════════ HABILLAGE ARCADE ══════════
+   Second habillage, plus fête foraine : fonds saturés, boutons bombés,
+   or épais. Il ne remplace pas le premier — on choisit selon le client.
+   Tout est contenu dans .jmk-skin-arcade : retirer la classe rend la page
+   exactement telle qu'elle était. */
+.jmk-skin-arcade{
+  --ink:#2A1259; --ink-2:#3A1C75; --ink-3:#4A2590; --ink-4:#5C31A8;
+  --line:#7A4FD0; --line-soft:rgba(122,79,208,.5);
+  --paper:#FFFDF5; --muted:#C4AFEE; --text-2:#E8DDFF;
+  --g1:#FFF0BE; --g2:#F5C93F; --g3:#B87C10;
+  --r:18px;
+}
+.jmk-skin-arcade body,body.jmk-skin-arcade{
+  background:linear-gradient(178deg,#3A1C75 0%,#2A1259 46%,#1C0B42 100%)}
+body.jmk-skin-arcade::before{
+  background:radial-gradient(880px 620px at 50% -14%,rgba(245,201,63,.30),transparent 62%),
+             radial-gradient(660px 520px at 6% 92%,rgba(255,90,140,.22),transparent 60%),
+             radial-gradient(620px 520px at 96% 70%,rgba(80,200,255,.18),transparent 60%)}
+
+/* rayons derrière la roue */
+body.jmk-skin-arcade .wheel-holder::before{
+  content:'';position:absolute;inset:-30%;z-index:-1;border-radius:50%;
+  background:repeating-conic-gradient(from 0deg,
+    rgba(255,240,190,.20) 0deg 5deg, transparent 5deg 15deg);
+  /* estompés au centre comme au bord : sans cela, les rayons forment des
+     blocs nets qui écrasent la roue. */
+  -webkit-mask-image:radial-gradient(circle,transparent 30%,#000 46%,#000 62%,transparent 82%);
+  mask-image:radial-gradient(circle,transparent 30%,#000 46%,#000 62%,transparent 82%);
+  filter:blur(1px);animation:rays 60s linear infinite}
+@keyframes rays{to{transform:rotate(360deg)}}
+
+/* titres en or bombé */
+.jmk-skin-arcade h1,.jmk-skin-arcade h2{
+  color:var(--paper);text-shadow:0 3px 0 rgba(70,30,10,.30),0 7px 22px rgba(0,0,0,.42)}
+.jmk-skin-arcade .accent-text{
+  background:linear-gradient(180deg,var(--g1) 6%,var(--g2) 52%,var(--g3) 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 3px 0 rgba(90,45,5,.45)) drop-shadow(0 6px 14px rgba(0,0,0,.35))}
+.jmk-skin-arcade .eyebrow{color:var(--g1);text-shadow:0 2px 8px rgba(0,0,0,.4)}
+
+/* boutons bombés */
+.jmk-skin-arcade .btn{
+  border-radius:14px;padding:16px 32px;font-size:1.05rem;
+  background:linear-gradient(180deg,#5EE07C 0%,#2FB84F 52%,#1E8C39 100%);
+  color:#06300F;border-bottom:4px solid #14682A;
+  text-shadow:0 1px 0 rgba(255,255,255,.45);
+  box-shadow:0 10px 0 -2px rgba(9,60,22,.55),0 18px 34px -12px rgba(47,184,79,.6),
+             inset 0 2px 0 rgba(255,255,255,.55)}
+.jmk-skin-arcade .btn:hover:not(:disabled){transform:translateY(-3px)}
+.jmk-skin-arcade .btn:active:not(:disabled){transform:translateY(2px);
+  box-shadow:0 5px 0 -2px rgba(9,60,22,.55),inset 0 2px 0 rgba(255,255,255,.45)}
+.jmk-skin-arcade .btn-ghost{
+  background:linear-gradient(180deg,rgba(255,255,255,.16),rgba(255,255,255,.05));
+  border:2px solid var(--g2);color:var(--paper);border-bottom-width:3px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.35);border-radius:12px}
+.jmk-skin-arcade .btn-wa{
+  background:linear-gradient(180deg,#5EE07C,#1FA855);border-bottom-color:#137A38}
+
+/* cartes et panneaux : bordure or épaisse */
+.jmk-skin-arcade .panel,.jmk-skin-arcade .game-card,.jmk-skin-arcade .pack,
+.jmk-skin-arcade .work,.jmk-skin-arcade .review,.jmk-skin-arcade .kpi,
+.jmk-skin-arcade .sheet,.jmk-skin-arcade .cta{
+  border:2px solid rgba(245,201,63,.42);
+  background:linear-gradient(172deg,rgba(92,49,168,.72),rgba(42,18,89,.72));
+  box-shadow:0 18px 40px -20px rgba(0,0,0,.75),inset 0 1px 0 rgba(255,255,255,.13)}
+.jmk-skin-arcade .pack-star{border-color:var(--g2);
+  box-shadow:0 0 0 4px rgba(245,201,63,.16),0 24px 60px -26px rgba(245,201,63,.75)}
+.jmk-skin-arcade .pack-flag{background:linear-gradient(180deg,var(--g1),var(--g2));color:#4A2A02;
+  border:1px solid #B87C10}
+.jmk-skin-arcade .pack-price,.jmk-skin-arcade .kpi .n,.jmk-skin-arcade .total .n,
+.jmk-skin-arcade .about-stats .n{
+  background:linear-gradient(180deg,var(--g1),var(--g2));-webkit-background-clip:text;
+  background-clip:text;color:transparent;filter:drop-shadow(0 2px 0 rgba(90,45,5,.4))}
+
+/* roue : anneau or et halo */
+.jmk-skin-arcade #wheel{
+  box-shadow:0 30px 80px -20px rgba(0,0,0,.9),0 0 0 6px #B87C10,0 0 0 10px #F5C93F,
+             0 0 44px 6px rgba(245,201,63,.4)}
+.jmk-skin-arcade .hub{
+  background:radial-gradient(circle at 40% 32%,#5C31A8,#2A1259);
+  border:4px solid var(--g2);color:var(--g1);
+  box-shadow:0 0 0 3px rgba(184,124,16,.75),inset 0 2px 6px rgba(255,255,255,.25)}
+.jmk-skin-arcade .needle{
+  border-top-color:var(--g1);filter:drop-shadow(0 4px 6px rgba(0,0,0,.7))}
+.jmk-skin-arcade .result .code{
+  background:linear-gradient(180deg,#3A1C75,#2A1259);border:2px dashed var(--g2);color:var(--g1)}
+
+/* jetons, étiquettes, cases */
+.jmk-skin-arcade .chip,.jmk-skin-arcade .tag,.jmk-skin-arcade .skill-tags li{
+  border:1.5px solid rgba(245,201,63,.4);background:rgba(92,49,168,.5);color:var(--text-2)}
+.jmk-skin-arcade .box{border:2px solid rgba(245,201,63,.42);
+  background:linear-gradient(172deg,#5C31A8,#3A1C75);border-radius:16px;
+  box-shadow:inset 0 2px 0 rgba(255,255,255,.16)}
+.jmk-skin-arcade .box .gift{color:var(--g2)}
+.jmk-skin-arcade .box.win{border-color:var(--g1);
+  background:linear-gradient(172deg,rgba(245,201,63,.35),rgba(92,49,168,.6))}
+.jmk-skin-arcade .reel{border:2px solid rgba(245,201,63,.4);border-radius:14px;background:#1C0B42}
+.jmk-skin-arcade .plinko-holder{border:2px solid rgba(245,201,63,.4);background:#1C0B42}
+.jmk-skin-arcade .qz-opt{border:2px solid rgba(245,201,63,.32);border-radius:14px;
+  background:linear-gradient(172deg,#5C31A8,#3A1C75)}
+.jmk-skin-arcade .qz-opt.ok{border-color:#5EE07C;background:rgba(94,224,124,.2)}
+.jmk-skin-arcade .qz-opt.no{border-color:#FF5A8C;background:rgba(255,90,140,.16)}
+
+/* carrousel */
+.jmk-skin-arcade .carousel-arrow{background:linear-gradient(180deg,#5C31A8,#3A1C75);
+  border:2px solid var(--g2);color:var(--g1)}
+.jmk-skin-arcade .carousel-dot{border:2px solid rgba(245,201,63,.35)}
+.jmk-skin-arcade .carousel-dot.active{
+  background:linear-gradient(180deg,var(--g1),var(--g2));border-color:var(--g2);color:#4A2A02}
+
+/* saisie */
+.jmk-skin-arcade input[type=text],.jmk-skin-arcade input[type=email],
+.jmk-skin-arcade input[type=number],.jmk-skin-arcade select,.jmk-skin-arcade textarea{
+  background:#1C0B42;border:2px solid rgba(245,201,63,.32);border-radius:12px;color:var(--paper)}
+.jmk-skin-arcade .topbar{background:rgba(28,11,66,.9);border-bottom:2px solid rgba(245,201,63,.32)}
+.jmk-skin-arcade .jmk-langs{border-color:rgba(245,201,63,.4)}
+.jmk-skin-arcade .jmk-langs a[aria-current=true]{
+  background:linear-gradient(180deg,var(--g1),var(--g2));color:#4A2A02}
+.jmk-skin-arcade .divider{background:linear-gradient(90deg,rgba(245,201,63,.5),transparent)}
+.jmk-skin-arcade .spec-item,.jmk-skin-arcade .skill{border-top:3px solid var(--g2)}
+
+@media(prefers-reduced-motion:reduce){
+  body.jmk-skin-arcade .wheel-holder::before{animation:none}
+}

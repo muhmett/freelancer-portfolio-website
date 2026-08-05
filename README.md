@@ -130,6 +130,15 @@ par `background-clip` sur son propre élément ; le découper en `<span>` rend l
 texte invisible, puisque les enfants héritent d'une couleur transparente sans
 fond. Il est donc animé d'un bloc.
 
+**Le second habillage est entièrement contenu.** Tout l'arcade vit sous
+`.jmk-skin-arcade` dans `main.css`, plus deux branches dans `drawWheel()`
+(couronne d'ampoules, voile de relief) gardées par `C.skin`. Retirer la classe
+rend la page exactement telle qu'elle était : c'est ce qui permet de proposer
+deux looks sans maintenir deux thèmes.
+
+La couronne d'ampoules se dessine **hors de la rotation**. Dessinée dedans, elle
+tournerait avec les segments et le mouvement deviendrait illisible.
+
 **Les polices viennent de Google Fonts.** C'est le point qui reste en tension
 avec l'argument RGPD de la page : pour un client européen strict, il faut
 héberger les trois familles dans `assets/fonts/` et remplacer l'appel à
