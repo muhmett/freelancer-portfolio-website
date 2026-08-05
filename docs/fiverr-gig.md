@@ -73,48 +73,46 @@ Development`, `Gamification`, `Landing Page`, `Lead Generation`, `Canvas`,
 
 ### Écran 1 — Overview
 
+Une seule annonce couvre toutes les mécaniques. Trois annonces vides valent
+moins qu'une vivante, et le référencement de Fiverr récompense les commandes,
+pas le nombre d'annonces.
+
 **Gig title** (Fiverr impose « I will… ») :
 
 ```
-I will create a custom spin wheel game to collect emails for your brand
+I will create a custom HTML5 marketing game to collect emails for your brand
 ```
 
 **Category** — le plus proche de : *Programming & Tech → Website Development*.
 La catégorie décide qui vous trouve : parcourir l'arbre et prendre la branche où
-des annonces comme la vôtre existent déjà. S'il y a une sous-catégorie
-« gamification » ou « interactive », elle est meilleure.
+des annonces comme la vôtre existent déjà.
 
 **Search tags** (5 maximum, minuscules) :
 
 ```
-spin wheel    gamification    lead generation    html5 game    email popup
+spin wheel    gamification    lead generation    html5 game    scratch card
 ```
 
 ### Écran 2 — Scope & Pricing
 
-Trois formules. **Fiverr prélève 20 %** : le prix affiché n'est pas ce qui arrive
-sur le compte. Le tableau tient compte de la commission.
+**Fiverr prélève 20 %** : le prix affiché n'est pas ce qui arrive sur le compte.
 
 | | Basic | Standard | Premium |
 |---|---|---|---|
-| Nom | Essential | Campaign | Bespoke |
+| Nom | One game | Campaign | Full setup |
 | **Prix de lancement** | $45 | $120 | $260 |
 | Ce qui reste après 20 % | $36 | $96 | $208 |
 | **Prix cible après ~10 avis** | $70 | $190 | $390 |
 | Délai | 3 jours | 5 jours | 10 jours |
 | Révisions | 2 | 3 | Illimitées |
 
-Le prix de lancement est volontairement bas. Sans avis, personne n'achète à
-plein tarif : les dix premières commandes s'achètent avec du prix, pas avec du
-texte. On monte ensuite.
+Descriptions courtes :
 
-Descriptions courtes des formules :
+- **Basic** — `One game of your choice — wheel, scratch card, slot machine, prize drop, tap-to-win or quiz. Your branding, your prizes, email capture included.`
+- **Standard** — `Two games, per-prize caps and promo codes, and delivery of the collected emails to Mailchimp, Brevo or your CRM.`
+- **Premium** — `A mechanic built for your campaign — including seasonal calendars like Ramadan or Advent. Second language with Arabic RTL, full source code, one month of fixes.`
 
-- **Essential** — `One game of your choice, in your branding, ready to paste on your page. Email capture form included.`
-- **Campaign** — `Two games, per-prize caps and promo codes, and delivery of the collected emails to Mailchimp, Brevo or your CRM.`
-- **Premium** — `A mechanic designed for your need, a second language (Arabic RTL included), full source code and one month of fixes.`
-
-Extras à cocher :
+Extras :
 - `Extra fast delivery` — +$25, livré en 24 h
 - `Additional game` — +$45
 - `Second language (Arabic RTL included)` — +$25
@@ -132,8 +130,21 @@ played — and the email arrives on its own.
 
 I build that game, in your brand's colours.
 
+SIX MECHANICS, READY TO BRAND
+• Prize wheel — the classic, and still the one that converts
+• Scratch card — works beautifully on a phone
+• Slot machine — three reels, instant read
+• Prize drop — the ball falls through the pegs and lands on a prize
+• Tap to win — three boxes, one try
+• Brand quiz — a few questions, then the prize
+
+BUILT TO ORDER
+• Ramadan or Advent calendar — one door a day for the whole campaign,
+  people come back every day instead of once
+• Or a mechanic that does not exist yet. Describe it and I will tell you
+  whether it is doable and how long it takes.
+
 WHAT YOU GET
-• A prize wheel, scratch card, slot machine, prize drop or quiz — your choice
 • Your colours, your logo, your prizes
 • Odds and caps you set yourself: 3% for the big prize, 20 winners maximum
 • An email capture form with a proper consent box
@@ -145,10 +156,10 @@ This runs anywhere — WordPress, Shopify, Wix, Webflow, a plain HTML page, even
 a touch screen at a trade show. And you keep the source code.
 
 THE PART OTHER SELLERS SKIP
-The draw runs on the server. That means your caps are actually respected: when
-the big prize is gone, it leaves the draw. Nobody can force a win by editing
-the page in their browser. If you are running a real promotion with real
-prizes, this is the part that matters.
+The draw runs on the server. Your caps are actually respected: when the big
+prize is gone, it leaves the draw. Nobody can force a win by editing the page
+in their browser. If you are running a real promotion with real prizes, this is
+the part that matters.
 
 LANGUAGES
 English, French and Arabic — with the full right-to-left layout, not just
@@ -158,20 +169,21 @@ Tell me your prizes, your platform and your launch date. I will tell you if it
 is doable and how long it takes — including when the answer is no.
 ```
 
-**FAQ** (à saisir une par une) :
+**FAQ** :
 
-1. `Can I decide who wins the big prize?` → `Yes. Every prize has its own probability and its own cap. You can set 3% for the top prize and limit it to 20 winners for the whole campaign. It is all in a settings panel — no code.`
-2. `Will it slow my site down?` → `No. Around 70 KB and no game framework. It loads after your main content, so your PageSpeed score and your ranking do not move.`
-3. `Where do the collected emails go?` → `Into the tool you already use: Mailchimp, Brevo, Klaviyo, Google Sheets or your CRM. A CSV copy stays downloadable. You own the data.`
-4. `Do I get the source code?` → `With the Premium package, yes — full rights. With the others you get a working game and a readable config file you can edit after delivery.`
-5. `Can you do Arabic?` → `Yes, including the right-to-left layout. That is a full mirror of the page, not just translated words.`
+1. `Which game should I choose?` → `The wheel converts best for a first campaign and everyone recognises it. The scratch card feels better on a phone. The quiz suits a brand that wants to teach something. Tell me your audience and I will suggest one.`
+2. `Can I decide who wins the big prize?` → `Yes. Every prize has its own probability and its own cap. You can set 3% for the top prize and limit it to 20 winners for the whole campaign. It is all in a settings panel — no code.`
+3. `Can you do a Ramadan or Advent calendar?` → `Yes, as custom work in the Premium package. One door a day for the whole campaign, so people come back daily instead of once. Tell me the number of days and your prizes.`
+4. `Will it slow my site down?` → `No. Around 70 KB and no game framework. It loads after your main content, so your PageSpeed score and your ranking do not move.`
+5. `Where do the collected emails go?` → `Into the tool you already use: Mailchimp, Brevo, Klaviyo, Google Sheets or your CRM. A CSV copy stays downloadable. You own the data.`
+6. `Do I get the source code?` → `With Premium, yes — full rights. With the others you get a working game and a readable config file you can edit after delivery.`
 
 ### Écran 4 — Requirements
 
 Ce que l'acheteur doit fournir avant que le compteur démarre. Cinq questions,
 toutes obligatoires :
 
-1. `Which game do you want? (wheel, scratch card, slot machine, prize drop, quiz)`
+1. `Which game do you want? (wheel, scratch card, slot machine, prize drop, tap-to-win, quiz — or describe your own)`
 2. `What are your prizes, and how often should each one come up?`
 3. `Your brand colour (hex code if you have it) and your logo file.`
 4. `Where will the game live? (WordPress, Shopify, Wix, plain HTML…)`
@@ -187,16 +199,21 @@ C'est l'écran qui vend. Voir la section suivante.
 
 ## 3. Les images de l'annonce
 
-Trois images minimum, format 1280 × 769.
+Trois images, 1280 × 769, déjà produites :
 
-1. **La roue, en grand**, aux couleurs par défaut, avec une phrase courte
-   par-dessus : `Your visitors spin. You keep the email.`
-2. **Avant / après** : à gauche un pop-up classique gris, à droite le jeu.
-3. **Le panneau des probabilités** — c'est l'argument que personne d'autre ne
-   montre. Légende : `You decide who wins. And how often.`
+1. **La gamme** — les six mécaniques prêtes, plus le calendrier et le sur-mesure
+   marqués « built to order ». C'est celle qui s'affiche dans les résultats de
+   recherche : elle doit être en première position.
+2. **Avant / après** — le pop-up gris contre le jeu.
+3. **Le panneau des probabilités** — l'argument que personne d'autre ne montre,
+   parce que leur tirage est dans le navigateur et qu'ils n'ont rien à montrer.
 
-Les captures se prennent sur le site, en plein écran, sans le bandeau du
-navigateur.
+> Le calendrier Ramadan / Avent est marqué **« built to order »** sur l'image,
+> et décrit comme du sur-mesure dans l'annonce. Ce n'est pas de la prudence
+> inutile : il n'est pas encore construit. Le moteur est là — tirage serveur,
+> plafonds, capture d'email — mais l'état « quel jour sommes-nous » reste à
+> écrire, environ une journée. Le vendre comme disponible et livrer en retard
+> coûte plus cher qu'un délai annoncé franchement.
 
 ---
 
