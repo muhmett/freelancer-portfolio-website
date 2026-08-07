@@ -199,6 +199,24 @@ n'est pas connue au moment où le script s'exécute : mesurée trop tôt, elle
 donne une échelle de 1 et la bannière est simplement rognée. Un
 `ResizeObserver` sur chaque emplacement remplace le choix d'un bon moment.
 
+**Quatre habillages, un moteur.** `jmk-banner.js` porte `soft`, `bold`,
+`luxe` et `clean` : ils ne changent ni la mise en page ni les formats,
+seulement la matière — graisse du titre, casse, forme du bouton, fond plat ou
+dégradé, filet intérieur. Quatre campagnes recolorées à partir d'un seul
+gabarit se voient au premier coup d'œil ; c'est ce que la section portfolio
+devait éviter.
+
+Trois pièges s'y sont cachés, tous du même genre : **ce qui est peint doit
+être ce qui est mesuré.** `bold` met le titre en capitales par
+`text-transform` — la chaîne mesurée restait en bas de casse, un dixième de
+largeur en moins, et le bloc débordait. L'interlettrage de `luxe` ajoute une
+chasse par caractère : « ORDER NOW » sortait d'un 160×600 des deux côtés,
+symétriquement, ce qui trahissait une largeur non comptée. Et le trait sous
+le surtitre de `bold` et `clean` ajoutait quatre pixels que la hauteur
+calculée ignorait. La hauteur garde une marge de 7 % : une somme de lignes
+théoriques n'égale pas les boîtes de ligne du navigateur, et sept pixels de
+trop suffisent à faire passer le sous-titre sous le bouton.
+
 **Les polices viennent de Google Fonts.** C'est le point qui reste en tension
 avec l'argument RGPD de la page : pour un client européen strict, il faut
 héberger les trois familles dans `assets/fonts/` et remplacer l'appel à

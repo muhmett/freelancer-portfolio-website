@@ -20,6 +20,7 @@ require_once JMK_DIR . '/inc/builder.php';
 require_once JMK_DIR . '/inc/leads.php';
 require_once JMK_DIR . '/inc/shortcode.php';
 require_once JMK_DIR . '/inc/portfolio.php';
+require_once JMK_DIR . '/inc/banner-work.php';
 
 /**
  * Support du thème.
@@ -204,6 +205,8 @@ function jmk_js_config() {
 		// quelle et le jeu tourne.
 		'engine'    => JMK_URI . '/assets/js/jmk-embed.js',
 		'banners'   => jmk_banner_config(),
+		'bwork'     => jmk_get( 'sec_bwork' ) ? jmk_banner_work_config() : array(),
+		'bworkNotes' => jmk_get( 'sec_bwork' ) ? wp_list_pluck( jmk_banner_work(), 'note' ) : array(),
 		'brand'     => (string) jmk_get( 'brand_name' ),
 		'accent'    => (string) jmk_get( 'accent' ),
 		'skin'      => (string) jmk_get( 'skin' ),
@@ -291,7 +294,7 @@ function jmk_assets() {
 
 	// Le moteur de bannières n'est chargé que si la section est affichée :
 	// c'est 14 Ko qui n'ont rien à faire sur une page qui ne les montre pas.
-	if ( jmk_get( 'sec_banners' ) && is_front_page() ) {
+	if ( ( jmk_get( 'sec_banners' ) || jmk_get( 'sec_bwork' ) ) && is_front_page() ) {
 		wp_enqueue_script( 'jmk-banner', JMK_URI . '/assets/js/jmk-banner.js', array(), jmk_asset_version( 'assets/js/jmk-banner.js' ), true );
 	}
 	wp_localize_script( 'jmk-app', 'JMK', jmk_js_config() );

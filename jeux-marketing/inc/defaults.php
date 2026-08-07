@@ -60,6 +60,7 @@ function jmk_defaults() {
 		'sec_quote'     => 1,
 		'sec_specs'     => 1,
 		'sec_banners'   => 1,
+		'sec_bwork'     => 1,
 		'sec_faq'       => 1,
 
 		// Règles de jeu.

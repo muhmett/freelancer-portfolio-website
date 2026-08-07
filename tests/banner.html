@@ -16,6 +16,11 @@
 		animation-iteration-count: 1 !important;
 		animation-duration: .01s !important;
 	}
+	/* Le bouton bat en `scale(1.05)`. Mesuré au mauvais instant, il dépasse
+	   de 5 px de chaque côté — symétriquement, ce qui trahit une mise à
+	   l'échelle et non un défaut de mise en page. Ces vérifications portent
+	   sur la mise en page : on arrête la pulsation. */
+	.jmkb-cta { animation: none !important; }
 </style>
 
 <div id="bench"></div>
@@ -104,7 +109,7 @@ window.addEventListener( 'error', function ( e ) {
 			   débordent exprès et sont rognés par overflow:hidden, donc le
 			   scrollWidth de la racine est toujours plus grand — il ne dit
 			   rien sur la lisibilité. */
-			[].slice.call( root.querySelectorAll( '.jmkb-t, .jmkb-s, .jmkb-k, .jmkb-cta, .jmkb-logo span' ) ).forEach( function ( n ) {
+			[].slice.call( root.querySelectorAll( '.jmkb-f.jmkb-on .jmkb-t, .jmkb-f.jmkb-on .jmkb-s, .jmkb-f.jmkb-on .jmkb-k, .jmkb-cta, .jmkb-logo span' ) ).forEach( function ( n ) {
 				// Un mot plus large que sa colonne déborde de sa propre boîte.
 				if ( n.scrollWidth > n.clientWidth + 1 ) {
 					over.push( s.w + 'x' + s.h + ' ' + n.className + ' (mot ' + n.scrollWidth + '>' + n.clientWidth + ')' );
@@ -147,7 +152,7 @@ window.addEventListener( 'error', function ( e ) {
 			made.push( b );
 
 			var box = b.el.getBoundingClientRect();
-			[].slice.call( b.el.querySelectorAll( '.jmkb-logo span, .jmkb-t, .jmkb-s, .jmkb-k, .jmkb-cta' ) ).forEach( function ( n ) {
+			[].slice.call( b.el.querySelectorAll( '.jmkb-f.jmkb-on .jmkb-t, .jmkb-f.jmkb-on .jmkb-s, .jmkb-f.jmkb-on .jmkb-k, .jmkb-cta, .jmkb-logo span' ) ).forEach( function ( n ) {
 				var r = n.getBoundingClientRect();
 				if ( n.scrollWidth > n.clientWidth + 1 || r.right > box.right + 1 || r.left < box.left - 1 ) {
 					over.push( s.w + 'x' + s.h + ' ' + n.className );
@@ -157,6 +162,66 @@ window.addEventListener( 'error', function ( e ) {
 		ok( 'un nom de marque long ne deborde d’aucun format' + ( over.length ? ' — ' + over.join( ', ' ) : '' ),
 			0 === over.length );
 		made.forEach( function ( b ) { b.destroy(); } );
+	} )();
+
+	/* ── 3 quater. chaque habillage, dans chaque format ──
+	   `bold` met le titre en capitales par `text-transform`. La mesure
+	   portait sur la chaîne d'origine : « Built for the last mile » mesuré,
+	   « BUILT FOR THE LAST MILE » peint — un dixième de largeur en plus, et
+	   le bloc débordait de trois formats sur quatre. La casse et
+	   l'interlettrage entrent maintenant dans le calcul. */
+	( function () {
+		var styles = [ 'soft', 'bold', 'luxe', 'clean' ], over = [];
+
+		styles.forEach( function ( st ) {
+			JMKBanner.sizes().forEach( function ( s ) {
+				var holder = document.createElement( 'div' );
+				bench.appendChild( holder );
+				var b = JMKBanner.mount( holder, cfgFor( s.w, s.h, { style: st } ) );
+
+				var box = b.el.getBoundingClientRect();
+				[].slice.call( b.el.querySelectorAll( '.jmkb-f.jmkb-on .jmkb-t, .jmkb-f.jmkb-on .jmkb-s, .jmkb-f.jmkb-on .jmkb-k, .jmkb-cta, .jmkb-logo span' ) )
+					.forEach( function ( n ) {
+						var r = n.getBoundingClientRect();
+						if ( n.scrollWidth > n.clientWidth + 1 ) {
+							over.push( st + ' ' + s.w + 'x' + s.h + ' ' + n.className +
+								' mot ' + n.scrollWidth + '>' + n.clientWidth );
+							return;
+						}
+						// Nommer le bord et le dépassement : « hors cadre » ne
+						// dit pas où chercher, et on finit par corriger au
+						// hasard.
+						var edges = [];
+						if ( r.right  > box.right  + 1 ) { edges.push( 'droite +' + Math.round( r.right - box.right ) ); }
+						if ( r.left   < box.left   - 1 ) { edges.push( 'gauche +' + Math.round( box.left - r.left ) ); }
+						if ( r.bottom > box.bottom + 1 ) { edges.push( 'bas +' + Math.round( r.bottom - box.bottom ) ); }
+						if ( r.top    < box.top    - 1 ) { edges.push( 'haut +' + Math.round( box.top - r.top ) ); }
+						if ( edges.length ) {
+							over.push( st + ' ' + s.w + 'x' + s.h + ' ' + n.className + ' ' + edges.join( '/' ) );
+						}
+					} );
+				b.destroy();
+			} );
+		} );
+
+		ok( 'les quatre habillages tiennent dans les ' + JMKBanner.sizes().length + ' formats' +
+			( over.length ? ' — ' + over.slice( 0, 6 ).join( ', ' ) + ( over.length > 6 ? ' …+' + ( over.length - 6 ) : '' ) : '' ),
+			0 === over.length );
+
+		// Et ils doivent bien différer, sinon ce ne sont pas des habillages.
+		var looks = styles.map( function ( st ) {
+			var h = document.createElement( 'div' );
+			bench.appendChild( h );
+			var b = JMKBanner.mount( h, cfgFor( 300, 250, { style: st } ) );
+			var t = b.el.querySelector( '.jmkb-t' ), c = b.el.querySelector( '.jmkb-cta' );
+			var sig = getComputedStyle( t ).fontWeight + '|' + getComputedStyle( t ).textTransform +
+				'|' + getComputedStyle( c ).borderRadius + '|' + getComputedStyle( t ).fontFamily;
+			b.destroy();
+			return sig;
+		} );
+		var uniques = looks.filter( function ( v, i ) { return looks.indexOf( v ) === i; } );
+		ok( 'les quatre habillages rendent quatre aspects distincts (' + uniques.length + '/4)',
+			4 === uniques.length );
 	} )();
 
 	/* ── 3 ter. la page d'accueil ne doit pas pouvoir déteindre ──

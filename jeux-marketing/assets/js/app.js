@@ -1218,6 +1218,67 @@
 		} );
 	}
 
+	/* ── portfolio de bannières ──
+	   Quatre campagnes, un jeu de formats. Changer d'onglet démonte les
+	   bannières en place et les remonte : elles ne partagent ni habillage ni
+	   palette, il n'y a rien à recycler. Et démonter compte — chaque bannière
+	   porte un minuteur, en laisser quatre séries tourner en arrière-plan
+	   ferait battre seize horloges pour rien. */
+	var bworkMounts = [];
+	var bworkAt     = 0;
+
+	function buildBwork() {
+		var wall = $( '#bworkWall' );
+		if ( ! wall || 'undefined' === typeof window.JMKBanner || ! C.bwork || ! C.bwork.length ) { return; }
+
+		bworkMounts.forEach( function ( b ) { b.destroy(); } );
+		bworkMounts = [];
+
+		var camp = C.bwork[ bworkAt ] || C.bwork[ 0 ];
+
+		$$( '#bworkWall .banner-slot' ).forEach( function ( slot ) {
+			var mount = slot.querySelector( '.banner-mount' );
+			mount.innerHTML = '';
+
+			var made = window.JMKBanner.mount( mount, Object.assign( {}, camp, {
+				w: Number( slot.dataset.w ),
+				h: Number( slot.dataset.h )
+			} ) );
+			if ( made ) { bworkMounts.push( made ); }
+			fitBanner( slot );
+		} );
+	}
+
+	if ( $( '#bworkWall' ) ) {
+		buildBwork();
+
+		$$( '#bworkTabs .bwork-tab' ).forEach( function ( tab ) {
+			tab.addEventListener( 'click', function () {
+				bworkAt = Number( tab.dataset.i ) || 0;
+				$$( '#bworkTabs .bwork-tab' ).forEach( function ( t ) {
+					t.classList.toggle( 'active', t === tab );
+					t.setAttribute( 'aria-selected', t === tab ? 'true' : 'false' );
+				} );
+				var note = $( '#bworkNote' );
+				if ( note && C.bworkNotes ) { note.textContent = C.bworkNotes[ bworkAt ] || ''; }
+				buildBwork();
+			} );
+		} );
+
+		if ( window.ResizeObserver ) {
+			var wo = new ResizeObserver( function ( entries ) {
+				entries.forEach( function ( e ) {
+					var slot = e.target.closest ? e.target.closest( '.banner-slot' ) : null;
+					if ( slot ) { fitBanner( slot ); }
+				} );
+			} );
+			$$( '#bworkWall .banner-stage' ).forEach( function ( st ) { wo.observe( st ); } );
+		}
+		window.addEventListener( 'load', function () {
+			$$( '#bworkWall .banner-slot' ).forEach( fitBanner );
+		} );
+	}
+
 	function fitAllBanners() {
 		$$( '#bannerWall .banner-slot' ).forEach( fitBanner );
 	}

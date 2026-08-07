@@ -402,7 +402,7 @@ msgstr ""
 msgid "Langue du jeu"
 msgstr ""
 
-#: jeux-marketing/inc/defaults.php:93
+#: jeux-marketing/inc/defaults.php:94
 msgid "Large Mobile Banner"
 msgstr ""
 
@@ -438,7 +438,7 @@ msgstr ""
 msgid "Le visiteur peut les modifier. Ce sont seulement les chiffres affichés à l'arrivée."
 msgstr ""
 
-#: jeux-marketing/inc/defaults.php:91
+#: jeux-marketing/inc/defaults.php:92
 msgid "Leaderboard"
 msgstr ""
 
@@ -494,7 +494,7 @@ msgstr ""
 msgid "Marque"
 msgstr ""
 
-#: jeux-marketing/inc/defaults.php:90
+#: jeux-marketing/inc/defaults.php:91
 msgid "Medium Rectangle"
 msgstr ""
 
@@ -518,7 +518,7 @@ msgstr ""
 msgid "N'affichez que des chiffres que vous pouvez tenir. « 48 h » engage sur un délai réel."
 msgstr ""
 
-#: jeux-marketing/functions.php:37
+#: jeux-marketing/functions.php:38
 msgid "Navigation principale"
 msgstr ""
 
@@ -944,7 +944,7 @@ msgstr ""
 msgid "WhatsApp entièrement masqué, bouton « Commander sur Fiverr ». Pour le lien de votre annonce."
 msgstr ""
 
-#: jeux-marketing/inc/defaults.php:92
+#: jeux-marketing/inc/defaults.php:93
 msgid "Wide Skyscraper"
 msgstr ""
 

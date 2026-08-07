@@ -804,3 +804,23 @@ body.jmk-skin-casino .wheel-holder::before{
 @media(max-width:640px){
   .banner-slot{flex-basis:100%}
 }
+
+/* ── portfolio de bannières ── */
+.bwork-flag{display:inline-block;font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:6px 14px;margin:0 0 22px}
+.bwork-tabs{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 16px}
+.bwork-tab{display:flex;flex-direction:column;align-items:flex-start;gap:2px;cursor:pointer;
+  font:inherit;text-align:start;padding:11px 18px;border-radius:12px;
+  border:1px solid var(--line);background:transparent;color:var(--text-2);
+  transition:border-color .15s ease,background .15s ease,transform .15s ease}
+.bwork-tab:hover{transform:translateY(-2px)}
+/* La pastille reprend la couleur d'accent de la campagne : on voit de quel
+   univers on parle avant même de cliquer. */
+.bwork-tab-brand{font-weight:800;font-size:.95rem;letter-spacing:.02em}
+.bwork-tab-brand::before{content:'';display:inline-block;width:8px;height:8px;border-radius:50%;
+  background:var(--c);margin-inline-end:8px;vertical-align:middle}
+.bwork-tab-niche{font-size:.74rem;color:var(--muted)}
+.bwork-tab.active{border-color:var(--c);background:color-mix(in srgb,var(--c) 12%,transparent)}
+.bwork-tab.active .bwork-tab-niche{color:var(--text-2)}
+.bwork-note{margin:0 0 26px;font-size:.9rem;color:var(--muted);max-width:66ch;min-height:2.6em}
+@media(prefers-reduced-motion:reduce){.bwork-tab:hover{transform:none}}

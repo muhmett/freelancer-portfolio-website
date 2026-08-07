@@ -42,16 +42,67 @@
 	 * @param {string} weight Graisse CSS.
 	 * @return {number}
 	 */
-	function textW( text, size, weight ) {
+	function textW( text, size, weight, family ) {
 		if ( ! gauge && global.document && global.document.createElement ) {
 			var cv = global.document.createElement( 'canvas' );
 			gauge = cv.getContext ? cv.getContext( '2d' ) : null;
 		}
 		if ( gauge ) {
-			gauge.font = ( weight || '800' ) + ' ' + size + 'px ' + FONT;
+			// La famille compte : une grasse sans-serif et un romain à
+			// empattements ne mesurent pas pareil, et l'habillage « luxe »
+			// utilise le second. Mesurer avec la mauvaise police revient à
+			// revenir à l'estimation qu'on cherchait à éliminer.
+			gauge.font = ( weight || '800' ) + ' ' + size + 'px ' + ( family || FONT );
 			return gauge.measureText( text ).width;
 		}
 		return String( text ).length * CHAR_W * size;
+	}
+
+	/* ─────────────────────────── habillages ─────────────────────────────── */
+
+	/* Quatre partis pris. Ils ne changent ni la mise en page ni les formats :
+	   seulement la matière — la graisse du titre, la forme du bouton, le fond.
+	   C'est ce qui permet à quatre campagnes de ne pas se ressembler alors
+	   qu'elles sortent du même moteur. Recolorer un seul gabarit se voit. */
+	var SERIF = 'Georgia,"Times New Roman",Times,serif';
+
+	var STYLES = {
+		// Le défaut : dégradé doux, bouton pilule.
+		soft: {
+			titleWeight: '800', titleCase: 'none',      titleTrack: '-.02em', titleFamily: '',
+			titleLine: 1.08,
+			ctaRadius: 1.4,     ctaCase: 'none',        ctaTrack: '0',        ctaOutline: false,
+			kickerTrack: '.14em',
+			gradient: true, frame: false, rule: false, sheen: true
+		},
+		// Rue, sport, promotion : aplat franc, capitales lourdes, bouton carré.
+		bold: {
+			titleWeight: '900', titleCase: 'uppercase', titleTrack: '-.03em', titleFamily: '',
+			titleLine: 0.98,
+			ctaRadius: 0.12,    ctaCase: 'uppercase',   ctaTrack: '.06em',    ctaOutline: false,
+			kickerTrack: '.2em',
+			gradient: false, frame: false, rule: true, sheen: true
+		},
+		// Horlogerie, joaillerie : filet intérieur, romain, bouton en réserve.
+		luxe: {
+			titleWeight: '400', titleCase: 'none',      titleTrack: '.005em', titleFamily: SERIF,
+			titleLine: 1.14,
+			ctaRadius: 0.08,    ctaCase: 'uppercase',   ctaTrack: '.18em',    ctaOutline: true,
+			kickerTrack: '.26em',
+			gradient: true, frame: true, rule: false, sheen: false
+		},
+		// Optique, mode, beauté : fond clair, encre sombre, presque rien.
+		clean: {
+			titleWeight: '700', titleCase: 'none',      titleTrack: '-.015em', titleFamily: '',
+			titleLine: 1.1,
+			ctaRadius: 0.14,    ctaCase: 'none',        ctaTrack: '0',        ctaOutline: false,
+			kickerTrack: '.16em',
+			gradient: false, frame: false, rule: true, sheen: false
+		}
+	};
+
+	function styleOf( name ) {
+		return STYLES[ name ] || STYLES.soft;
 	}
 
 	/* ───────────────────────── formats d'affichage ───────────────────────── */
@@ -99,6 +150,7 @@
 		bg2:    '',
 		ink:    '#FFFBF0',
 		accent: '#D9A441',
+		style:  'soft',
 
 		clickUrl: '',
 		hold:     2200,
@@ -203,22 +255,25 @@
 	 * @param {number} availW Largeur disponible.
 	 * @return {Object} { lines, fits }
 	 */
-	function wrap( text, size, availW, weight ) {
+	function wrap( text, size, availW, weight, family, track ) {
 		var words = plain( text ).split( /\s+/ ).filter( Boolean );
 		if ( ! words.length ) { return { lines: 0, fits: true }; }
 
-		var lines = 1, cur = 0, fits = true;
+		var lines = 1, cur = 0, fits = true, tr = ( track || 0 ) * size;
 
 		for ( var i = 0; i < words.length; i++ ) {
-			var wWidth = textW( words[ i ], size, weight );
+			// L'interlettrage ajoute une chasse par caractère. Il est négatif
+			// sur les titres serrés, positif sur les petites capitales : dans
+			// les deux cas il compte.
+			var wWidth = textW( words[ i ], size, weight, family ) + tr * words[ i ].length;
 			// Un mot plus large que la colonne déborde quoi qu'il arrive :
 			// aucune césure ne le sauvera, il faut réduire la police.
 			if ( wWidth > availW ) { fits = false; }
 
 			if ( 0 === cur ) {
 				cur = wWidth;
-			} else if ( cur + SPACE_W * size + wWidth <= availW ) {
-				cur += SPACE_W * size + wWidth;
+			} else if ( cur + SPACE_W * size + tr + wWidth <= availW ) {
+				cur += SPACE_W * size + tr + wWidth;
 			} else {
 				lines++;
 				cur = wWidth;
@@ -249,6 +304,8 @@
 	function layout( w, h, cfg ) {
 		var ratio = w / h,
 			min   = Math.min( w, h ),
+			S     = styleOf( cfg.style ),
+			tFam  = S.titleFamily || FONT,
 			kind;
 
 		if ( h <= 110 && ratio >= 3 ) {
@@ -260,6 +317,15 @@
 		} else {
 			kind = 'box';          // 300×250, 336×280 : le cas courant.
 		}
+
+		/* Le titre est mesuré dans la casse où il sera peint. `text-transform`
+		   s'applique au rendu, pas à la chaîne : mesurer « Built for the last
+		   mile » puis afficher « BUILT FOR THE LAST MILE » sous-estime la
+		   largeur d'un bon dixième, et le bloc déborde. */
+		var titleCase = function ( t ) {
+			return ( 'uppercase' === S.titleCase ) ? String( t ).toUpperCase() : String( t );
+		};
+		var tTrack = parseFloat( S.titleTrack ) || 0;
 
 		var row  = ( 'strip' === kind || 'wide' === kind ),
 			unit = row ? h : min,
@@ -275,9 +341,34 @@
 			brandFs  = clamp( Math.round( unit * ( row ? 0.20 : 0.10 ) ), 9, 22 ),
 			logoH    = clamp( Math.round( unit * ( row ? 0.42 : 0.17 ) ), 12, 64 );
 
+		var ctaLabel = ( 'uppercase' === S.ctaCase ) ? plain( cfg.cta ).toUpperCase() : plain( cfg.cta );
+
+		/* La largeur du bouton pour une taille de police donnée. Le libellé
+		   ne se coupe pas (`nowrap`) : c'est la police qui doit céder. */
+		function ctaWidthAt( fs ) {
+			// L'interlettrage ajoute une chasse par caractère : sans le
+			// compter, un bouton en petites capitales espacées déborde.
+			return textW( ctaLabel, fs, '800', FONT ) +
+				parseFloat( S.ctaTrack ) * fs * ctaLabel.length +
+				Math.round( fs * 1.25 ) * 2;
+		}
+
+		/* En pile, le bouton occupe toute la largeur disponible et rien ne
+		   l'empêchait de la dépasser : « ORDER NOW » en capitales espacées de
+		   l'habillage « luxe » sortait d'un 160×600 des deux côtés. On réduit
+		   la police jusqu'à ce qu'il rentre. */
+		// `hasCta` n'est déclaré que plus bas : s'y référer ici le laisserait
+		// à undefined et la boucle ne tournerait jamais.
+		if ( ! row && ctaLabel ) {
+			var ctaRoom = w - pad * 2;
+			while ( ctaFs > 8 && ctaWidthAt( ctaFs ) > ctaRoom ) {
+				ctaFs--;
+			}
+		}
+
 		var ctaPadX = Math.round( ctaFs * 1.25 ),
 			ctaPadY = Math.round( ctaFs * 0.6 ),
-			ctaW    = textW( plain( cfg.cta ), ctaFs, '800' ) + ctaPadX * 2,
+			ctaW    = ctaWidthAt( ctaFs ),
 			ctaH    = ctaFs * 1.15 + ctaPadY * 2;
 
 		var brandW = cfg.logo
@@ -294,7 +385,7 @@
 		   message passe avant la signature. */
 		if ( ! row && hasBrand && ! cfg.logo ) {
 			var brandRoom = w - pad * 2;
-			while ( brandFs > 9 && textW( plain( cfg.brand ), brandFs, '800' ) > brandRoom ) {
+			while ( brandFs > 9 && textW( plain( cfg.brand ), brandFs, '800', FONT ) > brandRoom ) {
 				brandFs--;
 			}
 			if ( textW( plain( cfg.brand ), brandFs, '800' ) > brandRoom ) {
@@ -331,21 +422,34 @@
 			var worst = 0;
 			for ( var i = 0; i < cfg.frames.length; i++ ) {
 				var f = cfg.frames[ i ],
-					t = wrap( f.title, size, availW, '800' );
+					t = wrap( titleCase( f.title ), size, availW, S.titleWeight, tFam, tTrack );
 				if ( ! t.fits ) { return Infinity; }
 
-				var tall = t.lines * size * 1.08;
+				var tall = t.lines * size * S.titleLine;
 				if ( withKicker && f.kicker ) {
 					tall += kickerFs * 1.25 + gap * 0.6;
+					// Les habillages « bold » et « clean » soulignent le
+					// surtitre : le trait et son retrait comptent dans la
+					// hauteur, et les oublier faisait déborder les bandeaux.
+					if ( S.rule ) {
+						tall += Math.max( 2, Math.round( gap * 0.4 ) ) + 2;
+					}
 				}
 				if ( withSub && f.sub ) {
-					var s = wrap( f.sub, subFs, availW, '500' );
+					var s = wrap( f.sub, subFs, availW, '500', FONT, 0 );
 					if ( ! s.fits ) { return Infinity; }
 					tall += s.lines * subFs * 1.25 + gap * 0.7;
 				}
 				worst = Math.max( worst, tall );
 			}
-			return worst;
+
+			/* Une marge de sécurité. La hauteur calculée reste une somme de
+			   lignes théoriques ; le navigateur, lui, compose des boîtes de
+			   ligne avec les métriques réelles de la police, et l'écart
+			   mesuré allait jusqu'à sept pixels sur un bandeau. Sept pixels
+			   de trop, et le sous-titre passe sous le bouton. Un titre un
+			   cran plus petit coûte moins cher qu'un chevauchement. */
+			return worst * 1.07;
 		}
 
 		/* Trois niveaux de richesse. On garde le plus complet qui laisse au
@@ -385,6 +489,7 @@
 		if ( ! isFinite( blockH ) ) { blockH = best.size * 2; }
 
 		return {
+			S:       S,
 			blockH:  Math.ceil( blockH ),
 			kind:    kind,
 			row:     row,
@@ -436,7 +541,9 @@
 			'cursor:pointer;color:' + cfg.ink + ';' +
 			'font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;' +
 			'-webkit-font-smoothing:antialiased;' +
-			'background:linear-gradient(' + ( L.row ? '100deg' : '170deg' ) + ',' + bg2 + ',' + cfg.bg + ' 62%);' +
+			( L.S.gradient
+				? 'background:linear-gradient(' + ( L.row ? '100deg' : '170deg' ) + ',' + bg2 + ',' + cfg.bg + ' 62%);'
+				: 'background:' + cfg.bg + ';' ) +
 			( cfg.border ? 'border:1px solid rgba(255,255,255,.22);' : '' ) + '}' );
 
 		if ( cfg.image ) {
@@ -469,14 +576,26 @@
 				'filter:drop-shadow(0 6px 18px rgba(0,0,0,.5))}' );
 		}
 
+		if ( L.S.frame ) {
+			/* Un filet posé en retrait du bord. C'est le seul ornement de
+			   l'habillage « luxe » : sur une montre ou un flacon, tout le
+			   reste est déjà dans la photo. */
+			var inset = Math.max( 5, Math.round( L.pad * 0.55 ) );
+			out.push( sel + '::after{content:"";position:absolute;pointer-events:none;z-index:3;' +
+				'top:' + inset + 'px;right:' + inset + 'px;bottom:' + inset + 'px;left:' + inset + 'px;' +
+				'border:1px solid ' + hexA( cfg.accent, 0.5 ) + '}' );
+		}
+
 		/* Halo de marque : du relief sans un octet d'image. */
 		out.push( sel + '::before{content:"";position:absolute;pointer-events:none;z-index:1;' +
 			( L.row ? 'right:-10%;top:-40%;width:46%;height:180%' : 'left:-24%;top:-32%;width:150%;height:72%' ) + ';' +
 			'background:radial-gradient(circle,' + cfg.accent + '2E,transparent 68%)}' );
 
-		if ( cfg.sheen ) {
+		if ( cfg.sheen && L.S.sheen ) {
 			/* Le voile qui balaie la surface : c'est ce mouvement de fond qui
-			   sépare une bannière d'une image fixe. */
+			   sépare une bannière d'une image fixe. Les habillages sobres s'en
+			   passent — sur un fond clair il ne se voit pas, sur une montre il
+			   fait clinquant. */
 			out.push( sel + ' .jmkb-sheen{position:absolute;top:-60%;width:26%;height:220%;pointer-events:none;' +
 				'background:linear-gradient(90deg,transparent,rgba(255,255,255,.15),transparent);' +
 				'transform:rotate(14deg);animation:jmkbSweep 4.6s ease-in-out infinite}' );
@@ -504,9 +623,18 @@
 		   taille du titre, pas une approximation. */
 		out.push( sel + ' .jmkb-msgs{height:' + L.blockH + 'px}' );
 
-		out.push( sel + ' .jmkb-k{font-size:' + L.kicker + 'px;font-weight:700;letter-spacing:.14em;' +
-			'text-transform:uppercase;color:' + cfg.accent + ';margin-bottom:' + Math.round( L.gap * 0.6 ) + 'px}' );
-		out.push( sel + ' .jmkb-t{font-size:' + L.title + 'px;font-weight:800;line-height:1.08;letter-spacing:-.02em}' );
+		out.push( sel + ' .jmkb-k{font-size:' + L.kicker + 'px;font-weight:700;' +
+			'letter-spacing:' + L.S.kickerTrack + ';text-transform:uppercase;color:' + cfg.accent + ';' +
+			'margin-bottom:' + Math.round( L.gap * 0.6 ) + 'px' +
+			( L.S.rule
+				? ';display:inline-block;padding-bottom:' + Math.max( 2, Math.round( L.gap * 0.4 ) ) + 'px' +
+				  ';border-bottom:2px solid ' + cfg.accent
+				: '' ) + '}' );
+
+		out.push( sel + ' .jmkb-t{font-size:' + L.title + 'px;font-weight:' + L.S.titleWeight + ';' +
+			'line-height:' + L.S.titleLine + ';letter-spacing:' + L.S.titleTrack + ';' +
+			'text-transform:' + L.S.titleCase +
+			( L.S.titleFamily ? ';font-family:' + L.S.titleFamily : '' ) + '}' );
 		out.push( sel + ' .jmkb-t em{font-style:normal;color:' + cfg.accent + '}' );
 		out.push( sel + ' .jmkb-s{font-size:' + L.sub + 'px;font-weight:500;line-height:1.25;opacity:.82;' +
 			'margin-top:' + Math.round( L.gap * 0.7 ) + 'px}' );
@@ -519,11 +647,14 @@
 
 		out.push( sel + ' .jmkb-cta{flex:0 0 auto;white-space:nowrap;' +
 			( L.row ? '' : 'margin-top:' + Math.round( L.gap * 1.6 ) + 'px;' ) +
-			'background:' + cfg.accent + ';color:' + accentInk + ';' +
+			( L.S.ctaOutline
+				? 'background:transparent;color:' + cfg.accent + ';border:1px solid ' + cfg.accent + ';'
+				: 'background:' + cfg.accent + ';color:' + accentInk + ';' +
+				  'box-shadow:0 ' + Math.round( L.cta * 0.22 ) + 'px ' + Math.round( L.cta * 0.7 ) + 'px rgba(0,0,0,.34);' ) +
 			'font-size:' + L.cta + 'px;font-weight:800;line-height:1.15;' +
+			'text-transform:' + L.S.ctaCase + ';letter-spacing:' + L.S.ctaTrack + ';' +
 			'padding:' + L.ctaPadY + 'px ' + L.ctaPadX + 'px;' +
-			'border-radius:' + Math.round( L.cta * 1.4 ) + 'px;' +
-			'box-shadow:0 ' + Math.round( L.cta * 0.22 ) + 'px ' + Math.round( L.cta * 0.7 ) + 'px rgba(0,0,0,.34);' +
+			'border-radius:' + Math.max( 2, Math.round( L.cta * L.S.ctaRadius ) ) + 'px;' +
 			'animation:jmkbPulse 2.4s ease-in-out infinite}' );
 		out.push( '@keyframes jmkbPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}' );
 
@@ -563,7 +694,7 @@
 
 		return ( cfg.image ? '<div class="jmkb-bg"></div><div class="jmkb-scrim"></div>' : '' ) +
 			( cfg.cutout ? '<div class="jmkb-cut"></div>' : '' ) +
-			( cfg.sheen ? '<div class="jmkb-sheen"></div>' : '' ) +
+			( cfg.sheen && L.S.sheen ? '<div class="jmkb-sheen"></div>' : '' ) +
 			'<div class="jmkb-stage">' + logo +
 			'<div class="jmkb-msgs">' + frames + '</div>' +
 			( L.hasCta ? '<div class="jmkb-cta">' + esc( cfg.cta ) + '</div>' : '' ) +
@@ -639,6 +770,7 @@
 		cfg.loops = clamp( parseInt( cfg.loops, 10 ) || 3, 1, 3 );
 		cfg.hold  = clamp( parseInt( cfg.hold, 10 ) || 2200, 800, 8000 );
 		cfg.scrim = clamp( 'number' === typeof cfg.scrim ? cfg.scrim : 0.58, 0, 1 );
+		if ( ! STYLES[ cfg.style ] ) { cfg.style = 'soft'; }
 
 		/* Une image de fond change la place du texte : sur une photo, le
 		   sous-titre en petit devient illisible quoi qu'on fasse. On garde la

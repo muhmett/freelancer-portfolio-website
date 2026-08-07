@@ -77,6 +77,9 @@ if ( jmk_get( 'sec_skills' ) ) {
 if ( jmk_get( 'sec_banners' ) ) {
 	get_template_part( 'template-parts/section', 'banners' );
 }
+if ( jmk_get( 'sec_bwork' ) ) {
+	get_template_part( 'template-parts/section', 'banner-work' );
+}
 if ( jmk_get( 'sec_reviews' ) ) {
 	get_template_part( 'template-parts/section', 'reviews' );
 }
