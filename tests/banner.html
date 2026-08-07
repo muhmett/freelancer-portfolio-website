@@ -1,0 +1,228 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Bannières HTML5 — vérifications</title>
+<style>
+	body { background:#0E0916; color:#F5EFE6; font:14px system-ui; margin:0; padding:20px }
+	#out { white-space:pre; font:12px ui-monospace,monospace; line-height:1.6 }
+	.ok { color:#48C9A9 } .ko { color:#F2506B }
+	#bench { position:absolute; left:-9999px; top:0 }
+
+	/* Le rapport sort par --dump-dom, qui attend que le travail en attente se
+	   vide. Le voile et la pulsation du bouton tournent sans fin : ça ne se
+	   vide jamais, et le navigateur ne rend jamais la main. On les arrête ici,
+	   dans le harnais seulement — ce que contient le fichier livré est vérifié
+	   sur la chaîne rendue par page(), pas sur ce DOM. */
+	*, *::before, *::after {
+		animation-iteration-count: 1 !important;
+		animation-duration: .01s !important;
+	}
+</style>
+
+<div id="bench"></div>
+<div id="out"></div>
+
+<script>
+/* Une erreur avalée laisserait le rapport vide et le lanceur muet : on la
+   montre à la place. */
+window.addEventListener( 'error', function ( e ) {
+	document.getElementById( 'out' ).textContent =
+		'ERREUR ' + e.message + ' @' + ( e.filename || '' ).split( '/' ).pop() + ':' + e.lineno;
+} );
+</script>
+<script src="../jeux-marketing/assets/js/jmk-banner.js"></script>
+<script>
+/* Vérifications du moteur de bannières.
+   Ce qui compte : le texte tient vraiment dans la boîte, et vingt bannières
+   sur une page ne se marchent pas dessus. */
+( function () {
+	var pass = 0, fail = 0, lines = [];
+
+	function ok( label, cond ) {
+		if ( cond ) { pass++; lines.push( '<span class="ok">ok  </span> ' + label ); }
+		else { fail++; lines.push( '<span class="ko">FAIL</span> ' + label ); }
+	}
+
+	var bench = document.getElementById( 'bench' );
+
+	var CFG = {
+		brand: 'Café Atlas', bg: '#0B3325', accent: '#D9A441', cta: 'Order now',
+		clickUrl: 'https://exemple.ma/promo',
+		frames: [
+			{ kicker: 'New this week', title: 'Roasted *this morning*', sub: 'Single origin, Souss valley' },
+			{ kicker: 'Free delivery', title: 'On orders over *200 MAD*', sub: 'Casablanca and Rabat' }
+		]
+	};
+
+	function cfgFor( w, h, extra ) {
+		var c = JSON.parse( JSON.stringify( CFG ) );
+		c.w = w; c.h = h;
+		for ( var k in ( extra || {} ) ) { c[ k ] = extra[ k ]; }
+		return c;
+	}
+
+	/* ── 1. surface publique ── */
+	ok( 'JMKBanner exposé', typeof JMKBanner === 'object' );
+	ok( 'sizes() rend des copies', JMKBanner.sizes() !== JMKBanner.sizes() );
+	ok( 'au moins 20 formats livrés', JMKBanner.sizes().length >= 20 );
+	ok( 'les formats vedettes sont marqués',
+		JMKBanner.sizes().filter( function ( s ) { return s.star; } ).length >= 5 );
+	ok( 'les dimensions sont plausibles', JMKBanner.sizes().every( function ( s ) {
+		return s.w >= 100 && s.h >= 40 && s.name;
+	} ) );
+
+	/* ── 2. le gabarit suit la forme, pas la taille ── */
+	var kinds = {
+		'728x90':   'strip',
+		'320x50':   'strip',
+		'970x250':  'wide',
+		'300x250':  'box',
+		'250x250':  'box',
+		'160x600':  'tall',
+		'300x1050': 'tall'
+	};
+	Object.keys( kinds ).forEach( function ( key ) {
+		var d = key.split( 'x' );
+		var L = JMKBanner.layout( +d[ 0 ], +d[ 1 ], cfgFor( +d[ 0 ], +d[ 1 ] ) );
+		ok( key + ' → ' + kinds[ key ], L.kind === kinds[ key ] );
+	} );
+
+	/* ── 3. le texte tient dans la boîte ──
+	   La vraie régression : un titre calculé sur une fraction de la hauteur
+	   débordait des formats étroits. On monte chaque format et on mesure ce
+	   que le navigateur a réellement peint. */
+	( function () {
+		var over = [], made = [];
+		JMKBanner.sizes().forEach( function ( s ) {
+			var holder = document.createElement( 'div' );
+			bench.appendChild( holder );
+			var b = JMKBanner.mount( holder, cfgFor( s.w, s.h ) );
+			made.push( b );
+
+			var root = b.el, box = root.getBoundingClientRect();
+
+			/* On mesure le texte, pas la racine : le halo et le voile
+			   débordent exprès et sont rognés par overflow:hidden, donc le
+			   scrollWidth de la racine est toujours plus grand — il ne dit
+			   rien sur la lisibilité. */
+			[].slice.call( root.querySelectorAll( '.t, .s, .k, .cta, .logo span' ) ).forEach( function ( n ) {
+				// Un mot plus large que sa colonne déborde de sa propre boîte.
+				if ( n.scrollWidth > n.clientWidth + 1 ) {
+					over.push( s.w + 'x' + s.h + ' ' + n.className + ' (mot ' + n.scrollWidth + '>' + n.clientWidth + ')' );
+				}
+				var r = n.getBoundingClientRect();
+				if ( r.right > box.right + 1 || r.left < box.left - 1 ) {
+					over.push( s.w + 'x' + s.h + ' ' + n.className + ' (hors cadre)' );
+				}
+			} );
+		} );
+		ok( 'aucun format ne déborde en largeur' + ( over.length ? ' — ' + over.join( ', ' ) : '' ),
+			0 === over.length );
+
+		/* Et pas de texte peint hors du cadre en hauteur non plus. */
+		var tallOver = [];
+		made.forEach( function ( b ) {
+			var box = b.el.getBoundingClientRect();
+			var st  = b.el.querySelector( '.stage' );
+			if ( st && st.getBoundingClientRect().height > box.height + 1 ) {
+				tallOver.push( b.config.w + 'x' + b.config.h );
+			}
+		} );
+		ok( 'aucun format ne déborde en hauteur' + ( tallOver.length ? ' — ' + tallOver.join( ', ' ) : '' ),
+			0 === tallOver.length );
+
+		made.forEach( function ( b ) { b.destroy(); } );
+	} )();
+
+	/* ── 4. deux bannières ne partagent pas leur style ──
+	   Chaque montage injectait `#ad{…}` : la dernière redessinait toutes les
+	   autres. Le studio en affiche vingt d'un coup, le défaut ne pardonnait
+	   pas. */
+	( function () {
+		var h1 = document.createElement( 'div' ), h2 = document.createElement( 'div' );
+		bench.appendChild( h1 );
+		bench.appendChild( h2 );
+
+		var a = JMKBanner.mount( h1, cfgFor( 300, 250 ) ),
+			b = JMKBanner.mount( h2, cfgFor( 728, 90 ) );
+
+		ok( 'les racines ont des identifiants distincts', a.el.id !== b.el.id );
+		ok( 'la première garde sa taille', Math.round( a.el.getBoundingClientRect().width ) === 300 );
+		ok( 'la seconde garde la sienne', Math.round( b.el.getBoundingClientRect().width ) === 728 );
+		ok( 'les deux gardent leur hauteur',
+			Math.round( a.el.getBoundingClientRect().height ) === 250 &&
+			Math.round( b.el.getBoundingClientRect().height ) === 90 );
+		ok( 'les gabarits diffèrent', a.layout.kind !== b.layout.kind );
+
+		a.destroy();
+		ok( 'destroy() retire la racine et son style', h1.children.length === 0 );
+		b.destroy();
+	} )();
+
+	/* ── 5. ce qu'exigent les régies ── */
+	( function () {
+		var page = JMKBanner.page( cfgFor( 300, 250 ) );
+		ok( 'la page déclare ad.size',
+			page.indexOf( '<meta name="ad.size" content="width=300,height=250">' ) > -1 );
+		ok( 'clickTag est déclaré avant tout le reste',
+			page.indexOf( 'var clickTag' ) > -1 &&
+			page.indexOf( 'var clickTag' ) < page.indexOf( '<body' ) );
+		ok( 'l’adresse de destination est reprise', page.indexOf( 'https://exemple.ma/promo' ) > -1 );
+		ok( 'la page est autonome', page.indexOf( '<script src=' ) === -1 );
+		ok( 'le document est à la taille du format',
+			/html,body\{width:300px;height:250px/.test( page ) );
+		ok( 'le clic passe par clickTag, pas par un href',
+			page.indexOf( 'window.clickTag' ) > -1 && page.indexOf( '<a href' ) === -1 );
+
+		var loops = JMKBanner.page( cfgFor( 300, 250, { loops: 99 } ) );
+		ok( 'le nombre de boucles est plafonné à 3', /L=3/.test( loops ) );
+
+		var one = JMKBanner.page( cfgFor( 300, 250, { frames: [ { title: 'Seul' } ] } ) );
+		ok( 'un seul message : pas de minuteur qui tourne pour rien',
+			one.indexOf( 'if(f.length<2){return;}' ) > -1 );
+	} )();
+
+	/* ── 6. le poids, que la régie plafonne à 150 Ko ── */
+	( function () {
+		var page  = JMKBanner.page( cfgFor( 300, 250 ) );
+		var bytes = new Blob( [ page ] ).size;
+		ok( 'une bannière pèse moins de 15 Ko (' + bytes + ' o)', bytes < 15360 );
+	} )();
+
+	/* ── 7. échappement ── */
+	( function () {
+		var page = JMKBanner.page( cfgFor( 300, 250, {
+			brand: '<\/scr' + 'ipt><scr' + 'ipt>alert(1)<\/scr' + 'ipt>',
+			frames: [ { title: '<img src=x onerror=alert(1)>' } ]
+		} ) );
+		ok( 'un libellé ne peut pas injecter de balise', page.indexOf( '<img src=x' ) === -1 );
+		ok( 'la page ne porte que ses deux blocs de script',
+			page.split( '<\/scr' + 'ipt>' ).length - 1 === 2 );
+	} )();
+
+	/* ── 8. l'emphase *un mot* ── */
+	( function () {
+		var h = document.createElement( 'div' );
+		bench.appendChild( h );
+		var b = JMKBanner.mount( h, cfgFor( 300, 250 ) );
+		ok( '*mot* passe en couleur d’accent', !! b.el.querySelector( '.t em' ) );
+		ok( 'les étoiles ne s’affichent pas', b.el.querySelector( '.t' ).textContent.indexOf( '*' ) === -1 );
+		b.destroy();
+	} )();
+
+	/* ── 9. réglages absurdes : on ne rend jamais une boîte vide ── */
+	( function () {
+		var h = document.createElement( 'div' );
+		bench.appendChild( h );
+		var b = JMKBanner.mount( h, { w: 0, h: -5, frames: [] } );
+		ok( 'dimensions impossibles → repli', b.config.w >= 40 && b.config.h >= 40 );
+		ok( 'aucun message → message par défaut', b.config.frames.length > 0 );
+		b.destroy();
+		ok( 'cible introuvable → null', JMKBanner.mount( '#nexistepas', {} ) === null );
+	} )();
+
+	var head = fail
+		? '<span class="ko">' + fail + ' échec(s)</span> sur ' + ( pass + fail )
+		: '<span class="ok">' + pass + ' vérifications, aucune erreur</span>';
+	document.getElementById( 'out' ).innerHTML = head + '\n\n' + lines.join( '\n' );
+} )();
+</script>
