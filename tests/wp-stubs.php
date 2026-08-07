@@ -146,5 +146,75 @@ function esc_url( $s ) {
 	return (string) $s;
 }
 function add_query_arg() {
-	return '';
+	$a = func_get_args();
+	if ( 3 === count( $a ) ) {
+		$url = $a[2];
+		$q   = array( $a[0] => $a[1] );
+	} elseif ( 2 === count( $a ) && is_array( $a[0] ) ) {
+		$url = $a[1];
+		$q   = $a[0];
+	} else {
+		return isset( $a[0] ) ? (string) $a[0] : '';
+	}
+	$sep = ( false === strpos( (string) $url, '?' ) ) ? '?' : '&';
+	return $url . $sep . http_build_query( $q );
+}
+
+/* ── juste ce qu'il faut pour inc/builder.php ── */
+function add_menu_page() {}
+function add_submenu_page() {}
+function wp_enqueue_style() {}
+function wp_enqueue_script() {}
+function wp_localize_script() {}
+function wp_nonce_field() {}
+function check_admin_referer( $a = -1, $q = '_wpnonce' ) {
+	return true;
+}
+function admin_url( $p = '' ) {
+	return 'https://exemple.test/wp-admin/' . $p;
+}
+function wp_die( $m = '' ) {
+	throw new RuntimeException( (string) $m );
+}
+/** Signale une redirection : le exit qui la suit couperait les tests. */
+class JmkRedirect extends RuntimeException {}
+
+function wp_safe_redirect( $u, $s = 302 ) {
+	$GLOBALS['jmk_redirect'] = $u;
+	throw new JmkRedirect( (string) $u );
+}
+function nocache_headers() {}
+function sanitize_hex_color( $c ) {
+	$c = trim( (string) $c );
+	return preg_match( '/^#([A-Fa-f0-9]{3}|[A-Fa-f0-9]{6})$/', $c ) ? $c : '';
+}
+function sanitize_title( $t ) {
+	$t = strtolower( remove_accents( (string) $t ) );
+	$t = preg_replace( '/[^a-z0-9]+/', '-', $t );
+	return trim( $t, '-' );
+}
+function remove_accents( $s ) {
+	$map = array( 'é' => 'e', 'è' => 'e', 'ê' => 'e', 'à' => 'a', 'ç' => 'c', 'ù' => 'u', 'ô' => 'o', 'î' => 'i' );
+	return strtr( (string) $s, $map );
+}
+function esc_url_raw( $u ) {
+	$u = trim( (string) $u );
+	return preg_match( '#^https?://#i', $u ) ? $u : '';
+}
+function esc_attr_e( $s, $d = null ) {
+	echo esc_attr( $s );
+}
+function esc_html_e( $s, $d = null ) {
+	echo esc_html( $s );
+}
+function get_template_directory_uri() {
+	return 'https://exemple.test/wp-content/themes/jeux-marketing';
+}
+
+function wp_list_pluck( $list, $field ) {
+	$out = array();
+	foreach ( (array) $list as $k => $v ) {
+		$out[ $k ] = is_array( $v ) && isset( $v[ $field ] ) ? $v[ $field ] : null;
+	}
+	return $out;
 }

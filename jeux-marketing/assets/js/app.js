@@ -48,7 +48,11 @@
 	}
 	function lotColor( lot ) {
 		if ( null === lot.hue || lot.losing ) {
-			return ( 'arcade' === C.skin ) ? '#4C2A9B' : '#3A2B4D';
+			// La case « réessayez » prend le fond de l'habillage, pas une
+			// teinte de la marque : c'est ce qui la fait lire comme un vide.
+			if ( 'arcade' === C.skin ) { return '#4C2A9B'; }
+			if ( 'casino' === C.skin ) { return '#0B3325'; }
+			return '#3A2B4D';
 		}
 		var c = hexToHsl( brandColor );
 		return hsl( c[ 0 ] + lot.hue, Math.max( 35, Math.min( 88, c[ 1 ] ) ), Math.max( 38, Math.min( 66, c[ 2 ] ) ) );
@@ -116,8 +120,10 @@
 	var rotation = 0, spinning = false, hasPlayed = false, drawToken = '';
 
 	var ARCADE = ( 'arcade' === C.skin );
+	var CASINO = ( 'casino' === C.skin );
 	// En habillage arcade, la couronne d'ampoules occupe le bord : la zone
-	// des segments recule d'autant.
+	// des segments recule d'autant. Le casino porte son anneau en CSS, autour
+	// du canevas : rien à réserver ici.
 	var RIM  = ARCADE ? 46 : 6;
 	var bulb = 0;
 
@@ -202,8 +208,23 @@
 				ctx.fill();
 			}
 
-			ctx.lineWidth   = ARCADE ? 5 : 3;
-			ctx.strokeStyle = ARCADE ? '#7A4E0B' : '#150C1D';
+			if ( CASINO && ! out ) {
+				// Un fondu vers le centre, comme le vernis d'une roue de
+				// table. Plus discret que le bombé de la fête foraine.
+				var cg = ctx.createRadialGradient( 0, 0, rad * 0.2, 0, 0, rad );
+				cg.addColorStop( 0, 'rgba(0,0,0,.26)' );
+				cg.addColorStop( 0.6, 'rgba(255,255,255,.06)' );
+				cg.addColorStop( 1, 'rgba(255,255,255,.16)' );
+				ctx.beginPath();
+				ctx.moveTo( 0, 0 );
+				ctx.arc( 0, 0, rad, a0, a0 + seg );
+				ctx.closePath();
+				ctx.fillStyle = cg;
+				ctx.fill();
+			}
+
+			ctx.lineWidth   = ARCADE ? 5 : ( CASINO ? 2 : 3 );
+			ctx.strokeStyle = ARCADE ? '#7A4E0B' : ( CASINO ? '#D9A441' : '#150C1D' );
 			ctx.stroke();
 
 			ctx.save();
@@ -1111,20 +1132,30 @@
 		}
 	}
 
+	/**
+	 * Le code d'intégration montré sous le devis.
+	 *
+	 * Ce n'est pas une illustration : l'adresse pointe le moteur autonome
+	 * réellement livré avec le thème, et les attributs sont ceux qu'il lit.
+	 * Copié tel quel dans une page, le jeu tourne.
+	 */
 	function buildEmbed() {
 		var box = $( '#embedCode' );
 		if ( ! box ) { return; }
-		var jeux = [ 'roue' ];
+		var jeu = 'roue';
 		OPTS.forEach( function ( o ) {
-			if ( o.on && /suppl/i.test( o.label ) ) { jeux.push( 'grattage', 'quiz' ); }
+			if ( o.on && /suppl/i.test( o.label ) ) { jeu = 'grattage'; }
 		} );
-		var crm = OPTS.some( function ( o ) { return o.on && /(crm|mailchimp|brevo|sheets)/i.test( o.label ); } );
+		var crm  = OPTS.some( function ( o ) { return o.on && /(crm|mailchimp|brevo|sheets)/i.test( o.label ); } );
 		var slug = ( brandName || 'ma-marque' ).toLowerCase().replace( /\s+/g, '-' ).replace( /[^a-z0-9-]/g, '' );
+		var src  = C.engine || '/wp-content/themes/jeux-marketing/assets/js/jmk-embed.js';
+
 		box.innerHTML =
-			'<span class="k">&lt;script</span> <span class="a">src</span>=<span class="s">"/jeu/jeu.min.js"</span>\n' +
+			'<span class="k">&lt;script</span> <span class="a">src</span>=<span class="s">"' + esc( src ) + '"</span>\n' +
+			'  <span class="a">data-jeu</span>=<span class="s">"' + jeu + '"</span>\n' +
 			'  <span class="a">data-marque</span>=<span class="s">"' + esc( slug ) + '"</span>\n' +
 			'  <span class="a">data-couleur</span>=<span class="s">"' + esc( brandColor.toUpperCase() ) + '"</span>\n' +
-			'  <span class="a">data-jeux</span>=<span class="s">"' + jeux.join( ',' ) + '"</span>\n' +
+			'  <span class="a">data-style</span>=<span class="s">"' + esc( C.skin || 'elegant' ) + '"</span>\n' +
 			'  <span class="a">data-langue</span>=<span class="s">"' + esc( lang ) + '"</span>' +
 			( crm ? '\n  <span class="a">data-webhook</span>=<span class="s">"https://votre-crm.exemple/lead"</span>' : '' ) +
 			'\n  <span class="a">data-rgpd</span>=<span class="s">"/politique-confidentialite"</span><span class="k">&gt;&lt;/script&gt;</span>';

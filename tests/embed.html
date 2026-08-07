@@ -1,0 +1,193 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Moteur autonome — vérifications</title>
+<style>
+	body { background:#0E0916; color:#F5EFE6; font:14px system-ui; margin:0; padding:20px }
+	#slots { display:grid; grid-template-columns:repeat(3,1fr); gap:16px }
+	#out { white-space:pre; font:12px ui-monospace,monospace; margin-top:20px; line-height:1.6 }
+	.ok { color:#48C9A9 } .ko { color:#F2506B }
+</style>
+
+<div id="slots">
+	<div id="g-wheel"></div><div id="g-scratch"></div><div id="g-tap"></div>
+	<div id="g-slot"></div><div id="g-plinko"></div><div id="g-quiz"></div>
+</div>
+<div id="out"></div>
+
+<script src="../jeux-marketing/assets/js/jmk-embed.js"></script>
+<script>
+/* Vérifications du moteur autonome, sans WordPress.
+   Le rapport est lisible à l'écran et repris par run-embed.sh. */
+( function () {
+	var pass = 0, fail = 0, lines = [];
+
+	function ok( label, cond ) {
+		if ( cond ) { pass++; lines.push( '<span class="ok">ok  </span> ' + label ); }
+		else { fail++; lines.push( '<span class="ko">FAIL</span> ' + label ); }
+	}
+
+	var LOTS = [
+		{ label: '-10 %',  weight: 30, cap: null, code: 'DIX',  hue: 0,    losing: false },
+		{ label: 'Cadeau', weight: 10, cap: 2,    code: 'GIFT', hue: 128,  losing: false },
+		{ label: 'Perdu',  weight: 20, cap: null, code: '',     hue: null, losing: true }
+	];
+
+	/* ── 1. surface publique ── */
+	ok( 'JMKGame exposé', typeof JMKGame === 'object' );
+	ok( 'mount() est une fonction', typeof JMKGame.mount === 'function' );
+	ok( 'defaults() rend une copie', JMKGame.defaults().lots !== JMKGame.defaults().lots );
+	ok( 'version renseignée', /^\d+\.\d+\.\d+$/.test( JMKGame.version ) );
+
+	/* ── 2. les six mécaniques se montent ── */
+	var made = {};
+	[ 'wheel', 'scratch', 'tap', 'slot', 'plinko', 'quiz' ].forEach( function ( g ) {
+		made[ g ] = JMKGame.mount( '#g-' + g, {
+			game: g, accent: '#3E9BF5', lots: LOTS, brand: 'test-' + g,
+			title: g, subtitle: '', onePlay: true
+		} );
+		ok( g + ' : monté', !! made[ g ] && !! made[ g ].el );
+		ok( g + ' : une seule racine', document.querySelectorAll( '#g-' + g + ' .jmkg' ).length === 1 );
+	} );
+
+	ok( 'la feuille de style n’est injectée qu’une fois',
+		document.querySelectorAll( 'style[data-jmk-embed]' ).length === 1 );
+
+	/* ── 3. les alias français marchent ── */
+	var host = document.createElement( 'div' );
+	document.body.appendChild( host );
+	var fr = JMKGame.mount( host, { game: 'roue', lots: LOTS } );
+	ok( '« roue » vaut wheel', fr.config.game === 'wheel' );
+	fr.destroy();
+	ok( 'destroy() retire la racine', host.children.length === 0 );
+
+	/* ── 4. réglages : fusion sans écraser le reste ── */
+	var part = JMKGame.mount( host, { game: 'wheel', lots: LOTS, t: { play: 'GO' }, form: { phone: true } } );
+	ok( 'un texte remplacé garde les autres', part.config.t.play === 'GO' && !! part.config.t.email );
+	ok( 'une option de formulaire garde les autres', part.config.form.phone === true && part.config.form.on === true );
+	ok( 'téléphone demandé → champ présent', !! part.el.querySelector( 'input[type=tel]' ) );
+	part.destroy();
+
+	var noPhone = JMKGame.mount( host, { game: 'wheel', lots: LOTS } );
+	ok( 'téléphone non demandé → pas de champ', ! noPhone.el.querySelector( 'input[type=tel]' ) );
+	ok( 'le formulaire est caché avant de jouer', noPhone.el.querySelector( '.jmkg-form' ).hidden === true );
+	noPhone.destroy();
+
+	/* ── 5. lots vides : on retombe sur ceux du moteur, jamais sur zéro lot ── */
+	var empty = JMKGame.mount( host, { game: 'wheel', lots: [] } );
+	ok( 'aucun lot fourni → lots par défaut', empty.config.lots.length > 0 );
+	empty.destroy();
+
+	/* ── 6. couleur de marque appliquée ── */
+	var col = JMKGame.mount( host, { game: 'tap', accent: '#F2506B', lots: LOTS } );
+	ok( 'la couleur descend en variable CSS',
+		col.el.style.getPropertyValue( '--jmkg-accent' ) === '#F2506B' );
+	ok( 'l’encre du bouton s’adapte au fond',
+		col.el.style.getPropertyValue( '--jmkg-accent-ink' ).length > 0 );
+	col.destroy();
+
+	/* ── 7. arabe : la racine passe en RTL ── */
+	var rtl = JMKGame.mount( host, { game: 'wheel', dir: 'rtl', lots: LOTS } );
+	ok( 'dir=rtl posé sur la racine', rtl.el.getAttribute( 'dir' ) === 'rtl' );
+	rtl.destroy();
+
+	/* ── 8. habillages ──
+	   Chaque habillage doit poser sa classe : sans elle, tout son bloc de
+	   style reste lettre morte et le jeu sort avec les couleurs du sobre. */
+	[ 'arcade', 'casino' ].forEach( function ( skin ) {
+		var g = JMKGame.mount( host, { game: 'wheel', skin: skin, lots: LOTS } );
+		ok( 'habillage ' + skin + ' → classe posée', g.el.classList.contains( 'skin-' + skin ) );
+		g.destroy();
+	} );
+
+	var plain = JMKGame.mount( host, { game: 'wheel', skin: 'elegant', lots: LOTS } );
+	ok( 'habillage sobre → aucune classe en trop', plain.el.className.trim() === 'jmkg' );
+	plain.destroy();
+
+	var bogus = JMKGame.mount( host, { game: 'wheel', skin: 'nimportequoi', lots: LOTS } );
+	ok( 'habillage inconnu → retour au sobre', bogus.el.className.trim() === 'jmkg' );
+	bogus.destroy();
+
+	/* ── 9. échappement ── */
+	var xss = JMKGame.mount( host, {
+		game: 'tap', title: '<img src=x onerror=alert(1)>', lots: LOTS
+	} );
+	ok( 'le titre est échappé', ! xss.el.querySelector( 'img' ) );
+	xss.destroy();
+
+	/* ── 10. le tirage respecte les plafonds ── */
+	( function () {
+		try { localStorage.removeItem( 'jmkg:cap-test:tap' ); } catch ( e ) {}
+		var seen = {}, rounds = 400, pending = rounds;
+		for ( var i = 0; i < rounds; i++ ) {
+			var g = JMKGame.mount( host, {
+				game: 'tap', lots: LOTS, brand: 'cap-test', onePlay: true, form: { on: false }
+			} );
+			g.el.querySelector( '.jmkg-box' ).click();
+			seen[ g.el.querySelector( '.jmkg-msg' ).textContent ] = 1;
+			g.destroy();
+		}
+		var gifts = 0;
+		try {
+			gifts = JSON.parse( localStorage.getItem( 'jmkg:cap-test:tap' ) )[ 1 ];
+		} catch ( e ) {}
+		ok( 'le plafond de 2 n’est jamais dépassé sur 400 parties (' + gifts + ')', gifts <= 2 );
+		ok( 'le plafond est bien atteint', gifts === 2 );
+	} )();
+
+	/* ── 11. une seule partie quand onePlay ── */
+	( function () {
+		try { localStorage.removeItem( 'jmkg:one:tap' ); } catch ( e ) {}
+		var g = JMKGame.mount( host, { game: 'tap', lots: LOTS, brand: 'one', onePlay: true } );
+		var boxes = g.el.querySelectorAll( '.jmkg-box' );
+		boxes[ 0 ].click();
+		var first = g.el.querySelector( '.jmkg-msg' ).textContent;
+		boxes[ 1 ].click();
+		ok( 'rejouer ne change rien quand une seule partie est permise',
+			g.el.querySelector( '.jmkg-msg' ).textContent === first );
+		ok( 'le formulaire apparaît après la partie',
+			g.el.querySelector( '.jmkg-form' ).hidden === false );
+		g.destroy();
+	} )();
+
+	/* ── 12. le formulaire refuse ce qu'il doit refuser ── */
+	( function () {
+		var g = JMKGame.mount( host, { game: 'tap', lots: LOTS, brand: 'form' } );
+		g.el.querySelector( '.jmkg-box' ).click();
+		var f = g.el.querySelector( '.jmkg-form' ),
+			e = g.el.querySelector( '.jmkg-err' ),
+			sub = function () { f.dispatchEvent( new Event( 'submit', { cancelable: true } ) ); };
+
+		sub();
+		ok( 'prénom vide → refusé', e.textContent.length > 0 );
+
+		f.querySelector( 'input[type=text]' ).value = 'Sara';
+		f.querySelector( 'input[type=email]' ).value = 'sara@';
+		sub();
+		ok( 'email incomplet → refusé', /email/i.test( e.textContent ) );
+
+		f.querySelector( 'input[type=email]' ).value = 'sara@exemple.ma';
+		sub();
+		ok( 'case non cochée → refusé', e.textContent.length > 0 && ! e.classList.contains( 'ok' ) );
+
+		f.querySelector( 'input[type=checkbox]' ).checked = true;
+		var got = null;
+		g.onLead = function ( p ) { got = p; };
+		sub();
+		ok( 'formulaire complet → accepté', e.classList.contains( 'ok' ) );
+		ok( 'le lot part avec le contact', !! got && typeof got.lot === 'string' );
+		ok( 'l’email est repris tel quel', !! got && got.email === 'sara@exemple.ma' );
+		g.destroy();
+	} )();
+
+	/* ── 13. sans conteneur, on ne casse pas la page ── */
+	ok( 'cible introuvable → null', JMKGame.mount( '#nexistepas', {} ) === null );
+
+	document.body.removeChild( host );
+
+	var head = fail
+		? '<span class="ko">' + fail + ' échec(s)</span> sur ' + ( pass + fail )
+		: '<span class="ok">' + pass + ' vérifications, aucune erreur</span>';
+	document.getElementById( 'out' ).innerHTML = head + '\n\n' + lines.join( '\n' );
+	window.__result = { pass: pass, fail: fail };
+} )();
+</script>

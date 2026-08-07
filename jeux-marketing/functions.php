@@ -16,6 +16,7 @@ define( 'JMK_URI', get_template_directory_uri() );
 require_once JMK_DIR . '/inc/i18n.php';
 require_once JMK_DIR . '/inc/defaults.php';
 require_once JMK_DIR . '/inc/admin.php';
+require_once JMK_DIR . '/inc/builder.php';
 require_once JMK_DIR . '/inc/leads.php';
 require_once JMK_DIR . '/inc/shortcode.php';
 require_once JMK_DIR . '/inc/portfolio.php';
@@ -87,11 +88,21 @@ function jmk_inline_css() {
 	$light           = 'hsl(' . round( $h ) . ' ' . round( $s ) . '% ' . round( min( 78, $l + 13 ) ) . '%)';
 	$ink             = ( $l > 58 ) ? '#221503' : '#FFF6E4';
 
+	// Le feutre de l'habillage casino passe par une variable plutôt que par
+	// une adresse écrite dans main.css : la feuille de style est servie telle
+	// quelle, elle ne connaît pas le dossier du thème.
+	$felt = sprintf(
+		'url(%s?v=%s)',
+		JMK_URI . '/assets/img/felt.jpg',
+		jmk_asset_version( 'assets/img/felt.jpg' )
+	);
+
 	return sprintf(
-		':root{--accent:%1$s;--accent-2:%2$s;--accent-ink:%3$s;}',
+		':root{--accent:%1$s;--accent-2:%2$s;--accent-ink:%3$s;--felt:%4$s;}',
 		esc_attr( $accent ),
 		esc_attr( $light ),
-		esc_attr( $ink )
+		esc_attr( $ink ),
+		esc_attr( $felt )
 	);
 }
 
@@ -153,6 +164,10 @@ function jmk_js_config() {
 		'whatsapp'  => ( 'fiverr' === $mode ) ? '' : preg_replace( '/\D/', '', (string) jmk_get( 'whatsapp' ) ),
 		'fiverr'    => esc_url_raw( jmk_get( 'fiverr_url' ) ),
 		'foil'      => JMK_URI . '/assets/img/foil.jpg?v=' . jmk_asset_version( 'assets/img/foil.jpg' ),
+		// Le code d'intégration montré au visiteur pointe le vrai moteur, pas
+		// un nom de fichier d'illustration : l'adresse est copiable telle
+		// quelle et le jeu tourne.
+		'engine'    => JMK_URI . '/assets/js/jmk-embed.js',
 		'brand'     => (string) jmk_get( 'brand_name' ),
 		'accent'    => (string) jmk_get( 'accent' ),
 		'skin'      => (string) jmk_get( 'skin' ),

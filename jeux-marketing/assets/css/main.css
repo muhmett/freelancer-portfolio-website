@@ -651,3 +651,133 @@ body.jmk-skin-arcade .wheel-holder::before{
 @media(prefers-reduced-motion:reduce){
   body.jmk-skin-arcade .wheel-holder::before{animation:none}
 }
+
+/* ══════════ HABILLAGE CASINO ══════════
+   Troisième habillage : tapis de feutre, or gravé, rouge de carte. Plus
+   feutré que la fête foraine, plus habillé que le sobre — c'est celui qui
+   va aux promotions « soirée », aux marques de boisson, aux tirages
+   d'anniversaire.
+
+   Même discipline que l'arcade : tout est contenu sous .jmk-skin-casino, et
+   retirer la classe rend la page exactement telle qu'elle était. Le feutre
+   est la seule image du lot, pour la même raison que la pellicule à gratter :
+   une matière avec du grain ne se code pas. Le dégradé reste dessous, et la
+   page est complète sans elle. */
+.jmk-skin-casino{
+  --ink:#0A2A1F; --ink-2:#0E3A2B; --ink-3:#134A38; --ink-4:#1A5C46;
+  --line:#2C7A5E; --line-soft:rgba(44,122,94,.5);
+  --paper:#FFFBF0; --muted:#9FBFB1; --text-2:#DDEFE6;
+  --g1:#FFE9A8; --g2:#D9A441; --g3:#8A5D12;
+  --card-red:#C1121F;
+  --r:14px;
+}
+.jmk-skin-casino body,body.jmk-skin-casino{
+  background:linear-gradient(178deg,#134A38 0%,#0E3A2B 48%,#07211A 100%)}
+
+/* le feutre par-dessus le dégradé, en fondu : la teinte reste celle des
+   variables, l'image n'apporte que le grain. */
+body.jmk-skin-casino::after{
+  content:'';position:fixed;inset:0;z-index:-2;pointer-events:none;
+  background-image:var(--felt);background-size:340px 340px;
+  opacity:.5;mix-blend-mode:soft-light}
+body.jmk-skin-casino::before{
+  background:radial-gradient(900px 640px at 50% -16%,rgba(217,164,65,.22),transparent 64%),
+             radial-gradient(680px 520px at 8% 92%,rgba(193,18,31,.20),transparent 60%),
+             radial-gradient(600px 500px at 94% 74%,rgba(44,122,94,.28),transparent 62%)}
+
+/* halo feutré derrière la roue, sans les rayons de la fête foraine */
+body.jmk-skin-casino .wheel-holder::before{
+  content:'';position:absolute;inset:-18%;z-index:-1;border-radius:50%;
+  background:radial-gradient(circle,rgba(217,164,65,.20),transparent 66%)}
+
+/* titres gravés */
+.jmk-skin-casino h1,.jmk-skin-casino h2{
+  color:var(--paper);text-shadow:0 1px 0 rgba(0,0,0,.55),0 6px 20px rgba(0,0,0,.5)}
+.jmk-skin-casino .accent-text{
+  /* Sur le vert du tapis, la descente jusqu'au brun de --g3 devient
+     illisible : l'or s'arrête plus haut ici que sur les deux autres
+     habillages. */
+  background:linear-gradient(180deg,#FFF6D2 10%,#F3CE74 52%,#C9922E 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 2px 0 rgba(0,0,0,.45)) drop-shadow(0 5px 14px rgba(0,0,0,.35))}
+.jmk-skin-casino .eyebrow{color:var(--g2);letter-spacing:.28em}
+
+/* boutons : jeton de table, liseré or */
+.jmk-skin-casino .btn{
+  border-radius:999px;padding:15px 34px;
+  background:linear-gradient(180deg,#D32433 0%,#A50E1B 60%,#7C0912 100%);
+  color:#FFF3E0;border:2px solid var(--g2);
+  text-shadow:0 1px 2px rgba(0,0,0,.5);
+  box-shadow:0 12px 30px -14px rgba(0,0,0,.9),inset 0 1px 0 rgba(255,255,255,.28),
+             inset 0 0 0 3px rgba(255,251,240,.14)}
+.jmk-skin-casino .btn:hover:not(:disabled){transform:translateY(-2px);filter:brightness(1.06)}
+.jmk-skin-casino .btn:active:not(:disabled){transform:translateY(1px)}
+.jmk-skin-casino .btn-ghost{
+  background:rgba(255,255,255,.06);border:1.5px solid var(--g2);color:var(--g1);
+  box-shadow:none;border-radius:999px}
+.jmk-skin-casino .btn-wa{
+  background:linear-gradient(180deg,#2FB84F,#177A33);border-color:var(--g2)}
+
+/* panneaux : double filet or, comme un bord de table */
+.jmk-skin-casino .panel,.jmk-skin-casino .game-card,.jmk-skin-casino .pack,
+.jmk-skin-casino .work,.jmk-skin-casino .review,.jmk-skin-casino .kpi,
+.jmk-skin-casino .sheet,.jmk-skin-casino .cta{
+  border:1px solid rgba(217,164,65,.55);
+  background:linear-gradient(172deg,rgba(26,92,70,.62),rgba(10,42,31,.78));
+  box-shadow:0 20px 44px -22px rgba(0,0,0,.85),
+             inset 0 0 0 3px rgba(217,164,65,.14),
+             inset 0 1px 0 rgba(255,255,255,.10)}
+.jmk-skin-casino .pack-star{border-color:var(--g2);
+  box-shadow:0 0 0 3px rgba(217,164,65,.20),0 26px 60px -28px rgba(217,164,65,.7)}
+.jmk-skin-casino .pack-flag{background:linear-gradient(180deg,var(--g1),var(--g2));
+  color:#3A2402;border:1px solid var(--g3)}
+.jmk-skin-casino .pack-price,.jmk-skin-casino .kpi .n,.jmk-skin-casino .total .n,
+.jmk-skin-casino .about-stats .n{
+  background:linear-gradient(180deg,var(--g1),var(--g2));-webkit-background-clip:text;
+  background-clip:text;color:transparent}
+
+/* roue : anneau or fin, sans ampoules */
+.jmk-skin-casino #wheel{
+  box-shadow:0 30px 80px -22px rgba(0,0,0,.9),0 0 0 5px var(--g3),0 0 0 8px var(--g2),
+             0 0 34px 4px rgba(217,164,65,.32)}
+.jmk-skin-casino .hub{
+  background:radial-gradient(circle at 40% 32%,#1A5C46,#07211A);
+  border:3px solid var(--g2);color:var(--g1);
+  box-shadow:0 0 0 2px rgba(138,93,18,.8),inset 0 2px 6px rgba(255,255,255,.2)}
+.jmk-skin-casino .needle{border-top-color:var(--g1);filter:drop-shadow(0 3px 5px rgba(0,0,0,.7))}
+.jmk-skin-casino .result .code{
+  background:#07211A;border:1px dashed var(--g2);color:var(--g1)}
+
+/* jetons, étiquettes, cases */
+.jmk-skin-casino .chip,.jmk-skin-casino .tag,.jmk-skin-casino .skill-tags li{
+  border:1px solid rgba(217,164,65,.42);background:rgba(26,92,70,.45);color:var(--text-2)}
+.jmk-skin-casino .box{border:1px solid rgba(217,164,65,.5);
+  background:linear-gradient(172deg,#1A5C46,#0E3A2B);border-radius:14px;
+  box-shadow:inset 0 0 0 3px rgba(217,164,65,.12)}
+.jmk-skin-casino .box .gift{color:var(--g2)}
+.jmk-skin-casino .box.win{border-color:var(--g1);
+  background:linear-gradient(172deg,rgba(217,164,65,.32),rgba(26,92,70,.6))}
+.jmk-skin-casino .reel{border:1px solid rgba(217,164,65,.5);border-radius:10px;background:#07211A}
+.jmk-skin-casino .plinko-holder{border:1px solid rgba(217,164,65,.5);background:#07211A}
+.jmk-skin-casino .qz-opt{border:1px solid rgba(217,164,65,.35);border-radius:12px;
+  background:linear-gradient(172deg,#1A5C46,#0E3A2B)}
+.jmk-skin-casino .qz-opt.ok{border-color:#4BD07A;background:rgba(75,208,122,.18)}
+.jmk-skin-casino .qz-opt.no{border-color:var(--card-red);background:rgba(193,18,31,.18)}
+
+/* carrousel */
+.jmk-skin-casino .carousel-arrow{background:linear-gradient(180deg,#1A5C46,#0E3A2B);
+  border:1px solid var(--g2);color:var(--g1)}
+.jmk-skin-casino .carousel-dot{border:1px solid rgba(217,164,65,.4)}
+.jmk-skin-casino .carousel-dot.active{
+  background:linear-gradient(180deg,var(--g1),var(--g2));border-color:var(--g2);color:#3A2402}
+
+/* saisie */
+.jmk-skin-casino input[type=text],.jmk-skin-casino input[type=email],
+.jmk-skin-casino input[type=number],.jmk-skin-casino select,.jmk-skin-casino textarea{
+  background:#07211A;border:1px solid rgba(217,164,65,.35);border-radius:10px;color:var(--paper)}
+.jmk-skin-casino .topbar{background:rgba(7,33,26,.92);border-bottom:1px solid rgba(217,164,65,.4)}
+.jmk-skin-casino .jmk-langs{border-color:rgba(217,164,65,.45)}
+.jmk-skin-casino .jmk-langs a[aria-current=true]{
+  background:linear-gradient(180deg,var(--g1),var(--g2));color:#3A2402}
+.jmk-skin-casino .divider{background:linear-gradient(90deg,rgba(217,164,65,.55),transparent)}
+.jmk-skin-casino .spec-item,.jmk-skin-casino .skill{border-top:2px solid var(--g2)}

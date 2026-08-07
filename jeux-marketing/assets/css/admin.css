@@ -95,3 +95,59 @@
   color:#3c434a;font-size:13px;line-height:1.6}
 .jmk-langbtn.active{background:#2271b1;border-color:#2271b1;color:#fff}
 .jmk-langbar em{flex:1 1 100%;color:#646970;font-size:12px;font-style:normal;line-height:1.5}
+
+/* ─────────────────────────── créateur de jeu ─────────────────────────── */
+.jmk-builder .jmk-lead{max-width:760px;font-size:14px;color:#50575e}
+.jmk-build{display:grid;grid-template-columns:minmax(0,1fr) 420px;gap:24px;align-items:start}
+@media(max-width:1200px){.jmk-build{grid-template-columns:1fr}}
+
+.jmk-panel{background:#fff;border:1px solid #dcdcde;border-radius:6px;padding:16px 18px;margin-bottom:18px}
+.jmk-panel h2{margin:0 0 6px;font-size:15px}
+.jmk-panel>.description{margin:0 0 14px;max-width:70ch}
+
+.jmk-picks{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+@media(max-width:782px){.jmk-picks{grid-template-columns:1fr 1fr}}
+.jmk-pick input{position:absolute;opacity:0;pointer-events:none}
+.jmk-pick-in{display:block;padding:12px 13px;border:1px solid #dcdcde;border-radius:6px;
+  cursor:pointer;height:100%;transition:border-color .12s ease,background .12s ease}
+.jmk-pick-in strong{display:block;font-size:13px;margin-bottom:3px}
+.jmk-pick-in em{font-style:normal;font-size:12px;color:#646970;line-height:1.45;display:block}
+.jmk-pick:hover .jmk-pick-in{border-color:#8c8f94}
+.jmk-pick input:checked+.jmk-pick-in{border-color:#2271b1;background:#f0f6fc;box-shadow:0 0 0 1px #2271b1}
+.jmk-pick input:focus-visible+.jmk-pick-in{outline:2px solid #2271b1;outline-offset:2px}
+
+.jmk-row{display:grid;grid-template-columns:210px minmax(0,1fr);gap:12px;align-items:center;margin:0 0 10px}
+@media(max-width:782px){.jmk-row{grid-template-columns:1fr}}
+.jmk-row>label{font-weight:600;font-size:13px}
+.jmk-inline{display:flex;align-items:center;gap:10px}
+.jmk-swatches{display:flex;gap:6px}
+.jmk-sw{width:22px;height:22px;border-radius:50%;border:1px solid rgba(0,0,0,.2);cursor:pointer;padding:0}
+
+.jmk-lots{margin-top:8px}
+.jmk-lots th{font-size:12px}
+.jmk-lots th.num,.jmk-lots td.num{text-align:end;width:1%;white-space:nowrap}
+.jmk-lots td{vertical-align:middle}
+.jmk-lots input[type=text]{width:100%;min-width:110px}
+.jmk-lots input[type=number]{width:72px;text-align:end}
+.jmk-lots input:disabled{opacity:.45}
+.jmk-chip{display:inline-block;width:11px;height:11px;border-radius:3px;margin-inline-end:7px;
+  vertical-align:middle;background:#3A2B4D}
+.jmk-share{font-size:12px;color:#646970;font-variant-numeric:tabular-nums}
+.jmk-l-del{color:#b32d2e;text-decoration:none;font-size:17px;line-height:1}
+
+.jmk-qbox{border:1px solid #dcdcde;border-radius:6px;padding:12px 13px;margin-bottom:10px}
+.jmk-qbox>input{margin-bottom:8px;font-weight:600}
+.jmk-q-opt{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.jmk-q-opt input[type=text]{flex:1}
+.jmk-q-del{color:#b32d2e;text-decoration:none;font-size:12px}
+
+.jmk-warn{border-inline-start:3px solid #dba617;padding-inline-start:10px;color:#7a5b00}
+
+.jmk-sticky{position:sticky;top:46px}
+.jmk-sticky h2{font-size:15px;margin:0 0 8px}
+.jmk-sticky h3{font-size:13px;margin:20px 0 6px}
+.jmk-sticky .description{margin-top:6px;font-size:12px}
+#jmkPreview{width:100%;height:520px;border:1px solid #dcdcde;border-radius:6px;background:#0E0916;display:block}
+.jmk-take{margin:0}
+.jmk-embed{background:#1B1226;color:#F5EFE6;border-radius:6px;padding:12px 13px;margin:0;
+  font-size:11.5px;line-height:1.65;white-space:pre-wrap;word-break:break-all;max-height:190px;overflow:auto}

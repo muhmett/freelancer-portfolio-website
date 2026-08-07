@@ -35,7 +35,7 @@ function jmk_defaults() {
 		// Marque.
 		'brand_name'    => 'anomalydev by Hsk',
 		'accent'        => '#D9A441',
-		'skin'          => 'arcade',
+		'skin'          => 'casino',
 		'lang'          => 'en',
 
 		// Jeux actifs.
@@ -73,6 +73,18 @@ function jmk_defaults() {
 		'roi_conv'      => 4,
 		'roi_cart'      => 65,
 	);
+}
+
+/**
+ * Les habillages livrés.
+ *
+ * Une seule liste : l'administration, le nettoyage et le créateur de jeu la
+ * lisent tous les trois. En ajouter un se fait ici et dans main.css.
+ *
+ * @return array
+ */
+function jmk_skins() {
+	return array( 'elegant', 'arcade', 'casino' );
 }
 
 /**

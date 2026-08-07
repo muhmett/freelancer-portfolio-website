@@ -16,6 +16,7 @@ code.
 | `bin/build-zip.sh` | Produit `dist/jeux-marketing.zip`, le fichier à téléverser |
 | `bin/make-pot.php` | Régénère `languages/jeux-marketing.pot` depuis les sources |
 | `bin/screenshot.html` | Page qui sert à produire `screenshot.png` |
+| `bin/make-felt.php` | Régénère `assets/img/felt.jpg`, le feutre de l'habillage casino |
 | `tests/` | Vérifications, sans WordPress |
 
 Le thème fait deux choses : il vend les jeux, et il sert de portfolio. Les
@@ -36,7 +37,9 @@ Le script régénère le fichier de traduction puis écrit
 ```sh
 php tests/test-draw.php     # logique de tirage
 php tests/test-i18n.php     # les trois langues
-tests/run-e2e.sh           # les six jeux dans un navigateur
+php tests/test-builder.php  # créateur de jeu et fichier exporté
+tests/run-embed.sh          # moteur autonome, dans un navigateur
+tests/run-e2e.sh            # les six jeux dans un navigateur
 ```
 
 Les tests chargent `inc/defaults.php` et `inc/leads.php` avec des doublures
@@ -46,7 +49,9 @@ coûte cher à casser :
 - les plafonds sont respectés au tirage,
 - les poids donnent bien les fréquences annoncées,
 - un contact effacé dans les réglages reste effacé,
-- le lot enregistré vient du serveur, pas de ce que le navigateur prétend.
+- le lot enregistré vient du serveur, pas de ce que le navigateur prétend,
+- rien de ce que le créateur reçoit du navigateur ne ressort tel quel dans le
+  fichier exporté.
 
 ## Refaire la capture d'écran
 
@@ -130,14 +135,43 @@ par `background-clip` sur son propre élément ; le découper en `<span>` rend l
 texte invisible, puisque les enfants héritent d'une couleur transparente sans
 fond. Il est donc animé d'un bloc.
 
-**Le second habillage est entièrement contenu.** Tout l'arcade vit sous
-`.jmk-skin-arcade` dans `main.css`, plus deux branches dans `drawWheel()`
-(couronne d'ampoules, voile de relief) gardées par `C.skin`. Retirer la classe
+**Les habillages sont entièrement contenus.** L'arcade vit sous
+`.jmk-skin-arcade` dans `main.css`, le casino sous `.jmk-skin-casino`, plus
+quelques branches dans `drawWheel()` gardées par `C.skin`. Retirer la classe
 rend la page exactement telle qu'elle était : c'est ce qui permet de proposer
-deux looks sans maintenir deux thèmes.
+trois looks sans maintenir trois thèmes. La liste fait foi dans `jmk_skins()`
+— l'administration, le nettoyage et le créateur la lisent tous les trois.
+
+Le piège de l'habillage, rencontré une fois : le moteur autonome ne posait la
+classe que pour l'arcade (`'arcade' === skin ? ' skin-arcade' : ''`). Le
+casino se montait sans erreur, avec les couleurs du sobre. Un habillage qui ne
+casse rien quand il ne s'applique pas ne se remarque pas — d'où la
+vérification qui compare la classe attendue pour chacun.
 
 La couronne d'ampoules se dessine **hors de la rotation**. Dessinée dedans, elle
 tournerait avec les segments et le mouvement deviendrait illisible.
+
+**Le moteur autonome est le produit, le thème est la vitrine.**
+`assets/js/jmk-embed.js` ne dépend de rien : ni WordPress, ni jQuery, ni
+feuille de style jointe — son CSS est une chaîne qu'il injecte lui-même. C'est
+ce fichier que `inc/builder.php` recopie dans la page qu'on télécharge, et
+c'est ce fichier que désigne le code d'intégration montré sous le devis. Avant,
+ce code d'intégration citait un `jeu.min.js` qui n'existait pas : la
+documentation le reconnaissait en note de bas de page. Il pointe maintenant un
+fichier réel.
+
+**L'aperçu du créateur est le fichier exporté.** `jmk_builder_html()` en PHP et
+`skeleton()` en JavaScript produisent le même squelette : une div, le moteur,
+un appel à `mount()`. Rien à y diverger, et ce que le vendeur montre au client
+est littéralement ce que le client recevra.
+
+**Le feutre du casino n'existe qu'une fois côté site.** `bin/make-felt.php`
+dessine `assets/img/felt.jpg` (13 Ko, en tuile) : deux trames de fibres
+croisées et du bruit fin, bouclés sur les bords pour que la répétition ne se
+voie pas. Le moteur autonome, lui, ne peut charger aucune image — il doit
+tenir dans un fichier — et peint son feutre avec deux
+`repeating-linear-gradient` croisés. Les deux se ressemblent assez pour que le
+client ne fasse pas la différence.
 
 **Les polices viennent de Google Fonts.** C'est le point qui reste en tension
 avec l'argument RGPD de la page : pour un client européen strict, il faut

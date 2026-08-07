@@ -38,7 +38,8 @@ l'anglais ni l'arabe.
 
 ## 3. Le panneau de réglages
 
-Tout se passe dans le menu **Jeux Marketing** de la colonne de gauche. Sept onglets.
+Tout se passe dans le menu **Jeux Marketing** de la colonne de gauche. Sept onglets,
+plus l'écran **Créateur de jeu** décrit à la section 6.
 
 ### Général
 - **Mode direct / Mode Fiverr** — le réglage le plus important, voir la section 4
@@ -54,6 +55,7 @@ visuel** :
 |---|---|---|
 | **Sobre** | Fond sombre, or discret, formes nettes | Marque haut de gamme, cabinet, boutique de créateur |
 | **Fête foraine** | Violet saturé, or épais, ampoules autour de la roue, boutons bombés | Promotion grand public, jeu-concours de marque, stand de salon |
+| **Casino** | Tapis de feutre vert, filets or, roue cerclée d'or, boutons jeton rouges | Soirée de marque, tirage d'anniversaire, boisson, hôtellerie, restaurant |
 
 Le style ne touche ni aux lots, ni aux probabilités, ni à la capture d'email :
 uniquement l'apparence. On peut basculer à tout moment.
@@ -152,7 +154,44 @@ Le lot enregistré avec un participant est celui que le serveur a tiré, et pas 
 
 ---
 
-## 6. Insérer un jeu dans une autre page
+## 6. Le créateur de jeu
+
+**Jeux Marketing → Créateur de jeu.** C'est de là que sort ce que vous livrez
+à un client.
+
+Vous composez le jeu à gauche — mécanique, marque, langue, lots, formulaire —
+et il se met à jour à droite. **L'aperçu est le fichier lui-même** : même
+moteur, mêmes réglages. Ce que vous voyez est ce que le client recevra.
+
+Trois façons d'en repartir :
+
+| Bouton | Ce que vous obtenez | Quand s'en servir |
+|---|---|---|
+| **Télécharger le fichier du jeu** | Un fichier `.html` unique, moteur compris | La livraison Fiverr. Le client double-clique, ça marche, sans serveur |
+| **Copier le code** | Une balise `<script>` à coller | Le client a déjà un site et veut le jeu dedans |
+| **Reprendre ces lots sur le site** | Les lots, la couleur et le style passent dans les réglages | Vous avez réglé le jeu dans le créateur et voulez la même chose sur votre page |
+
+Le fichier téléchargé ne dépend de rien : ni WordPress, ni internet, ni
+bibliothèque. Il s'ouvre depuis une clé USB. C'est ce qui permet aussi de
+l'utiliser sur une borne de salon hors ligne.
+
+### Où vont les participants
+
+| Réglage | Ce qui se passe |
+|---|---|
+| Adresse vide | Rien n'est envoyé, rien n'est enregistré. Le jeu est une démonstration |
+| **Utiliser ce site WordPress** | Chaque participant arrive dans **Participants**, et le tirage passe côté serveur |
+| Une autre adresse | Les participants sont envoyés en `POST` à votre webhook |
+
+> **Le tirage serveur n'est pas un détail.** Sans lui, les plafonds sont
+> comptés dans le navigateur de chaque visiteur : chacun repart avec son
+> propre compteur, et « 5 cadeaux maximum » n'en limite aucun. C'est suffisant
+> pour une démonstration, jamais pour un stock réel. Le créateur l'affiche en
+> clair quand vous laissez l'adresse vide.
+
+---
+
+## 7. Insérer un jeu dans une autre page
 
 Le code court `[jeu]` fonctionne dans n'importe quelle page ou article.
 
@@ -168,7 +207,25 @@ Le code court `[jeu]` fonctionne dans n'importe quelle page ou article.
 
 ---
 
-## 7. Structure des fichiers
+### Sur un site qui n'est pas le vôtre
+
+Le code court ne vaut que dans WordPress. Pour poser un jeu sur le site d'un
+client, c'est le code d'intégration du créateur :
+
+```html
+<script src="https://votre-site.com/wp-content/themes/jeux-marketing/assets/js/jmk-embed.js"
+  data-jeu="roue"
+  data-couleur="#D9A441"
+  data-style="casino"
+  data-marque="ma-marque"></script>
+```
+
+Le jeu se pose là où la balise est écrite. `data-cible="#mon-bloc"` le place
+ailleurs dans la page.
+
+---
+
+## 8. Structure des fichiers
 
 ```
 jeux-marketing/
@@ -181,6 +238,7 @@ jeux-marketing/
 ├── header.php / footer.php
 ├── inc/
 │   ├── defaults.php           valeurs par défaut
+│   ├── builder.php            créateur de jeu et export
 │   ├── admin.php              panneau de réglages
 │   ├── leads.php              participants, tirage serveur, export CSV
 │   ├── portfolio.php          réalisations
@@ -193,15 +251,18 @@ jeux-marketing/
 │   └── jeux-marketing.pot     modèle de traduction
 ├── template-parts/            sections et jeux
 └── assets/
+    ├── img/felt.jpg           feutre de l'habillage casino
     ├── css/main.css           styles publics
     ├── css/admin.css          styles de l'administration
     ├── js/app.js              jeux, calculateur, devis
+    ├── js/jmk-embed.js        moteur autonome, livrable seul
+    ├── js/builder.js          le créateur de jeu
     └── js/admin.js            onglets, répéteurs, aperçu des probabilités
 ```
 
 ---
 
-## 8. Avant de mettre en ligne
+## 9. Avant de mettre en ligne
 
 - [ ] Renseigner le numéro WhatsApp et le lien Fiverr
 - [ ] Choisir le bon mode selon la destination du lien
@@ -219,11 +280,10 @@ jeux-marketing/
 
 ---
 
-## 9. Ce qui n'est pas inclus
+## 10. Ce qui n'est pas inclus
 
 Pour rester honnête sur le périmètre :
 
-- Le fichier `jeu.min.js` affiché dans le code d'intégration est une **maquette de démonstration** destinée à montrer au visiteur à quoi ressemblera son intégration. Le moteur autonome livrable au client est un projet séparé.
 - Aucune connexion directe à Mailchimp ou Brevo n'est codée : le webhook couvre ces cas via Zapier ou Make. Une intégration native demanderait les clés d'API de chaque service.
 - Le mode borne tactile hors-ligne est décrit dans les arguments de vente, mais n'est pas fourni dans ce thème.
 - Les polices d'écriture sont chargées depuis Google Fonts. Sur un site soumis au RGPD européen, mieux vaut les héberger soi-même : voir la note dans le `README.md` du dépôt.
