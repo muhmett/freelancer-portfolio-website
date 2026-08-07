@@ -79,6 +79,22 @@ function jmk_hex_to_hsl( $hex ) {
 }
 
 /**
+ * Une section de bannières est-elle affichée sur cette page ?
+ *
+ * Un seul endroit décide. La mise en file du moteur et la configuration
+ * envoyée au navigateur doivent répondre la même chose, sinon on charge un
+ * script pour rien — ou, dans l'autre sens, on affiche des cadres vides.
+ *
+ * @return bool
+ */
+function jmk_banners_visible() {
+	if ( ! is_front_page() ) {
+		return false;
+	}
+	return (bool) jmk_get( 'sec_banners' ) || (bool) jmk_get( 'sec_bwork' );
+}
+
+/**
  * Réglages de la section « bannières ».
  *
  * La bannière reprend la couleur de la marque : c'est le même argument que
@@ -290,13 +306,20 @@ function jmk_assets() {
 
 	wp_enqueue_style( 'jeux-marketing-style', get_stylesheet_uri(), array( 'jmk-main' ), JMK_VERSION );
 
-	wp_enqueue_script( 'jmk-app', JMK_URI . '/assets/js/app.js', array(), jmk_asset_version( 'assets/js/app.js' ), true );
-
-	// Le moteur de bannières n'est chargé que si la section est affichée :
-	// c'est 14 Ko qui n'ont rien à faire sur une page qui ne les montre pas.
-	if ( ( jmk_get( 'sec_banners' ) || jmk_get( 'sec_bwork' ) ) && is_front_page() ) {
+	// Le moteur de bannières n'est chargé que si une section l'affiche : c'est
+	// 16 Ko qui n'ont rien à faire sur une page qui ne les montre pas.
+	//
+	// Il passe AVANT app.js et lui sert de dépendance. L'ordre n'est pas
+	// cosmétique : app.js monte les bannières et renonce si JMKBanner n'existe
+	// pas encore. Chargé après, il ne produisait aucune erreur — seulement des
+	// cadres vides, ce qui est le pire des deux cas.
+	$jmk_deps = array();
+	if ( jmk_banners_visible() ) {
 		wp_enqueue_script( 'jmk-banner', JMK_URI . '/assets/js/jmk-banner.js', array(), jmk_asset_version( 'assets/js/jmk-banner.js' ), true );
+		$jmk_deps[] = 'jmk-banner';
 	}
+
+	wp_enqueue_script( 'jmk-app', JMK_URI . '/assets/js/app.js', $jmk_deps, jmk_asset_version( 'assets/js/app.js' ), true );
 	wp_localize_script( 'jmk-app', 'JMK', jmk_js_config() );
 }
 add_action( 'wp_enqueue_scripts', 'jmk_assets' );

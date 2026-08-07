@@ -1195,9 +1195,24 @@
 		stage.style.height = Math.ceil( h * scale ) + 'px';
 	}
 
+	/* Un mur sans moteur ne produit rien et ne dit rien : c'est ainsi que la
+	   section est partie en ligne avec quatre cadres vides et aucune erreur en
+	   console. On le signale plutôt que de renoncer en silence. */
+	function bannerEngineReady( wall ) {
+		if ( ! wall ) { return false; }
+		if ( 'undefined' === typeof window.JMKBanner ) {
+			if ( window.console && console.warn ) {
+				console.warn( 'Jeux Marketing : jmk-banner.js n’est pas chargé, ou il l’est après app.js. ' +
+					'Les emplacements de bannières resteront vides.' );
+			}
+			return false;
+		}
+		return true;
+	}
+
 	function buildBanners() {
 		var wall = $( '#bannerWall' );
-		if ( ! wall || 'undefined' === typeof window.JMKBanner || ! C.banners ) { return; }
+		if ( ! bannerEngineReady( wall ) || ! C.banners ) { return; }
 
 		bannerMounts.forEach( function ( b ) { b.destroy(); } );
 		bannerMounts = [];
@@ -1229,7 +1244,7 @@
 
 	function buildBwork() {
 		var wall = $( '#bworkWall' );
-		if ( ! wall || 'undefined' === typeof window.JMKBanner || ! C.bwork || ! C.bwork.length ) { return; }
+		if ( ! bannerEngineReady( wall ) || ! C.bwork || ! C.bwork.length ) { return; }
 
 		bworkMounts.forEach( function ( b ) { b.destroy(); } );
 		bworkMounts = [];

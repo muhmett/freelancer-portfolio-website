@@ -38,6 +38,7 @@ Le script régénère le fichier de traduction puis écrit
 php tests/test-draw.php     # logique de tirage
 php tests/test-i18n.php     # les trois langues
 php tests/test-builder.php  # créateur de jeu et fichier exporté
+php tests/test-enqueue.php  # ordre de chargement des scripts
 tests/run-embed.sh          # moteur autonome, dans un navigateur
 tests/run-banner.sh         # bannières : mise en page, formats, régies
 tests/run-e2e.sh            # les six jeux dans un navigateur
@@ -216,6 +217,15 @@ le surtitre de `bold` et `clean` ajoutait quatre pixels que la hauteur
 calculée ignorait. La hauteur garde une marge de 7 % : une somme de lignes
 théoriques n'égale pas les boîtes de ligne du navigateur, et sept pixels de
 trop suffisent à faire passer le sous-titre sous le bouton.
+
+**L'ordre de chargement fait partie du code.** app.js monte les bannières et
+renonce si `JMKBanner` n'existe pas encore. Mis en file après lui, le moteur
+ne produisait aucune erreur : la section sortait avec ses titres, ses
+étiquettes de format et quatre cadres vides. Rien dans les vérifications
+navigateur ne pouvait l'attraper — le harnais charge les deux fichiers dans le
+bon ordre par construction. `jmk-banner` passe donc avant et sert de
+dépendance déclarée à `jmk-app`, `test-enqueue.php` le vérifie, et app.js
+écrit maintenant en console au lieu de se taire.
 
 **Les polices viennent de Google Fonts.** C'est le point qui reste en tension
 avec l'argument RGPD de la page : pour un client européen strict, il faut

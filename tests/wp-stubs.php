@@ -164,7 +164,6 @@ function add_query_arg() {
 function add_menu_page() {}
 function add_submenu_page() {}
 function wp_enqueue_style() {}
-function wp_enqueue_script() {}
 function wp_localize_script() {}
 function wp_nonce_field() {}
 function check_admin_referer( $a = -1, $q = '_wpnonce' ) {
@@ -218,3 +217,39 @@ function wp_list_pluck( $list, $field ) {
 	}
 	return $out;
 }
+
+/* Ce qu'il faut de plus pour charger functions.php en entier et vérifier
+   l'ordre de mise en file des scripts. */
+$GLOBALS['jmk_scripts'] = array();
+
+function wp_enqueue_script( $handle = '', $src = '', $deps = array(), $ver = false, $footer = false ) {
+	$GLOBALS['jmk_scripts'][] = array( 'handle' => $handle, 'deps' => (array) $deps );
+}
+function wp_add_inline_style( $h, $c ) {}
+function get_stylesheet_uri() {
+	return 'https://exemple.test/style.css';
+}
+function register_nav_menus( $m ) {}
+function add_theme_support() {}
+function load_theme_textdomain( $d, $p ) {
+	return true;
+}
+function add_shortcode( $tag, $cb ) {}
+function shortcode_atts( $pairs, $atts, $tag = '' ) {
+	return array_merge( (array) $pairs, (array) $atts );
+}
+function add_meta_box() {}
+function register_taxonomy() {}
+function flush_rewrite_rules() {}
+function wp_parse_args( $a, $d = array() ) {
+	return array_merge( (array) $d, (array) $a );
+}
+
+function is_front_page() {
+	return isset( $GLOBALS['jmk_is_front'] ) ? (bool) $GLOBALS['jmk_is_front'] : true;
+}
+
+function wp_create_nonce( $a = -1 ) {
+	return 'nonce';
+}
+
