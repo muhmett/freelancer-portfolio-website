@@ -19,6 +19,13 @@ return array(
 		'about_eyebrow'      => "Qui fait le travail",
 		'all_realisations'   => "← Toutes les réalisations",
 		'avg_cart'           => "Panier moyen",
+		'banners_chip_sizes'   => "plus de 20 formats standard",
+		'banners_chip_specs'   => "clickTag et ad.size inclus",
+		'banners_chip_weight'  => "moins de 150 Ko pièce",
+		'banners_eyebrow'      => "Publicité display",
+		'banners_foot'         => "Livré en un dossier par format : un fichier HTML5 autonome, un ZIP par format, et une image de repli. Prêt à téléverser sur Google Ads, Campaign Manager 360, Display & Video 360 ou Adform.",
+		'banners_h2'           => "Une création, tous les formats",
+		'banners_lede'         => "Ce sont les vraies bannières, animées ici même — pas des captures. Le même message, remis en page pour chaque taille. Vos couleurs : changez-les plus haut, les bannières suivent.",
 		'brand_eyebrow'      => "Essayez tout de suite",
 		'brand_h2_a'         => "Voyez la roue à",
 		'brand_h2_b'         => "vos couleurs",
@@ -200,6 +207,14 @@ return array(
 	'work_text'      => "Chaque fiche indique le secteur, la mécanique utilisée et le résultat mesuré. Les chiffres viennent des tableaux de bord des clients, pas d'une estimation.",
 
 	// Lots.
+	// Bannières d'affichage : les messages qui défilent.
+	'banner_cta' => "Commander",
+	'banner_frames' => array(
+		array( 'kicker' => "Torréfié cette semaine", 'title' => "Des grains frais, *livrés chez vous*", 'sub' => "Origine unique, torréfié à la commande" ),
+		array( 'kicker' => "Livraison offerte", 'title' => "Dès *200* d’achat", 'sub' => "Deux jours, partout dans le pays" ),
+		array( 'kicker' => "", 'title' => "Votre premier paquet, *-20 %*", 'sub' => "Avec le code BIENVENUE20" ),
+	),
+
 	'lots' => array(
 		array( 'label' => "-10 %", 'weight' => 38, 'cap' => 0, 'code' => 'PROMO10', 'hue' => 0, 'losing' => 0 ),
 		array( 'label' => "Livraison offerte", 'weight' => 24, 'cap' => 0, 'code' => 'LIVRAISON', 'hue' => 38, 'losing' => 0 ),

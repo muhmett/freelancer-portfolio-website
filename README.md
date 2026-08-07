@@ -39,6 +39,7 @@ php tests/test-draw.php     # logique de tirage
 php tests/test-i18n.php     # les trois langues
 php tests/test-builder.php  # créateur de jeu et fichier exporté
 tests/run-embed.sh          # moteur autonome, dans un navigateur
+tests/run-banner.sh         # bannières : mise en page, formats, régies
 tests/run-e2e.sh            # les six jeux dans un navigateur
 ```
 
@@ -172,6 +173,31 @@ voie pas. Le moteur autonome, lui, ne peut charger aucune image — il doit
 tenir dans un fichier — et peint son feutre avec deux
 `repeating-linear-gradient` croisés. Les deux se ressemblent assez pour que le
 client ne fasse pas la différence.
+
+**Un moteur embarqué ne partage aucun nom avec sa page d'accueil.**
+`jmk-embed.js` préfixe tout en `.jmkg-`, `jmk-banner.js` en `.jmkb-`. Ce n'est
+pas de la cosmétique : les bannières portaient d'abord des classes `.stage`,
+`.cta`, `.logo`. Le thème définit `.stage{flex-direction:column}` pour la
+roue — la règle s'appliquait aussi aux bannières, le bandeau passait en
+colonne, la colonne de texte tombait à zéro et le titre sortait à un mot par
+ligne. Sur le site d'un client, où `.cta` et `.logo` existent presque
+toujours, le même accident se produirait sans qu'on le voie jamais. Le test
+`banner.html` rejoue l'accident : il injecte les règles hostiles et vérifie
+que la bannière ne bouge pas.
+
+**La largeur du texte se mesure, elle ne s'estime pas.** `jmk-banner.js`
+choisit la taille du titre en la cherchant : il part de la plus grande
+plausible et descend jusqu'à ce que le bloc tienne. Le calcul repose sur
+`measureText` dans un canevas hors écran — une estimation « tant de fois la
+taille de police par caractère » s'est trompée d'assez pour faire déborder
+quatre formats sur vingt, sans que rien ne le signale.
+
+**Ce qui est mis à l'échelle doit être mesuré après la mise en page.** La
+section « bannières » affiche les formats à leur taille réelle en pixels et
+ne les réduit que si la colonne est trop étroite. La largeur de cette colonne
+n'est pas connue au moment où le script s'exécute : mesurée trop tôt, elle
+donne une échelle de 1 et la bannière est simplement rognée. Un
+`ResizeObserver` sur chaque emplacement remplace le choix d'un bon moment.
 
 **Les polices viennent de Google Fonts.** C'est le point qui reste en tension
 avec l'argument RGPD de la page : pour un client européen strict, il faut

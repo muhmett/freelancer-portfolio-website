@@ -781,3 +781,26 @@ body.jmk-skin-casino .wheel-holder::before{
   background:linear-gradient(180deg,var(--g1),var(--g2));color:#3A2402}
 .jmk-skin-casino .divider{background:linear-gradient(90deg,rgba(217,164,65,.55),transparent)}
 .jmk-skin-casino .spec-item,.jmk-skin-casino .skill{border-top:2px solid var(--g2)}
+
+/* ── mur de bannières ── */
+.banner-note{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 26px}
+
+/* Chaque emplacement fait la largeur de sa bannière, pas celle d'une colonne
+   de grille. Un 728×90 rangé dans une colonne de 280 px descend à 39 % : il
+   devient illisible, et une bannière illisible ne démontre rien. Ici les
+   formats s'affichent à leur taille réelle tant que la page est assez large,
+   et le bandeau prend sa propre ligne. */
+.banner-wall{display:flex;flex-wrap:wrap;gap:28px 30px;align-items:flex-start}
+.banner-slot{flex:0 0 auto;max-width:100%;margin:0}
+.banner-slot[data-w="728"],.banner-slot[data-w="970"],.banner-slot[data-w="980"]{flex-basis:100%}
+.banner-stage{max-width:100%}
+.banner-slot figcaption{display:flex;align-items:baseline;gap:10px;margin-bottom:8px}
+.banner-dim{font-family:var(--mono,ui-monospace,monospace);font-size:.78rem;
+  color:var(--accent);letter-spacing:.06em}
+.banner-name{font-size:.78rem;color:var(--muted)}
+.banner-stage{overflow:hidden}
+.banner-mount{width:max-content}
+.banner-foot{margin-top:24px;font-size:.86rem;color:var(--muted);max-width:62ch}
+@media(max-width:640px){
+  .banner-slot{flex-basis:100%}
+}

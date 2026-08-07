@@ -104,7 +104,7 @@ window.addEventListener( 'error', function ( e ) {
 			   débordent exprès et sont rognés par overflow:hidden, donc le
 			   scrollWidth de la racine est toujours plus grand — il ne dit
 			   rien sur la lisibilité. */
-			[].slice.call( root.querySelectorAll( '.t, .s, .k, .cta, .logo span' ) ).forEach( function ( n ) {
+			[].slice.call( root.querySelectorAll( '.jmkb-t, .jmkb-s, .jmkb-k, .jmkb-cta, .jmkb-logo span' ) ).forEach( function ( n ) {
 				// Un mot plus large que sa colonne déborde de sa propre boîte.
 				if ( n.scrollWidth > n.clientWidth + 1 ) {
 					over.push( s.w + 'x' + s.h + ' ' + n.className + ' (mot ' + n.scrollWidth + '>' + n.clientWidth + ')' );
@@ -122,7 +122,7 @@ window.addEventListener( 'error', function ( e ) {
 		var tallOver = [];
 		made.forEach( function ( b ) {
 			var box = b.el.getBoundingClientRect();
-			var st  = b.el.querySelector( '.stage' );
+			var st  = b.el.querySelector( '.jmkb-stage' );
 			if ( st && st.getBoundingClientRect().height > box.height + 1 ) {
 				tallOver.push( b.config.w + 'x' + b.config.h );
 			}
@@ -131,6 +131,73 @@ window.addEventListener( 'error', function ( e ) {
 			0 === tallOver.length );
 
 		made.forEach( function ( b ) { b.destroy(); } );
+	} )();
+
+	/* ── 3 bis. un nom de marque long ──
+	   La série ci-dessus tournait sur « Café Atlas », dix caractères. Une
+	   signature deux fois plus longue sortait du cadre des formats étroits :
+	   le nom est en `nowrap` (le couper au milieu serait pire) et rien ne
+	   vérifiait qu'il tenait. */
+	( function () {
+		var over = [], made = [];
+		JMKBanner.sizes().forEach( function ( s ) {
+			var holder = document.createElement( 'div' );
+			bench.appendChild( holder );
+			var b = JMKBanner.mount( holder, cfgFor( s.w, s.h, { brand: 'anomalydev by Hsk' } ) );
+			made.push( b );
+
+			var box = b.el.getBoundingClientRect();
+			[].slice.call( b.el.querySelectorAll( '.jmkb-logo span, .jmkb-t, .jmkb-s, .jmkb-k, .jmkb-cta' ) ).forEach( function ( n ) {
+				var r = n.getBoundingClientRect();
+				if ( n.scrollWidth > n.clientWidth + 1 || r.right > box.right + 1 || r.left < box.left - 1 ) {
+					over.push( s.w + 'x' + s.h + ' ' + n.className );
+				}
+			} );
+		} );
+		ok( 'un nom de marque long ne deborde d’aucun format' + ( over.length ? ' — ' + over.join( ', ' ) : '' ),
+			0 === over.length );
+		made.forEach( function ( b ) { b.destroy(); } );
+	} )();
+
+	/* ── 3 ter. la page d'accueil ne doit pas pouvoir déteindre ──
+	   Le thème définit `.stage{flex-direction:column}` pour la roue. La
+	   bannière portait une classe `.stage` elle aussi : la règle du thème
+	   passait, le bandeau devenait une colonne, et la colonne de texte
+	   tombait à zéro — un mot par ligne, débordant du cadre. Les noms sont
+	   maintenant préfixés. Ce qui suit rejoue l'accident. */
+	( function () {
+		var hostile = document.createElement( 'style' );
+		hostile.textContent =
+			'.stage{display:block!important;flex-direction:column!important}' +
+			'.cta{padding:46px 34px!important;display:block!important}' +
+			'.logo{width:100%!important}.msgs{width:0!important}' +
+			'.t{font-size:80px!important}.f{position:static!important}' +
+			'.on,.out{opacity:1!important}';
+		document.head.appendChild( hostile );
+
+		var h = document.createElement( 'div' );
+		bench.appendChild( h );
+		var b = JMKBanner.mount( h, cfgFor( 728, 90 ) );
+
+		var stage = b.el.querySelector( '.jmkb-stage' ),
+			msgs  = b.el.querySelector( '.jmkb-msgs' ),
+			title = b.el.querySelector( '.jmkb-t' );
+
+		// Un élément absent doit faire échouer la vérification, pas lever :
+		// une exception ici emporterait toute la suite et masquerait le reste.
+		ok( 'les éléments portent bien le préfixe', !! stage && !! msgs && !! title );
+
+		ok( 'la scène reste en ligne malgré une règle .stage hostile',
+			!! stage && getComputedStyle( stage ).flexDirection === 'row' );
+		ok( 'la colonne de texte garde sa largeur',
+			!! msgs && msgs.getBoundingClientRect().width > 200 );
+		ok( 'le titre garde sa taille',
+			!! title && parseFloat( getComputedStyle( title ).fontSize ) < 60 );
+		ok( 'le bloc ne déborde pas du cadre',
+			!! stage && stage.getBoundingClientRect().height <= b.el.getBoundingClientRect().height + 1 );
+
+		b.destroy();
+		document.head.removeChild( hostile );
 	} )();
 
 	/* ── 4. deux bannières ne partagent pas leur style ──
@@ -204,8 +271,8 @@ window.addEventListener( 'error', function ( e ) {
 		var h = document.createElement( 'div' );
 		bench.appendChild( h );
 		var b = JMKBanner.mount( h, cfgFor( 300, 250 ) );
-		ok( '*mot* passe en couleur d’accent', !! b.el.querySelector( '.t em' ) );
-		ok( 'les étoiles ne s’affichent pas', b.el.querySelector( '.t' ).textContent.indexOf( '*' ) === -1 );
+		ok( '*mot* passe en couleur d’accent', !! b.el.querySelector( '.jmkb-t em' ) );
+		ok( 'les étoiles ne s’affichent pas', b.el.querySelector( '.jmkb-t' ).textContent.indexOf( '*' ) === -1 );
 		b.destroy();
 	} )();
 

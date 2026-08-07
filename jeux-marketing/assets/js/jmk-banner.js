@@ -287,6 +287,22 @@
 		var hasCta   = !! plain( cfg.cta ),
 			hasBrand = !! ( cfg.logo || plain( cfg.brand ) );
 
+		/* En pile, le nom de marque occupe toute la largeur et ne se coupe
+		   pas — il est en `nowrap`, sinon « anomalydev by Hsk » se casserait
+		   en deux lignes au milieu du mot. Il faut donc le faire tenir : on
+		   réduit sa taille, et s'il ne rentre toujours pas, on le retire. Le
+		   message passe avant la signature. */
+		if ( ! row && hasBrand && ! cfg.logo ) {
+			var brandRoom = w - pad * 2;
+			while ( brandFs > 9 && textW( plain( cfg.brand ), brandFs, '800' ) > brandRoom ) {
+				brandFs--;
+			}
+			if ( textW( plain( cfg.brand ), brandFs, '800' ) > brandRoom ) {
+				hasBrand = false;
+			}
+			brandW = hasBrand ? textW( plain( cfg.brand ), brandFs, '800' ) : 0;
+		}
+
 		/* La place qui reste au texte, une fois logo et bouton posés. */
 		var availW, availH;
 		if ( row ) {
@@ -427,12 +443,12 @@
 			/* La photo, puis le voile. L'ordre compte : le dégradé part du
 			   côté où vit le texte et s'ouvre vers l'image, pour qu'on voie
 			   la matière sans perdre un mot. */
-			out.push( sel + ' .bg{position:absolute;inset:0;pointer-events:none;' +
+			out.push( sel + ' .jmkb-bg{position:absolute;inset:0;pointer-events:none;' +
 				'background-image:url(' + cfg.image + ');background-size:cover;' +
 				'background-position:' + cfg.focus + '}' );
 
 			var dir = L.row ? '95deg' : '175deg';
-			out.push( sel + ' .scrim{position:absolute;inset:0;pointer-events:none;' +
+			out.push( sel + ' .jmkb-scrim{position:absolute;inset:0;pointer-events:none;' +
 				'background:linear-gradient(' + dir + ',' +
 				hexA( cfg.bg, Math.min( 0.97, cfg.scrim + 0.28 ) ) + ' 0%,' +
 				hexA( cfg.bg, cfg.scrim ) + ' 46%,' +
@@ -443,7 +459,7 @@
 			/* La découpe mord sur le bord opposé au texte. En bandeau elle
 			   tient dans sa colonne ; en boîte elle passe derrière, sinon il
 			   ne reste plus rien pour le message. */
-			out.push( sel + ' .cut{position:absolute;pointer-events:none;' +
+			out.push( sel + ' .jmkb-cut{position:absolute;pointer-events:none;' +
 				( L.row
 					? 'right:0;top:0;height:100%;width:34%;'
 					: 'right:-6%;bottom:-4%;height:52%;width:62%;' ) +
@@ -461,47 +477,47 @@
 		if ( cfg.sheen ) {
 			/* Le voile qui balaie la surface : c'est ce mouvement de fond qui
 			   sépare une bannière d'une image fixe. */
-			out.push( sel + ' .sheen{position:absolute;top:-60%;width:26%;height:220%;pointer-events:none;' +
+			out.push( sel + ' .jmkb-sheen{position:absolute;top:-60%;width:26%;height:220%;pointer-events:none;' +
 				'background:linear-gradient(90deg,transparent,rgba(255,255,255,.15),transparent);' +
 				'transform:rotate(14deg);animation:jmkbSweep 4.6s ease-in-out infinite}' );
 			out.push( '@keyframes jmkbSweep{0%{left:-40%}55%,100%{left:130%}}' );
 		}
 
-		out.push( sel + ' .stage{position:absolute;inset:0;z-index:2;padding:' + L.pad + 'px;display:flex;align-items:center;' +
+		out.push( sel + ' .jmkb-stage{position:absolute;inset:0;z-index:2;padding:' + L.pad + 'px;display:flex;align-items:center;' +
 			( L.row
 				? 'gap:' + L.gap + 'px;'
 				: 'flex-direction:column;justify-content:center;text-align:center;' ) + '}' );
 
-		out.push( sel + ' .msgs{position:relative;flex:1 1 auto;min-width:0;' +
+		out.push( sel + ' .jmkb-msgs{position:relative;flex:1 1 auto;min-width:0;' +
 			( L.row ? 'align-self:center;' : 'width:100%;' ) + '}' );
 
-		out.push( sel + ' .f{' + ( L.row ? '' : 'position:absolute;left:0;right:0;top:50%;' ) +
+		out.push( sel + ' .jmkb-f{' + ( L.row ? '' : 'position:absolute;left:0;right:0;top:50%;' ) +
 			( L.row ? 'position:absolute;left:0;right:0;top:50%;' : '' ) +
 			'transform:translateY(calc(-50% + ' + Math.round( L.title * 0.45 ) + 'px));opacity:0;' +
 			'transition:opacity .42s ease,transform .42s cubic-bezier(.2,.7,.3,1)}' );
-		out.push( sel + ' .f.on{opacity:1;transform:translateY(-50%)}' );
-		out.push( sel + ' .f.out{opacity:0;transition-duration:.3s;' +
+		out.push( sel + ' .jmkb-f.jmkb-on{opacity:1;transform:translateY(-50%)}' );
+		out.push( sel + ' .jmkb-f.jmkb-out{opacity:0;transition-duration:.3s;' +
 			'transform:translateY(calc(-50% - ' + Math.round( L.title * 0.38 ) + 'px))}' );
 
 		/* La pile est absolue : elle ne pousse plus le conteneur. On lui rend
 		   la hauteur du plus grand message — celle qui a servi à choisir la
 		   taille du titre, pas une approximation. */
-		out.push( sel + ' .msgs{height:' + L.blockH + 'px}' );
+		out.push( sel + ' .jmkb-msgs{height:' + L.blockH + 'px}' );
 
-		out.push( sel + ' .k{font-size:' + L.kicker + 'px;font-weight:700;letter-spacing:.14em;' +
+		out.push( sel + ' .jmkb-k{font-size:' + L.kicker + 'px;font-weight:700;letter-spacing:.14em;' +
 			'text-transform:uppercase;color:' + cfg.accent + ';margin-bottom:' + Math.round( L.gap * 0.6 ) + 'px}' );
-		out.push( sel + ' .t{font-size:' + L.title + 'px;font-weight:800;line-height:1.08;letter-spacing:-.02em}' );
-		out.push( sel + ' .t em{font-style:normal;color:' + cfg.accent + '}' );
-		out.push( sel + ' .s{font-size:' + L.sub + 'px;font-weight:500;line-height:1.25;opacity:.82;' +
+		out.push( sel + ' .jmkb-t{font-size:' + L.title + 'px;font-weight:800;line-height:1.08;letter-spacing:-.02em}' );
+		out.push( sel + ' .jmkb-t em{font-style:normal;color:' + cfg.accent + '}' );
+		out.push( sel + ' .jmkb-s{font-size:' + L.sub + 'px;font-weight:500;line-height:1.25;opacity:.82;' +
 			'margin-top:' + Math.round( L.gap * 0.7 ) + 'px}' );
 
-		out.push( sel + ' .logo{flex:0 0 auto;' + ( L.row ? '' : 'margin-bottom:' + L.gap + 'px;' ) + '}' );
-		out.push( sel + ' .logo img{display:block;height:' + L.logoH + 'px;width:auto;' +
+		out.push( sel + ' .jmkb-logo{flex:0 0 auto;' + ( L.row ? '' : 'margin-bottom:' + L.gap + 'px;' ) + '}' );
+		out.push( sel + ' .jmkb-logo img{display:block;height:' + L.logoH + 'px;width:auto;' +
 			'max-width:' + Math.round( cfg.w * ( L.row ? 0.22 : 0.5 ) ) + 'px;object-fit:contain}' );
-		out.push( sel + ' .logo span{display:block;white-space:nowrap;font-size:' + L.brand + 'px;' +
+		out.push( sel + ' .jmkb-logo span{display:block;white-space:nowrap;font-size:' + L.brand + 'px;' +
 			'font-weight:800;letter-spacing:-.01em}' );
 
-		out.push( sel + ' .cta{flex:0 0 auto;white-space:nowrap;' +
+		out.push( sel + ' .jmkb-cta{flex:0 0 auto;white-space:nowrap;' +
 			( L.row ? '' : 'margin-top:' + Math.round( L.gap * 1.6 ) + 'px;' ) +
 			'background:' + cfg.accent + ';color:' + accentInk + ';' +
 			'font-size:' + L.cta + 'px;font-weight:800;line-height:1.15;' +
@@ -511,8 +527,8 @@
 			'animation:jmkbPulse 2.4s ease-in-out infinite}' );
 		out.push( '@keyframes jmkbPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}' );
 
-		out.push( '@media(prefers-reduced-motion:reduce){' + sel + ' .cta,' + sel + ' .sheen{animation:none}' +
-			sel + ' .f{transition:none}}' );
+		out.push( '@media(prefers-reduced-motion:reduce){' + sel + ' .jmkb-cta,' + sel + ' .jmkb-sheen{animation:none}' +
+			sel + ' .jmkb-f{transition:none}}' );
 
 		return out.join( '' );
 	}
@@ -527,9 +543,9 @@
 
 	function frameHtml( f, L ) {
 		var out = '';
-		if ( L.showKicker && f.kicker ) { out += '<div class="k">' + esc( f.kicker ) + '</div>'; }
-		out += '<div class="t">' + emphasis( f.title ) + '</div>';
-		if ( L.showSub && f.sub ) { out += '<div class="s">' + esc( f.sub ) + '</div>'; }
+		if ( L.showKicker && f.kicker ) { out += '<div class="jmkb-k">' + esc( f.kicker ) + '</div>'; }
+		out += '<div class="jmkb-t">' + emphasis( f.title ) + '</div>';
+		if ( L.showSub && f.sub ) { out += '<div class="jmkb-s">' + esc( f.sub ) + '</div>'; }
 		return out;
 	}
 
@@ -537,20 +553,20 @@
 		var logo = '';
 		if ( L.hasBrand ) {
 			logo = cfg.logo
-				? '<div class="logo"><img src="' + esc( cfg.logo ) + '" alt=""></div>'
-				: '<div class="logo"><span>' + esc( cfg.brand ) + '</span></div>';
+				? '<div class="jmkb-logo"><img src="' + esc( cfg.logo ) + '" alt=""></div>'
+				: '<div class="jmkb-logo"><span>' + esc( cfg.brand ) + '</span></div>';
 		}
 
 		var frames = cfg.frames.map( function ( f, i ) {
-			return '<div class="f' + ( 0 === i ? ' on' : '' ) + '">' + frameHtml( f, L ) + '</div>';
+			return '<div class="jmkb-f' + ( 0 === i ? ' jmkb-on' : '' ) + '">' + frameHtml( f, L ) + '</div>';
 		} ).join( '' );
 
-		return ( cfg.image ? '<div class="bg"></div><div class="scrim"></div>' : '' ) +
-			( cfg.cutout ? '<div class="cut"></div>' : '' ) +
-			( cfg.sheen ? '<div class="sheen"></div>' : '' ) +
-			'<div class="stage">' + logo +
-			'<div class="msgs">' + frames + '</div>' +
-			( L.hasCta ? '<div class="cta">' + esc( cfg.cta ) + '</div>' : '' ) +
+		return ( cfg.image ? '<div class="jmkb-bg"></div><div class="jmkb-scrim"></div>' : '' ) +
+			( cfg.cutout ? '<div class="jmkb-cut"></div>' : '' ) +
+			( cfg.sheen ? '<div class="jmkb-sheen"></div>' : '' ) +
+			'<div class="jmkb-stage">' + logo +
+			'<div class="jmkb-msgs">' + frames + '</div>' +
+			( L.hasCta ? '<div class="jmkb-cta">' + esc( cfg.cta ) + '</div>' : '' ) +
 			'</div>';
 	}
 
@@ -573,7 +589,7 @@
 	 * @return {Object} { stop }
 	 */
 	function run( root, cfg ) {
-		var frames = [].slice.call( root.querySelectorAll( '.f' ) );
+		var frames = [].slice.call( root.querySelectorAll( '.jmkb-f' ) );
 		if ( frames.length < 2 ) { return { stop: function () {} }; }
 
 		var i = 0, loop = 0, timer = 0, fade = 0, stopped = false;
@@ -590,13 +606,13 @@
 					if ( loop >= cfg.loops ) { return; }
 				}
 
-				cur.classList.remove( 'on' );
-				cur.classList.add( 'out' );
-				next.classList.remove( 'out' );
+				cur.classList.remove( 'jmkb-on' );
+				cur.classList.add( 'jmkb-out' );
+				next.classList.remove( 'jmkb-out' );
 
 				// Un temps mort entre les deux : les deux textes ne doivent
 				// jamais être lisibles en même temps.
-				fade = setTimeout( function () { next.classList.add( 'on' ); }, 220 );
+				fade = setTimeout( function () { next.classList.add( 'jmkb-on' ); }, 220 );
 
 				i = ( i + 1 ) % frames.length;
 				step();
@@ -723,7 +739,7 @@
 			var sheet = css( cfg, L, '#ad', true );
 			if ( still ) {
 				// Ni pulsation ni transition : la capture doit être stable.
-				sheet += '#ad .cta{animation:none}#ad .f{transition:none;opacity:1}';
+				sheet += '#ad .jmkb-cta{animation:none}#ad .jmkb-f{transition:none;opacity:1}';
 			}
 
 			return head + '<style>' + sheet + '</style>\n' +
@@ -743,14 +759,14 @@
 			'ad.addEventListener("click",function(){',
 			'  var u=window.clickTag||"";if(u){window.open(u,"_blank");}',
 			'});',
-			'var f=[].slice.call(ad.querySelectorAll(".f"));',
+			'var f=[].slice.call(ad.querySelectorAll(".jmkb-f"));',
 			'if(f.length<2){return;}',
 			'var i=0,l=0,H=' + cfg.hold + ',L=' + cfg.loops + ';',
 			'(function s(){setTimeout(function(){',
 			'  var c=f[i],n=f[(i+1)%f.length];',
 			'  if((i+1)%f.length===0){l++;if(l>=L){return;}}',
-			'  c.classList.remove("on");c.classList.add("out");n.classList.remove("out");',
-			'  setTimeout(function(){n.classList.add("on");},220);',
+			'  c.classList.remove("jmkb-on");c.classList.add("jmkb-out");n.classList.remove("jmkb-out");',
+			'  setTimeout(function(){n.classList.add("jmkb-on");},220);',
 			'  i=(i+1)%f.length;s();',
 			'},H);})();',
 			'})();'

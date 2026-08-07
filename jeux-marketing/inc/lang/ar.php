@@ -19,6 +19,13 @@ return array(
 		'about_eyebrow'      => "من ينجز العمل",
 		'all_realisations'   => "← كل الأعمال",
 		'avg_cart'           => "متوسط السلة",
+		'banners_chip_sizes'   => "أكثر من 20 مقاساً معيارياً",
+		'banners_chip_specs'   => "clickTag و ad.size مضمّنان",
+		'banners_chip_weight'  => "أقل من 150 كيلوبايت لكل واحد",
+		'banners_eyebrow'      => "إعلانات العرض",
+		'banners_foot'         => "تُسلَّم في مجلد لكل مقاس: ملف HTML5 مستقل، وملف مضغوط لكل مقاس، وصورة احتياطية. جاهزة للرفع على Google Ads أو Campaign Manager 360 أو Display & Video 360 أو Adform.",
+		'banners_h2'           => "تصميم واحد، كل المقاسات",
+		'banners_lede'         => "هذه هي البانرات الحقيقية، تتحرك هنا — وليست صوراً. نفس الرسالة، معادة التنسيق لكل مقاس. ألوانك: غيّرها في الأعلى وستتبعها البانرات.",
 		'brand_eyebrow'      => "جرّبها الآن",
 		'brand_h2_a'         => "شاهد العجلة",
 		'brand_h2_b'         => "بألوانك",
@@ -200,6 +207,14 @@ return array(
 	'work_text'      => "كل بطاقة تبيّن القطاع والآلية المستعملة والنتيجة المقاسة. الأرقام مأخوذة من لوحات تحكم الزبناء، لا من تقدير.",
 
 	// Lots.
+	// Bannières d'affichage : les messages qui défilent.
+	'banner_cta' => "اطلب الآن",
+	'banner_frames' => array(
+		array( 'kicker' => "محمّص هذا الأسبوع", 'title' => "حبوب طازجة، *تصلك مباشرة*", 'sub' => "أصل واحد، يُحمَّص عند الطلب" ),
+		array( 'kicker' => "توصيل مجاني", 'title' => "لكل طلب فوق *200*", 'sub' => "يومان، إلى أي مكان" ),
+		array( 'kicker' => "", 'title' => "كيسك الأول، *-20%*", 'sub' => "استعمل الرمز WELCOME20" ),
+	),
+
 	'lots' => array(
 		array( 'label' => "خصم ١٠٪", 'weight' => 38, 'cap' => 0, 'code' => 'PROMO10', 'hue' => 0, 'losing' => 0 ),
 		array( 'label' => "شحن مجاني", 'weight' => 24, 'cap' => 0, 'code' => 'SHIPPING', 'hue' => 38, 'losing' => 0 ),

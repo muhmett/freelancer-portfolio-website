@@ -100,6 +100,15 @@ C'est aussi ici que se règlent les valeurs de départ du calculateur de rentabi
 ### Textes
 Titre, paragraphe d'introduction, étiquettes, points techniques et questions fréquentes.
 
+### Bannières
+La section « bannières » de la page d'accueil montre les formats d'affichage,
+animés, à leur taille réelle. Les messages qui y défilent se modifient par
+langue, comme le reste du contenu.
+
+Une campagne complète se produit hors de WordPress, avec
+`bin/build-banners.php` : un dossier par format, un fichier HTML5 autonome,
+un ZIP par format et une image de repli. C'est ce dossier qui part au client.
+
 ### Portfolio
 Les packs et leurs prix, le déroulé d'un projet, les compétences, la section
 « à propos » avec ses chiffres clés, l'intitulé des réalisations et les avis

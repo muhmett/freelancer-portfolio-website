@@ -19,6 +19,13 @@ return array(
 		'about_eyebrow'      => "Who does the work",
 		'all_realisations'   => "← All work",
 		'avg_cart'           => "Average basket",
+		'banners_chip_sizes'   => "20+ standard sizes",
+		'banners_chip_specs'   => "clickTag and ad.size built in",
+		'banners_chip_weight'  => "under 150 KB each",
+		'banners_eyebrow'      => "Display advertising",
+		'banners_foot'         => "Delivered as one folder per size: a self-contained HTML5 file, a per-size ZIP, and a static backup image. Ready to upload to Google Ads, Campaign Manager 360, Display & Video 360 or Adform.",
+		'banners_h2'           => "One creative, every format",
+		'banners_lede'         => "These are the real banners, animating right here — not screenshots. The same message, laid out again for each size. Your colours: change them above and the banners follow.",
 		'brand_eyebrow'      => "Try it right now",
 		'brand_h2_a'         => "See the wheel in",
 		'brand_h2_b'         => "your colours",
@@ -200,6 +207,14 @@ return array(
 	'work_text'      => "Each entry shows the sector, the mechanic used and the measured result. The figures come from client dashboards, not from an estimate.",
 
 	// Lots.
+	// Bannières d'affichage : les messages qui défilent.
+	'banner_cta' => "Order now",
+	'banner_frames' => array(
+		array( 'kicker' => "Roasted this week", 'title' => "Fresh beans, *straight to you*", 'sub' => "Single origin, roasted to order" ),
+		array( 'kicker' => "Free delivery", 'title' => "On every order over *200*", 'sub' => "Two days, anywhere in the country" ),
+		array( 'kicker' => "", 'title' => "Your first bag, *-20%*", 'sub' => "Use code WELCOME20" ),
+	),
+
 	'lots' => array(
 		array( 'label' => "-10 %", 'weight' => 38, 'cap' => 0, 'code' => 'PROMO10', 'hue' => 0, 'losing' => 0 ),
 		array( 'label' => "Free shipping", 'weight' => 24, 'cap' => 0, 'code' => 'SHIPPING', 'hue' => 38, 'losing' => 0 ),

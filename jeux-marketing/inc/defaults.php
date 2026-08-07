@@ -59,6 +59,7 @@ function jmk_defaults() {
 		'sec_roi'       => 1,
 		'sec_quote'     => 1,
 		'sec_specs'     => 1,
+		'sec_banners'   => 1,
 		'sec_faq'       => 1,
 
 		// Règles de jeu.
@@ -72,6 +73,24 @@ function jmk_defaults() {
 		'roi_part'      => 24,
 		'roi_conv'      => 4,
 		'roi_cart'      => 65,
+	);
+}
+
+/**
+ * Les formats montrés dans la section « bannières ».
+ *
+ * Quatre suffisent à faire passer l'argument : une boîte, un bandeau, un
+ * gratte-ciel, un mobile. En montrer vingt remplirait la page sans rien
+ * ajouter — le visiteur a compris à la deuxième.
+ *
+ * @return array
+ */
+function jmk_banner_sizes() {
+	return array(
+		array( 'w' => 300, 'h' => 250, 'name' => __( 'Medium Rectangle', 'jeux-marketing' ) ),
+		array( 'w' => 728, 'h' => 90,  'name' => __( 'Leaderboard', 'jeux-marketing' ) ),
+		array( 'w' => 160, 'h' => 600, 'name' => __( 'Wide Skyscraper', 'jeux-marketing' ) ),
+		array( 'w' => 320, 'h' => 100, 'name' => __( 'Large Mobile Banner', 'jeux-marketing' ) ),
 	);
 }
 
@@ -98,6 +117,7 @@ function jmk_translatable() {
 		'about_title', 'about_text', 'about_stats',
 		'work_title', 'work_text',
 		'lots', 'options', 'packs', 'process', 'skills', 'faq', 'specs', 'quiz', 'reviews',
+		'banner_frames', 'banner_cta',
 	);
 }
 

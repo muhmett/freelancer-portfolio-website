@@ -402,6 +402,10 @@ msgstr ""
 msgid "Langue du jeu"
 msgstr ""
 
+#: jeux-marketing/inc/defaults.php:93
+msgid "Large Mobile Banner"
+msgstr ""
+
 #: jeux-marketing/inc/builder.php:78
 msgid "Le classique. Lisible tout de suite."
 msgstr ""
@@ -432,6 +436,10 @@ msgstr ""
 
 #: jeux-marketing/inc/admin.php:604
 msgid "Le visiteur peut les modifier. Ce sont seulement les chiffres affichés à l'arrivée."
+msgstr ""
+
+#: jeux-marketing/inc/defaults.php:91
+msgid "Leaderboard"
 msgstr ""
 
 #: jeux-marketing/inc/builder.php:420
@@ -484,6 +492,10 @@ msgstr ""
 
 #: jeux-marketing/inc/admin.php:350
 msgid "Marque"
+msgstr ""
+
+#: jeux-marketing/inc/defaults.php:90
+msgid "Medium Rectangle"
 msgstr ""
 
 #: jeux-marketing/inc/admin.php:690
@@ -930,6 +942,10 @@ msgstr ""
 
 #: jeux-marketing/inc/admin.php:395
 msgid "WhatsApp entièrement masqué, bouton « Commander sur Fiverr ». Pour le lien de votre annonce."
+msgstr ""
+
+#: jeux-marketing/inc/defaults.php:92
+msgid "Wide Skyscraper"
 msgstr ""
 
 #: jeux-marketing/inc/admin.php:563

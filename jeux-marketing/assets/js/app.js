@@ -1170,6 +1170,85 @@
 		} );
 	}
 
+	/* ══════════ BANNIÈRES ══════════ */
+	/* La section vitrine. Les bannières sont montées à leur taille réelle en
+	   pixels — un 728×90 mesure 728×90 — puis mises à l'échelle par transform
+	   quand la colonne est plus étroite. Les redimensionner en CSS les
+	   déformerait, et une bannière déformée ne prouve plus rien à un client
+	   qui vient précisément vérifier qu'on tient les formats. */
+	var bannerMounts = [];
+
+	function fitBanner( slot ) {
+		var w     = Number( slot.dataset.w ),
+			h     = Number( slot.dataset.h ),
+			stage = slot.querySelector( '.banner-stage' );
+		if ( ! stage || ! w ) { return; }
+
+		var room  = stage.clientWidth,
+			scale = Math.min( 1, room / w );
+
+		var mount = stage.querySelector( '.banner-mount' );
+		mount.style.transform       = 'scale(' + scale + ')';
+		mount.style.transformOrigin = ( 'rtl' === document.dir ) ? 'top right' : 'top left';
+		// La scène ne connaît pas la hauteur d'un contenu mis à l'échelle :
+		// transform ne change pas la place réservée dans le flux.
+		stage.style.height = Math.ceil( h * scale ) + 'px';
+	}
+
+	function buildBanners() {
+		var wall = $( '#bannerWall' );
+		if ( ! wall || 'undefined' === typeof window.JMKBanner || ! C.banners ) { return; }
+
+		bannerMounts.forEach( function ( b ) { b.destroy(); } );
+		bannerMounts = [];
+
+		$$( '#bannerWall .banner-slot' ).forEach( function ( slot ) {
+			var mount = slot.querySelector( '.banner-mount' );
+			mount.innerHTML = '';
+
+			var cfg = Object.assign( {}, C.banners, {
+				w:      Number( slot.dataset.w ),
+				h:      Number( slot.dataset.h ),
+				accent: brandColor
+			} );
+
+			var made = window.JMKBanner.mount( mount, cfg );
+			if ( made ) { bannerMounts.push( made ); }
+			fitBanner( slot );
+		} );
+	}
+
+	function fitAllBanners() {
+		$$( '#bannerWall .banner-slot' ).forEach( fitBanner );
+	}
+
+	if ( $( '#bannerWall' ) ) {
+		buildBanners();
+
+		/* Même leçon que pour les jeux, et elle se paie deux fois : la
+		   colonne d'une grille n'a pas sa largeur définitive au moment où le
+		   script s'exécute. Mesurée trop tôt, elle rend une échelle de 1, et
+		   la bannière est simplement rognée par le conteneur — un 728×90
+		   dont on ne voit que le tiers gauche. On observe donc la colonne
+		   plutôt que de choisir un instant où la mesurer. */
+		if ( window.ResizeObserver ) {
+			var bo = new ResizeObserver( function ( entries ) {
+				entries.forEach( function ( e ) {
+					var slot = e.target.closest ? e.target.closest( '.banner-slot' ) : null;
+					if ( slot ) { fitBanner( slot ); }
+				} );
+			} );
+			$$( '#bannerWall .banner-stage' ).forEach( function ( st ) { bo.observe( st ); } );
+		} else {
+			window.addEventListener( 'resize', fitAllBanners );
+		}
+
+		window.addEventListener( 'load', fitAllBanners );
+		if ( document.fonts && document.fonts.ready ) {
+			document.fonts.ready.then( fitAllBanners );
+		}
+	}
+
 	/* ══════════ PERSONNALISATION ══════════ */
 	function applyBrand() {
 		var c = hexToHsl( brandColor ), root = document.documentElement.style;
@@ -1184,6 +1263,7 @@
 		buildReels();
 		pkDraw();
 		buildEmbed();
+		buildBanners();
 		if ( ! scratchDone ) { newCard(); }
 	}
 	var PRESETS = [ '#D9A441', '#F2506B', '#3E9BF5', '#48C9A9', '#B45CF0', '#FF7A3D' ];

@@ -78,6 +78,41 @@ function jmk_hex_to_hsl( $hex ) {
 }
 
 /**
+ * Réglages de la section « bannières ».
+ *
+ * La bannière reprend la couleur de la marque : c'est le même argument que
+ * pour la roue — le visiteur doit voir ses couleurs, pas les nôtres.
+ *
+ * @return array
+ */
+function jmk_banner_config() {
+	$frames = array();
+	foreach ( (array) jmk_get( 'banner_frames' ) as $f ) {
+		if ( empty( $f['title'] ) ) {
+			continue;
+		}
+		$frames[] = array(
+			'kicker' => isset( $f['kicker'] ) ? (string) $f['kicker'] : '',
+			'title'  => (string) $f['title'],
+			'sub'    => isset( $f['sub'] ) ? (string) $f['sub'] : '',
+		);
+	}
+
+	return array(
+		'brand'  => (string) jmk_get( 'brand_name' ),
+		'accent' => (string) jmk_get( 'accent' ),
+		'bg'     => ( 'casino' === jmk_get( 'skin' ) ) ? '#0B3325' : ( ( 'arcade' === jmk_get( 'skin' ) ) ? '#2A0F4D' : '#1B1226' ),
+		'cta'    => (string) jmk_get( 'banner_cta' ),
+		'frames' => $frames,
+		'hold'   => 2400,
+		// Dans la page, la bannière tourne sans fin : c'est une vitrine, pas
+		// une diffusion. Le plafond de trois boucles ne vaut que pour ce qui
+		// part en régie.
+		'loops'  => 3,
+	);
+}
+
+/**
  * CSS variables dérivées de la couleur choisie.
  *
  * @return string
@@ -168,6 +203,7 @@ function jmk_js_config() {
 		// un nom de fichier d'illustration : l'adresse est copiable telle
 		// quelle et le jeu tourne.
 		'engine'    => JMK_URI . '/assets/js/jmk-embed.js',
+		'banners'   => jmk_banner_config(),
 		'brand'     => (string) jmk_get( 'brand_name' ),
 		'accent'    => (string) jmk_get( 'accent' ),
 		'skin'      => (string) jmk_get( 'skin' ),
@@ -252,6 +288,12 @@ function jmk_assets() {
 	wp_enqueue_style( 'jeux-marketing-style', get_stylesheet_uri(), array( 'jmk-main' ), JMK_VERSION );
 
 	wp_enqueue_script( 'jmk-app', JMK_URI . '/assets/js/app.js', array(), jmk_asset_version( 'assets/js/app.js' ), true );
+
+	// Le moteur de bannières n'est chargé que si la section est affichée :
+	// c'est 14 Ko qui n'ont rien à faire sur une page qui ne les montre pas.
+	if ( jmk_get( 'sec_banners' ) && is_front_page() ) {
+		wp_enqueue_script( 'jmk-banner', JMK_URI . '/assets/js/jmk-banner.js', array(), jmk_asset_version( 'assets/js/jmk-banner.js' ), true );
+	}
 	wp_localize_script( 'jmk-app', 'JMK', jmk_js_config() );
 }
 add_action( 'wp_enqueue_scripts', 'jmk_assets' );
