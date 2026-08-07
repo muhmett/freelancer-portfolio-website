@@ -1,0 +1,41 @@
+{
+  "brand": "Café Atlas",
+  "clickUrl": "https://cafe-atlas.example/promo",
+  "bg": "#0B3325",
+  "accent": "#D9A441",
+  "ink": "#FFFBF0",
+  "cta": "Order now",
+  "hold": 2200,
+  "loops": 3,
+  "frames": [
+    {
+      "kicker": "New this week",
+      "title": "Roasted *this morning*",
+      "sub": "Single origin, Souss valley"
+    },
+    {
+      "kicker": "Free delivery",
+      "title": "On orders over *200 MAD*",
+      "sub": "Casablanca and Rabat"
+    },
+    {
+      "kicker": "",
+      "title": "Your first bag, *-20%*",
+      "sub": "Code ATLAS20"
+    }
+  ],
+  "sizes": [
+    "300x250",
+    "336x280",
+    "728x90",
+    "300x600",
+    "160x600",
+    "320x50",
+    "320x100",
+    "970x250",
+    "970x90",
+    "250x250"
+  ],
+  "image": "banner-assets/coffee-bg.png",
+  "scrim": 0.62
+}

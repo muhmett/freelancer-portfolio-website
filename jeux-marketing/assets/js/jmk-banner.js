@@ -104,7 +104,18 @@
 		hold:     2200,
 		loops:    3,
 		border:   true,
-		sheen:    true
+		sheen:    true,
+
+		/* Imagerie. `image` couvre le fond, `cutout` se pose au bord — une
+		   découpe de produit sur fond transparent. Les deux acceptent une
+		   adresse ou une donnée en ligne (data:). */
+		image:  '',
+		cutout: '',
+		// Le voile sombre posé sur l'image. Sans lui, un fond photographique
+		// avale le texte : c'est la première chose qui rate quand on colle
+		// une photo derrière une accroche.
+		scrim:  0.58,
+		focus:  '50% 50%'
 	};
 
 	/* ───────────────────────────── outillage ───────────────────────────── */
@@ -151,6 +162,24 @@
 	   que soit la couleur de marque, et personne ne relit vingt formats. */
 	function inkOn( hex ) {
 		return hexToHsl( hex )[ 2 ] > 58 ? '#141210' : '#FFFBF0';
+	}
+
+	/**
+	 * Une couleur du thème, en transparence.
+	 *
+	 * @param {string} hex   Couleur.
+	 * @param {number} alpha Opacité.
+	 * @return {string}
+	 */
+	function hexA( hex, alpha ) {
+		hex = String( hex ).replace( '#', '' );
+		if ( 3 === hex.length ) {
+			hex = hex.split( '' ).map( function ( c ) { return c + c; } ).join( '' );
+		}
+		return 'rgba(' + parseInt( hex.slice( 0, 2 ), 16 ) + ',' +
+			parseInt( hex.slice( 2, 4 ), 16 ) + ',' +
+			parseInt( hex.slice( 4, 6 ), 16 ) + ',' +
+			Math.round( clamp( alpha, 0, 1 ) * 100 ) / 100 + ')';
 	}
 
 	function shade( hex, delta ) {
@@ -331,7 +360,16 @@
 			best = { size: 9, level: { kicker: false, sub: false } };
 		}
 
+		/* La hauteur réelle du bloc de messages. La pile est en position
+		   absolue — elle ne pousse plus rien — donc il faut la lui rendre à
+		   la main. Une valeur au jugé (« trois fois et demie le titre »)
+		   débordait : le bouton passait sous le bord et disparaissait dans
+		   l'image de repli. */
+		var blockH = blockHeight( best.size, best.level.kicker, best.level.sub );
+		if ( ! isFinite( blockH ) ) { blockH = best.size * 2; }
+
 		return {
+			blockH:  Math.ceil( blockH ),
 			kind:    kind,
 			row:     row,
 			pad:     pad,
@@ -385,8 +423,38 @@
 			'background:linear-gradient(' + ( L.row ? '100deg' : '170deg' ) + ',' + bg2 + ',' + cfg.bg + ' 62%);' +
 			( cfg.border ? 'border:1px solid rgba(255,255,255,.22);' : '' ) + '}' );
 
+		if ( cfg.image ) {
+			/* La photo, puis le voile. L'ordre compte : le dégradé part du
+			   côté où vit le texte et s'ouvre vers l'image, pour qu'on voie
+			   la matière sans perdre un mot. */
+			out.push( sel + ' .bg{position:absolute;inset:0;pointer-events:none;' +
+				'background-image:url(' + cfg.image + ');background-size:cover;' +
+				'background-position:' + cfg.focus + '}' );
+
+			var dir = L.row ? '95deg' : '175deg';
+			out.push( sel + ' .scrim{position:absolute;inset:0;pointer-events:none;' +
+				'background:linear-gradient(' + dir + ',' +
+				hexA( cfg.bg, Math.min( 0.97, cfg.scrim + 0.28 ) ) + ' 0%,' +
+				hexA( cfg.bg, cfg.scrim ) + ' 46%,' +
+				hexA( cfg.bg, Math.max( 0, cfg.scrim - 0.34 ) ) + ' 100%)}' );
+		}
+
+		if ( cfg.cutout ) {
+			/* La découpe mord sur le bord opposé au texte. En bandeau elle
+			   tient dans sa colonne ; en boîte elle passe derrière, sinon il
+			   ne reste plus rien pour le message. */
+			out.push( sel + ' .cut{position:absolute;pointer-events:none;' +
+				( L.row
+					? 'right:0;top:0;height:100%;width:34%;'
+					: 'right:-6%;bottom:-4%;height:52%;width:62%;' ) +
+				'background-image:url(' + cfg.cutout + ');background-size:contain;' +
+				'background-repeat:no-repeat;background-position:' +
+				( L.row ? 'right center' : 'right bottom' ) + ';' +
+				'filter:drop-shadow(0 6px 18px rgba(0,0,0,.5))}' );
+		}
+
 		/* Halo de marque : du relief sans un octet d'image. */
-		out.push( sel + '::before{content:"";position:absolute;pointer-events:none;' +
+		out.push( sel + '::before{content:"";position:absolute;pointer-events:none;z-index:1;' +
 			( L.row ? 'right:-10%;top:-40%;width:46%;height:180%' : 'left:-24%;top:-32%;width:150%;height:72%' ) + ';' +
 			'background:radial-gradient(circle,' + cfg.accent + '2E,transparent 68%)}' );
 
@@ -399,7 +467,7 @@
 			out.push( '@keyframes jmkbSweep{0%{left:-40%}55%,100%{left:130%}}' );
 		}
 
-		out.push( sel + ' .stage{position:absolute;inset:0;padding:' + L.pad + 'px;display:flex;align-items:center;' +
+		out.push( sel + ' .stage{position:absolute;inset:0;z-index:2;padding:' + L.pad + 'px;display:flex;align-items:center;' +
 			( L.row
 				? 'gap:' + L.gap + 'px;'
 				: 'flex-direction:column;justify-content:center;text-align:center;' ) + '}' );
@@ -416,8 +484,9 @@
 			'transform:translateY(calc(-50% - ' + Math.round( L.title * 0.38 ) + 'px))}' );
 
 		/* La pile est absolue : elle ne pousse plus le conteneur. On lui rend
-		   la hauteur du plus grand message pour que le bloc reste centré. */
-		out.push( sel + ' .msgs{height:' + Math.round( L.title * 3.4 ) + 'px}' );
+		   la hauteur du plus grand message — celle qui a servi à choisir la
+		   taille du titre, pas une approximation. */
+		out.push( sel + ' .msgs{height:' + L.blockH + 'px}' );
 
 		out.push( sel + ' .k{font-size:' + L.kicker + 'px;font-weight:700;letter-spacing:.14em;' +
 			'text-transform:uppercase;color:' + cfg.accent + ';margin-bottom:' + Math.round( L.gap * 0.6 ) + 'px}' );
@@ -476,7 +545,9 @@
 			return '<div class="f' + ( 0 === i ? ' on' : '' ) + '">' + frameHtml( f, L ) + '</div>';
 		} ).join( '' );
 
-		return ( cfg.sheen ? '<div class="sheen"></div>' : '' ) +
+		return ( cfg.image ? '<div class="bg"></div><div class="scrim"></div>' : '' ) +
+			( cfg.cutout ? '<div class="cut"></div>' : '' ) +
+			( cfg.sheen ? '<div class="sheen"></div>' : '' ) +
 			'<div class="stage">' + logo +
 			'<div class="msgs">' + frames + '</div>' +
 			( L.hasCta ? '<div class="cta">' + esc( cfg.cta ) + '</div>' : '' ) +
@@ -551,6 +622,12 @@
 		if ( ! cfg.frames.length ) { cfg.frames = BASE.frames.slice(); }
 		cfg.loops = clamp( parseInt( cfg.loops, 10 ) || 3, 1, 3 );
 		cfg.hold  = clamp( parseInt( cfg.hold, 10 ) || 2200, 800, 8000 );
+		cfg.scrim = clamp( 'number' === typeof cfg.scrim ? cfg.scrim : 0.58, 0, 1 );
+
+		/* Une image de fond change la place du texte : sur une photo, le
+		   sous-titre en petit devient illisible quoi qu'on fasse. On garde la
+		   photo, on remonte le contraste, et le reste suit. */
+		if ( cfg.image && cfg.scrim < 0.3 ) { cfg.scrim = 0.3; }
 		return cfg;
 	}
 
@@ -608,21 +685,50 @@
 		/**
 		 * La page complète d'une bannière, prête pour la régie.
 		 *
+		 * Avec `opts.still`, rend l'image de repli : le dernier message,
+		 * figé, sans minuteur ni animation. Les régies l'exigent — c'est ce
+		 * qui s'affiche là où le HTML5 ne passe pas, et c'est le dernier
+		 * message qu'il faut, celui qui porte la marque et le bouton. Une
+		 * capture au premier écran donnerait une image sans appel à l'action.
+		 *
 		 * @param {Object} config Réglages.
+		 * @param {Object} opts   { still }.
 		 * @return {string}
 		 */
-		page: function ( config ) {
-			var cfg = normalise( config ),
-				L   = layout( cfg.w, cfg.h, cfg );
+		page: function ( config, opts ) {
+			opts = opts || {};
 
-			return '<!doctype html>\n<html lang="en">\n<head>\n' +
+			var cfg = normalise( config ),
+				L   = layout( cfg.w, cfg.h, cfg ),
+				still = !! opts.still;
+
+			if ( still ) {
+				// Le repli ne garde que la dernière image, déjà en place.
+				cfg = assign( {}, cfg, {
+					frames: [ cfg.frames[ cfg.frames.length - 1 ] ],
+					sheen:  false
+				} );
+			}
+
+			var head = '<!doctype html>\n<html lang="en">\n<head>\n' +
 				'<meta charset="utf-8">\n' +
 				'<meta name="ad.size" content="width=' + cfg.w + ',height=' + cfg.h + '">\n' +
-				'<title>' + esc( cfg.brand || 'Banner' ) + ' ' + cfg.w + 'x' + cfg.h + '</title>\n' +
-				'<script type="text/javascript">var clickTag = "' + esc( cfg.clickUrl ) + '";<\/script>\n' +
-				'<style>' + css( cfg, L, '#ad', true ) + '</style>\n' +
+				'<title>' + esc( cfg.brand || 'Banner' ) + ' ' + cfg.w + 'x' + cfg.h +
+				( still ? ' (backup)' : '' ) + '</title>\n';
+
+			if ( ! still ) {
+				head += '<script type="text/javascript">var clickTag = "' + esc( cfg.clickUrl ) + '";<\/script>\n';
+			}
+
+			var sheet = css( cfg, L, '#ad', true );
+			if ( still ) {
+				// Ni pulsation ni transition : la capture doit être stable.
+				sheet += '#ad .cta{animation:none}#ad .f{transition:none;opacity:1}';
+			}
+
+			return head + '<style>' + sheet + '</style>\n' +
 				'</head>\n<body>\n<div id="ad">' + bodyHtml( cfg, L ) + '</div>\n' +
-				'<script type="text/javascript">\n' + runtime( cfg ) + '\n<\/script>\n' +
+				( still ? '' : '<script type="text/javascript">\n' + runtime( cfg ) + '\n<\/script>\n' ) +
 				'</body>\n</html>\n';
 		}
 	};
