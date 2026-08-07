@@ -122,6 +122,10 @@ msgstr ""
 msgid "Avis clients"
 msgstr ""
 
+#: jeux-marketing/inc/pages.php:55
+msgid "Bannières display"
+msgstr ""
+
 #: jeux-marketing/inc/admin.php:513
 msgid "Bonne réponse n°"
 msgstr ""
@@ -366,6 +370,10 @@ msgstr ""
 msgid "Jeux Marketing"
 msgstr ""
 
+#: jeux-marketing/inc/pages.php:54
+msgid "Jeux marketing"
+msgstr ""
+
 #: jeux-marketing/inc/admin.php:490
 msgid "Jeux visibles sur la page"
 msgstr ""
@@ -518,7 +526,7 @@ msgstr ""
 msgid "N'affichez que des chiffres que vous pouvez tenir. « 48 h » engage sur un délai réel."
 msgstr ""
 
-#: jeux-marketing/functions.php:38
+#: jeux-marketing/functions.php:39
 msgid "Navigation principale"
 msgstr ""
 

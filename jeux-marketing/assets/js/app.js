@@ -1325,6 +1325,89 @@
 		}
 	}
 
+	/* ══════════ VIGNETTES DU CARREFOUR ══════════
+	   Les cartes de l'accueil portent la démonstration en miniature plutôt
+	   qu'une capture : une bannière qui défile pour le métier bannière, la
+	   roue pour le métier jeu. Même parti pris que partout ailleurs ici —
+	   ce qui se montre n'a pas à se raconter. */
+	function buildHub() {
+		$$( '.hub-demo' ).forEach( function ( host ) {
+			var kind = host.dataset.demo;
+
+			if ( 'banner' === kind && 'undefined' !== typeof window.JMKBanner && C.bwork && C.bwork.length ) {
+				var box = host.getBoundingClientRect();
+				if ( box.width < 40 ) { return; }
+
+				var mount = document.createElement( 'div' );
+				mount.style.transformOrigin = 'top left';
+				host.appendChild( mount );
+
+				// La vignette montre un 300×250 mis à l'échelle de la carte.
+				window.JMKBanner.mount( mount, Object.assign( {}, C.bwork[ 0 ], { w: 300, h: 250 } ) );
+				var scale = Math.min( box.width / 300, box.height / 250 );
+				mount.style.transform = 'scale(' + scale + ')';
+				mount.style.position  = 'absolute';
+				mount.style.top       = ( ( box.height - 250 * scale ) / 2 ) + 'px';
+				mount.style.left      = ( ( box.width  - 300 * scale ) / 2 ) + 'px';
+				return;
+			}
+
+			if ( 'game' === kind ) {
+				// La roue de l'accueil : dessinée, jamais jouable. Une partie
+				// se joue sur la page du métier, où le formulaire existe.
+				var cv = document.createElement( 'canvas' );
+				cv.width = cv.height = 320;
+				cv.style.maxWidth = '76%';
+				cv.style.height = 'auto';
+				host.appendChild( cv );
+				drawMiniWheel( cv );
+			}
+		} );
+	}
+
+	function drawMiniWheel( cv ) {
+		var x = cv.getContext( '2d' );
+		if ( ! x || ! LOTS.length ) { return; }
+		var R = cv.width / 2, n = LOTS.length, seg = ( Math.PI * 2 ) / n, rot = -0.24;
+
+		x.clearRect( 0, 0, cv.width, cv.height );
+		x.save();
+		x.translate( R, R );
+		x.rotate( rot );
+		LOTS.forEach( function ( lot, i ) {
+			var a0 = -Math.PI / 2 + i * seg;
+			x.beginPath();
+			x.moveTo( 0, 0 );
+			x.arc( 0, 0, R - 10, a0, a0 + seg );
+			x.closePath();
+			x.fillStyle = lotColor( lot );
+			x.fill();
+			x.lineWidth = 2;
+			x.strokeStyle = 'rgba(0,0,0,.35)';
+			x.stroke();
+		} );
+		x.restore();
+
+		x.beginPath();
+		x.arc( R, R, R * 0.2, 0, Math.PI * 2 );
+		x.fillStyle = '#150C1D';
+		x.fill();
+		x.lineWidth = 3;
+		x.strokeStyle = brandColor;
+		x.stroke();
+	}
+
+	if ( $( '.hub-demo' ) ) {
+		buildHub();
+		window.addEventListener( 'load', function () {
+			// Une vignette construite alors que la carte mesure zéro reste
+			// vide : on ne recommence que si rien n'a été posé.
+			$$( '.hub-demo' ).forEach( function ( h ) {
+				if ( ! h.children.length ) { buildHub(); }
+			} );
+		} );
+	}
+
 	/* ══════════ PERSONNALISATION ══════════ */
 	function applyBrand() {
 		var c = hexToHsl( brandColor ), root = document.documentElement.style;

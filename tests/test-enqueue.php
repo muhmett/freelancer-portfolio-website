@@ -111,5 +111,19 @@ jmk_assets();
 ok( false === jmk_pos( 'jmk-banner' ), 'aucune section : aucun moteur' );
 ok( ! jmk_banners_visible(), 'jmk_banners_visible() dit la même chose' );
 
+echo "\nsur la page « bannières », hors accueil\n";
+
+/* La page du métier bannière n'est pas l'accueil : sans cette branche, elle
+   sortirait avec le portfolio et aucun moteur pour le peindre. */
+$GLOBALS['jmk_is_front']     = false;
+$GLOBALS['jmk_page_template'] = 'template-banners.php';
+$GLOBALS['jmk_scripts']       = array();
+jmk_assets();
+
+ok( false !== jmk_pos( 'jmk-banner' ), 'le moteur est chargé sur la page bannières' );
+ok( in_array( 'jmk-banner', jmk_deps( 'jmk-app' ), true ), 'et reste une dépendance de app.js' );
+
+$GLOBALS['jmk_page_template'] = '';
+
 echo "\n" . ( $failures ? "$failures échec(s).\n" : "Tout est au vert.\n" );
 exit( $failures ? 1 : 0 );

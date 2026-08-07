@@ -227,6 +227,15 @@ bon ordre par construction. `jmk-banner` passe donc avant et sert de
 dépendance déclarée à `jmk-app`, `test-enqueue.php` le vérifie, et app.js
 écrit maintenant en console au lieu de se taire.
 
+**Une page par métier.** Tout tenait sur une seule page : les jeux, les
+bannières, le devis, le portfolio. Long à lire, interminable sur téléphone, et
+surtout impossible à envoyer — on ne partage pas « la page des bannières » à un
+client qui n'achète que ça. `inc/pages.php` crée les pages à l'activation et
+leur affecte leur modèle : demander à quelqu'un de créer trois pages et d'y
+poser le bon modèle, c'est trois occasions de se tromper. `jmk_page_url()`
+retombe sur une ancre de l'accueil tant qu'une page n'existe pas — un menu qui
+pointe dans le vide est pire qu'un menu qui reste sur place.
+
 **Les polices viennent de Google Fonts.** C'est le point qui reste en tension
 avec l'argument RGPD de la page : pour un client européen strict, il faut
 héberger les trois familles dans `assets/fonts/` et remplacer l'appel à

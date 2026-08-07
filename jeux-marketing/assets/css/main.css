@@ -790,10 +790,17 @@ body.jmk-skin-casino .wheel-holder::before{
    devient illisible, et une bannière illisible ne démontre rien. Ici les
    formats s'affichent à leur taille réelle tant que la page est assez large,
    et le bandeau prend sa propre ligne. */
-.banner-wall{display:flex;flex-wrap:wrap;gap:28px 30px;align-items:flex-start}
-.banner-slot{flex:0 0 auto;max-width:100%;margin:0}
+.banner-wall{display:flex;flex-wrap:wrap;gap:28px 30px;align-items:flex-start;max-width:100%}
+/* `min-width:0` n'est pas un détail : un élément flex a une taille minimale
+   automatique égale à son contenu. La scène porte une largeur en dur — 728 px
+   pour un bandeau — donc sans cela l'emplacement refuse de descendre en
+   dessous, la ligne déborde, et c'est toute la page qui devient plus large
+   que l'écran. Sur téléphone, le titre et les paragraphes se retrouvaient
+   coupés à droite sans que rien ne les touche : ils payaient pour le
+   bandeau. */
+.banner-slot{flex:0 1 auto;min-width:0;max-width:100%;margin:0}
 .banner-slot[data-w="728"],.banner-slot[data-w="970"],.banner-slot[data-w="980"]{flex-basis:100%}
-.banner-stage{max-width:100%}
+.banner-stage{max-width:100%;overflow:hidden}
 .banner-slot figcaption{display:flex;align-items:baseline;gap:10px;margin-bottom:8px}
 .banner-dim{font-family:var(--mono,ui-monospace,monospace);font-size:.78rem;
   color:var(--accent);letter-spacing:.06em}
@@ -803,6 +810,8 @@ body.jmk-skin-casino .wheel-holder::before{
 .banner-foot{margin-top:24px;font-size:.86rem;color:var(--muted);max-width:62ch}
 @media(max-width:640px){
   .banner-slot{flex-basis:100%}
+  .banner-wall{gap:22px}
+  .bwork-tab{flex:1 1 auto}
 }
 
 /* ── portfolio de bannières ── */
@@ -824,3 +833,42 @@ body.jmk-skin-casino .wheel-holder::before{
 .bwork-tab.active .bwork-tab-niche{color:var(--text-2)}
 .bwork-note{margin:0 0 26px;font-size:.9rem;color:var(--muted);max-width:66ch;min-height:2.6em}
 @media(prefers-reduced-motion:reduce){.bwork-tab:hover{transform:none}}
+
+/* ── accueil : le carrefour ── */
+.hub-hero{padding-block:clamp(48px,9vw,104px) clamp(28px,5vw,52px);max-width:900px}
+.hub-hero h1{margin:6px 0 18px}
+.hub-hero .lede{max-width:60ch}
+.hub-hero .metaline{margin-top:22px}
+
+.hub-grid{display:grid;gap:26px;grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
+.hub-card{display:flex;flex-direction:column;overflow:hidden;border-radius:var(--r);
+  border:1px solid var(--line);background:linear-gradient(168deg,var(--ink-3),var(--ink-2));
+  transition:transform .3s cubic-bezier(.2,.8,.25,1),border-color .3s ease}
+.hub-card:hover{transform:translateY(-6px);border-color:var(--accent)}
+/* La vignette a une forme fixe : sans elle, une carte dont la démonstration
+   n'a pas encore été montée s'écrase à zéro et la grille saute au chargement. */
+.hub-demo{position:relative;aspect-ratio:16/9;overflow:hidden;
+  border-bottom:1px solid var(--line);display:grid;place-items:center;
+  background:radial-gradient(120% 90% at 50% 0,rgba(255,255,255,.07),transparent 62%)}
+.hub-demo canvas,.hub-demo .jmkb-root{max-width:100%}
+.hub-body{padding:24px 24px 28px;display:flex;flex-direction:column;flex:1}
+.hub-body h2{font-size:clamp(1.3rem,2.4vw,1.75rem);margin:4px 0 10px}
+.hub-text{color:var(--text-2);margin-bottom:16px;line-height:1.6}
+.hub-points{list-style:none;padding:0;margin:0 0 22px;display:grid;gap:8px}
+.hub-points li{position:relative;padding-inline-start:20px;font-size:.9rem;color:var(--muted)}
+.hub-points li::before{content:'';position:absolute;inset-inline-start:0;top:.55em;
+  width:7px;height:7px;border-radius:50%;background:var(--accent)}
+.hub-body .btn{margin-top:auto;align-self:flex-start}
+
+/* ── en-tête des pages intérieures ── */
+.page-head{padding-block:clamp(40px,7vw,84px) clamp(20px,3vw,34px);max-width:820px}
+.page-head h1{margin:6px 0 14px}
+.page-head .lede{max-width:62ch}
+
+@media(max-width:640px){
+  .hub-grid{grid-template-columns:1fr}
+  .hub-card:hover{transform:none}
+}
+@media(prefers-reduced-motion:reduce){
+  .hub-card,.hub-card:hover{transition:none;transform:none}
+}

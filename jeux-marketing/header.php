@@ -53,16 +53,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 				);
 				?>
 			</nav>
-		<?php elseif ( is_front_page() ) : ?>
+		<?php else : ?>
+			<?php /* Le menu est le même partout : deux métiers, deux pages, plus
+			   ce qui reste sur l'accueil. Des ancres ne valaient que sur la page
+			   longue — depuis qu'il y a des pages, elles mènent dans le vide dès
+			   qu'on n'est pas sur la bonne. */ ?>
 			<nav class="topnav" aria-label="<?php echo esc_attr( jmk_t( 'nav_main' ) ); ?>">
-				<?php if ( jmk_get( 'sec_services' ) ) : ?><a href="#services"><?php jmk_e( 'nav_prices' ); ?></a><?php endif; ?>
-				<?php if ( jmk_get( 'sec_work' ) ) : ?><a href="#realisations"><?php jmk_e( 'nav_work' ); ?></a><?php endif; ?>
-				<?php if ( jmk_get( 'sec_skills' ) ) : ?><a href="#competences"><?php jmk_e( 'nav_skills' ); ?></a><?php endif; ?>
-				<?php if ( jmk_get( 'sec_brand' ) ) : ?><a href="#marque"><?php jmk_e( 'nav_brand' ); ?></a><?php endif; ?>
-				<?php if ( jmk_get( 'sec_lab' ) ) : ?><a href="#labo"><?php jmk_e( 'nav_lab' ); ?></a><?php endif; ?>
-				<a href="#autres"><?php jmk_e( 'nav_games' ); ?></a>
-				<?php if ( jmk_get( 'sec_roi' ) ) : ?><a href="#roi"><?php jmk_e( 'nav_roi' ); ?></a><?php endif; ?>
-				<?php if ( jmk_get( 'sec_quote' ) ) : ?><a href="#devis"><?php jmk_e( 'nav_quote' ); ?></a><?php endif; ?>
+				<a href="<?php echo esc_url( jmk_page_url( 'games' ) ); ?>"><?php jmk_e( 'nav_games' ); ?></a>
+				<a href="<?php echo esc_url( jmk_page_url( 'banners' ) ); ?>"><?php jmk_e( 'nav_banners' ); ?></a>
+				<?php if ( jmk_get( 'sec_skills' ) ) : ?><a href="<?php echo esc_url( home_url( '/#competences' ) ); ?>"><?php jmk_e( 'nav_skills' ); ?></a><?php endif; ?>
+				<?php if ( jmk_get( 'sec_work' ) ) : ?><a href="<?php echo esc_url( home_url( '/#realisations' ) ); ?>"><?php jmk_e( 'nav_work' ); ?></a><?php endif; ?>
+				<?php if ( jmk_get( 'sec_quote' ) ) : ?><a href="<?php echo esc_url( jmk_page_url( 'games' ) . '#devis' ); ?>"><?php jmk_e( 'nav_quote' ); ?></a><?php endif; ?>
 			</nav>
 		<?php endif; ?>
 

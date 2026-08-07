@@ -6,6 +6,9 @@
 2. Choisir `jeux-marketing.zip`, puis **Installer** et **Activer**
 3. Aller dans **Réglages → Lecture** et cocher *Une page statique*, puis choisir une page vide comme page d'accueil
 
+> À l'activation, le thème crée deux pages : **Jeux** et **Bannières**, chacune
+> avec son modèle. L'accueil devient un carrefour qui y mène. Rien à régler.
+
 > Si l'hébergeur limite la taille d'envoi, décompresser le zip et téléverser le dossier `jeux-marketing` dans `/wp-content/themes/` par FTP.
 
 ---

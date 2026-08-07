@@ -21,6 +21,7 @@ require_once JMK_DIR . '/inc/leads.php';
 require_once JMK_DIR . '/inc/shortcode.php';
 require_once JMK_DIR . '/inc/portfolio.php';
 require_once JMK_DIR . '/inc/banner-work.php';
+require_once JMK_DIR . '/inc/pages.php';
 
 /**
  * Support du thème.
@@ -88,10 +89,15 @@ function jmk_hex_to_hsl( $hex ) {
  * @return bool
  */
 function jmk_banners_visible() {
-	if ( ! is_front_page() ) {
-		return false;
+	// L'accueil montre les cartes en miniature ; la page « bannières » montre
+	// tout. Les deux ont besoin du moteur.
+	if ( is_page_template( 'template-banners.php' ) ) {
+		return true;
 	}
-	return (bool) jmk_get( 'sec_banners' ) || (bool) jmk_get( 'sec_bwork' );
+	if ( is_front_page() ) {
+		return (bool) jmk_get( 'sec_banners' ) || (bool) jmk_get( 'sec_bwork' );
+	}
+	return false;
 }
 
 /**

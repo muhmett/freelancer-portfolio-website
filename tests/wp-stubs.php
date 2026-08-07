@@ -10,6 +10,7 @@
  */
 
 define( 'ABSPATH', __DIR__ );
+define( 'OBJECT', 'OBJECT' );
 define( 'HOUR_IN_SECONDS', 3600 );
 define( 'YEAR_IN_SECONDS', 31536000 );
 
@@ -253,3 +254,16 @@ function wp_create_nonce( $a = -1 ) {
 	return 'nonce';
 }
 
+
+function is_page_template( $t = '' ) {
+	return isset( $GLOBALS['jmk_page_template'] ) && $GLOBALS['jmk_page_template'] === $t;
+}
+function get_page_by_path( $p, $o = OBJECT, $t = 'page' ) {
+	return null;
+}
+function get_post_status( $id ) {
+	return false;
+}
+function get_permalink( $p = 0 ) {
+	return 'https://exemple.test/?p=' . ( is_object( $p ) ? $p->ID : (int) $p );
+}
