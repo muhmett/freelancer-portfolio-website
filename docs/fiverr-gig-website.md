@@ -160,16 +160,58 @@ enregistrement d'écran : on fait défiler la page, la roue tourne, une bannièr
 change de message. Fiverr met les annonces avec vidéo en avant, et surtout on
 voit tout de suite que ça bouge pour de vrai.
 
-### Ce qu'il ne faut pas écrire sous ces images
+### Deux natures de travaux, deux étiquettes
 
-Le site de démonstration est **le vôtre**, et les quatre marques du portfolio
-de bannières sont **inventées**. Écrivez-le. « Concept work » ou « my own
-site » suffit.
+Vous avez maintenant les deux. Ne les mélangez pas — c'est la seule chose qui
+compte dans cette section.
 
-Un prospect qui demande à parler à la référence vous met en difficulté, et une
-fausse référence est un motif de suspension sur les deux plateformes. Vous
-n'avez rien à cacher : un site de démonstration qui fonctionne vraiment prouve
-davantage qu'un logo de client emprunté.
+| | Ce que c'est | Ce qu'on écrit dessous |
+|---|---|---|
+| **Uromolax** | Une agence pour qui vous avez réellement travaillé | Le nom, ce que vous avez fait, l'année |
+| Le site de démonstration | Le vôtre | « My own site » |
+| VELT, MERIDIAN, AURA, SILLAGE | Marques inventées | « Concept work » |
+
+Une vraie référence vaut plus que les quatre campagnes de démonstration
+réunies. Mettez-la **en premier** dans la galerie.
+
+Une fausse référence, elle, est un motif de suspension sur les deux
+plateformes — et un prospect qui demande à parler au client cité vous met en
+difficulté. D'où les étiquettes.
+
+### Uromolax — la fiche à remplir
+
+Je ne peux pas l'écrire : je ne sais ni ce que vous avez livré, ni quand, ni
+avec quel résultat. Remplissez, et n'écrivez que ce que vous pourriez montrer
+à quelqu'un qui demande.
+
+```
+Client        : Uromolax
+Secteur       : …
+Année         : …
+Ce que j'ai livré : … (pages ? site complet ? refonte ? bannières ?)
+Techniques    : … (WordPress ? HTML/CSS/JS ? multilingue ?)
+Durée         : …
+Résultat      : … (seulement si vous avez un chiffre réel — sinon, rien)
+```
+
+Sur la ligne **Résultat** : pas de « +40 % de conversions » sorti de nulle
+part. Si vous n'avez pas mesuré, laissez vide. « Livré en trois semaines,
+toujours en ligne » est vrai et se défend ; un pourcentage inventé tombe à la
+première question.
+
+> **À faire avant de publier le nom.** Demandez à Uromolax si vous pouvez les
+> citer. Beaucoup d'agences sous-traitent en marque blanche et ne veulent pas
+> voir leur nom apparaître dans le portfolio d'un prestataire — leur client
+> final croit que l'agence a tout fait en interne. Un simple message suffit.
+> S'ils refusent, écrivez « a digital agency in Morocco » sans le nom : c'est
+> vrai, et ça vaut toujours mieux que du concept.
+
+### Où la mettre dans le thème
+
+Le menu **Réalisations** du thème existe pour ça : une image, un texte, et les
+champs client / secteur / jeu utilisé / résultat. La section « réalisations »
+reste masquée tant qu'elle est vide — elle apparaîtra dès que vous aurez saisi
+Uromolax.
 
 ---
 
@@ -195,3 +237,6 @@ davantage qu'un logo de client emprunté.
 - Le volume de recherche des trois titres proposés est une hypothèse. Le
   premier est le plus étroit, donc le moins concurrentiel ; c'est le seul
   argument que je peux tenir sans données.
+- Je ne sais rien du travail fait pour Uromolax : ni le périmètre, ni la date,
+  ni les résultats, ni si vous avez le droit de les nommer. Tout ce qui figure
+  sous ce nom doit venir de vous.
