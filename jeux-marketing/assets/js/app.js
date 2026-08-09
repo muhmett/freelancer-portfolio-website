@@ -121,10 +121,14 @@
 
 	var ARCADE = ( 'arcade' === C.skin );
 	var CASINO = ( 'casino' === C.skin );
-	// En habillage arcade, la couronne d'ampoules occupe le bord : la zone
-	// des segments recule d'autant. Le casino porte son anneau en CSS, autour
-	// du canevas : rien à réserver ici.
-	var RIM  = ARCADE ? 46 : 6;
+	/* Le bord du plateau appartient à la monture, pas aux quartiers.
+	   En arcade, c'est la couronne d'ampoules, dessinée ici même.
+	   Ailleurs, c'est la monture en laiton, posée en CSS par-dessus le
+	   canevas : son trou tombe à 78 % du rayon, donc les quartiers
+	   s'arrêtent là. Deux points de moins et un liseré de segment
+	   dépasserait du laiton ; deux de plus et un croissant vide
+	   apparaîtrait entre les deux. */
+	var RIM  = ARCADE ? 46 : Math.round( R * 0.22 );
 	var bulb = 0;
 
 	/**
@@ -291,12 +295,33 @@
 		} )( t0 );
 	}
 
+	/* L'inclinaison de la roue est pilotée par deux classes, pas par une
+	   valeur calculée ici : la mise en forme reste dans la feuille de style,
+	   et « mouvement réduit » la neutralise d'un seul endroit. */
+	function leanWheel( on ) {
+		var holder = $( '.wheel-holder' );
+		if ( ! holder || reduced ) { return; }
+
+		holder.classList.toggle( 'spinning', !! on );
+		if ( on ) {
+			holder.classList.remove( 'settling' );
+			return;
+		}
+		// Relancer l'animation demande de la retirer, de forcer un calcul de
+		// style, puis de la remettre — sinon le navigateur ne voit aucun
+		// changement et ne rejoue rien.
+		void holder.offsetWidth;
+		holder.classList.add( 'settling' );
+		setTimeout( function () { holder.classList.remove( 'settling' ); }, 800 );
+	}
+
 	function spin() {
 		if ( spinning || hasPlayed ) { return; }
 		spinning = true;
 		$( '#spinBtn' ).disabled = true;
 		var glow = $( '#glow' );
 		if ( glow ) { glow.classList.add( 'on' ); }
+		leanWheel( true );
 		$( '#wheelResult' ).classList.remove( 'show' );
 
 		play( function ( lot, code ) {
@@ -316,6 +341,7 @@
 		hasPlayed = !! C.onePlay;
 		var glow = $( '#glow' );
 		if ( glow ) { glow.classList.remove( 'on' ); }
+		leanWheel( false );
 
 		var b = $( '#wheelResult' );
 		b.innerHTML = code

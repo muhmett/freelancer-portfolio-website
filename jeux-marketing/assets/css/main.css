@@ -80,21 +80,94 @@ p{margin:0}
 
 /* wheel */
 .stage{display:flex;flex-direction:column;align-items:center;gap:16px}
-.wheel-holder{position:relative;width:min(410px,84vw);aspect-ratio:1}
-#wheel{width:100%;height:100%;display:block;border-radius:50%;
-  box-shadow:0 26px 70px -22px rgba(0,0,0,.85),0 0 0 8px var(--ink-2),0 0 0 10px color-mix(in srgb,var(--accent) 55%,black)}
-.glowring{position:absolute;inset:-14px;border-radius:50%;pointer-events:none;opacity:0;transition:opacity .4s}
+/* ══════════ LA ROUE EN RELIEF ══════════
+   Une roue vue de dessus, à plat, se lit comme un camembert : c'est un
+   graphique, pas un objet. Elle est donc inclinée, posée sur une tranche,
+   et coiffée d'une monture en laiton. L'inclinaison porte tout le reste —
+   sans elle, ni la tranche ni les reflets n'auraient de sens.
+
+   Le plateau seul tourne. La monture, le vernis et l'aiguille restent
+   immobiles : c'est ce contraste qui fait lire le mouvement. */
+/* Le porteur mesure l'encombrement total, monture comprise, et le plateau
+   se loge dedans. Sinon la monture débordait et venait couvrir le bouton
+   posé juste dessous.
+
+   7,9 % : le métal ne remplit pas toute l'image — il s'arrête à 91,9 % de
+   sa demi-largeur — donc la monture dessinée mesure 1,189 fois le plateau,
+   pas 1,294. Le reste de l'image est du vide transparent, et c'est ce vide
+   qui décollait l'aiguille du laiton. */
+.wheel-holder{position:relative;width:min(470px,90vw);aspect-ratio:1;
+  perspective:1000px;perspective-origin:50% 40%}
+/* rotateX(15°) n'aplatit que de 3 % : l'œil n'y voit rien et la roue reste
+   un camembert. À 28°, elle se pose. */
+.wheel-3d{position:absolute;inset:7.9%;transform-style:preserve-3d;
+  transform:rotateX(var(--tilt,28deg));transition:transform .5s cubic-bezier(.2,.8,.25,1)}
+#wheel{position:absolute;inset:0;width:100%;height:100%;display:block;border-radius:50%}
+
+/* La tranche : un disque glissé derrière le plateau, un peu plus large que
+   la monture. En perspective il ressort par le bas, et c'est lui — plus que
+   l'ellipse — qui fait lire l'objet comme épais. Un laiton assombri, pas
+   une ombre : une ombre se lit comme du flou, une tranche comme du métal. */
+.wheel-edge{position:absolute;inset:-12%;border-radius:50%;transform:translateZ(-34px);
+  background:linear-gradient(180deg,#2A2009 0%,#6B5117 46%,#8A6A1E 60%,#3B2C0C 78%,#140E04 100%);
+  box-shadow:0 40px 70px -18px rgba(0,0,0,.92)}
+
+/* Le vernis : une lumière rasante qui ne tourne pas avec le plateau, donc
+   qui glisse dessus quand il tourne. */
+.wheel-gloss{position:absolute;inset:0;border-radius:50%;pointer-events:none;z-index:2;
+  background:
+    radial-gradient(ellipse 62% 44% at 32% 20%,rgba(255,255,255,.30),transparent 62%),
+    radial-gradient(ellipse 80% 60% at 50% 108%,rgba(0,0,0,.42),transparent 60%)}
+
+/* -14,7 % n'est pas un chiffre rond mais une mesure : dans l'image, le trou
+   de la monture vaut 60,25 % de sa demi-largeur. Pour que ce trou tombe à
+   78 % du rayon du plateau — là où s'arrêtent les quartiers — la monture
+   doit être dessinée 1,29 fois plus large que lui. */
+/* Le PNG d'abord, l'`image-set` ensuite : un navigateur qui ne connaît pas
+   `image-set` jette la seconde déclaration et garde la première. Le laiton
+   dégradé pèse 65 Ko en WebP contre 611 Ko en PNG — l'écart justifie de
+   servir les deux plutôt que de choisir. */
+.wheel-rim{position:absolute;inset:-14.7%;z-index:3;pointer-events:none;
+  background:url(../img/wheel/rim.png) center/contain no-repeat;
+  background-image:image-set(url(../img/wheel/rim.webp) type("image/webp"),
+                             url(../img/wheel/rim.png) type("image/png"));
+  filter:drop-shadow(0 6px 10px rgba(0,0,0,.55))}
+/* L'arcade a déjà sa couronne d'ampoules, dessinée dans le canevas : deux
+   montures l'une sur l'autre n'en font pas une plus belle. */
+.jmk-skin-arcade .wheel-rim{display:none}
+/* Pendant qu'elle tourne, la roue se redresse un peu : on la voit de plus
+   haut, comme un objet qu'on suit du regard. Elle se recouche en
+   s'arrêtant. C'est la seule animation qui touche à l'inclinaison — le
+   reste du mouvement est dans le plateau. */
+.wheel-holder.spinning .wheel-3d{--tilt:16deg;transition:transform 1.1s cubic-bezier(.2,.8,.25,1)}
+.wheel-holder.settling .wheel-3d{animation:wheel-settle .7s cubic-bezier(.34,1.56,.64,1)}
+@keyframes wheel-settle{0%{transform:rotateX(16deg)}55%{transform:rotateX(33deg)}100%{transform:rotateX(28deg)}}
+
+.glowring{position:absolute;inset:-14px;border-radius:50%;pointer-events:none;opacity:0;transition:opacity .4s;z-index:1}
 .glowring.on{opacity:1;animation:pulse 1.4s ease infinite}
 @keyframes pulse{0%,100%{box-shadow:0 0 0 1px color-mix(in srgb,var(--accent) 30%,transparent)}
   50%{box-shadow:0 0 34px 4px color-mix(in srgb,var(--accent) 22%,transparent)}}
-.needle{position:absolute;top:-11px;left:50%;transform:translateX(-50%);z-index:3;width:0;height:0;
-  border-left:15px solid transparent;border-right:15px solid transparent;border-top:30px solid var(--paper);
-  filter:drop-shadow(0 3px 5px rgba(0,0,0,.6));transform-origin:50% 0}
+/* L'aiguille est hors de l'empilement incliné : elle surplombe la roue et
+   n'a pas à s'aplatir avec elle. */
+/* 5 % : le laiton ne commence pas au bord du porteur. L'image de la monture
+   garde une marge transparente, et l'inclinaison recule encore son bord
+   haut — l'aiguille posée à 0 flottait au-dessus du vide. */
+.needle{position:absolute;top:5%;left:50%;transform:translateX(-50%);z-index:6;width:0;height:0;
+  border-left:15px solid transparent;border-right:15px solid transparent;border-top:32px solid var(--paper);
+  filter:drop-shadow(0 4px 6px rgba(0,0,0,.7));transform-origin:50% 0}
 .needle.tick{animation:tick .09s ease}
 @keyframes tick{50%{transform:translateX(-50%) rotate(-13deg)}}
-.hub{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:19%;aspect-ratio:1;border-radius:50%;
-  background:var(--ink-2);border:3px solid var(--accent);display:grid;place-items:center;z-index:2;
-  font-family:var(--display);font-weight:800;font-size:.72rem;color:var(--accent);letter-spacing:.04em;text-align:center;padding:4px}
+/* Le moyeu porte le mot « TOURNEZ » : il reste lisible, donc il ne subit
+   pas l'inclinaison. On le redresse d'autant, à la même place. */
+.hub{position:absolute;top:50%;left:50%;width:26%;aspect-ratio:1;border-radius:50%;
+  transform:translate(-50%,-50%) rotateX(calc(-1 * var(--tilt,15deg))) translateZ(14px);
+  background:url(../img/wheel/hub.png) center/contain no-repeat;
+  background-image:image-set(url(../img/wheel/hub.webp) type("image/webp"),
+                             url(../img/wheel/hub.png) type("image/png"));
+  display:grid;place-items:center;z-index:4;
+  font-family:var(--display);font-weight:800;font-size:.66rem;color:#3A2A08;
+  letter-spacing:.04em;text-align:center;padding:4px;
+  text-shadow:0 1px 0 rgba(255,235,180,.65)}
 #jmk-confetti{position:fixed;inset:0;pointer-events:none;z-index:90;display:none}
 .result{min-height:54px;text-align:center;font-family:var(--display);font-weight:800;font-size:1.28rem;opacity:0;transform:translateY(8px);transition:.35s}
 .result.show{opacity:1;transform:none}
@@ -386,7 +459,8 @@ select{cursor:pointer}
 .jmk-rtl .needle{left:auto;right:50%;transform:translateX(50%)}
 .jmk-rtl .needle.tick{animation:tick-rtl .09s ease}
 @keyframes tick-rtl{50%{transform:translateX(50%) rotate(13deg)}}
-.jmk-rtl .hub{left:auto;right:50%;transform:translate(50%,-50%)}
+.jmk-rtl .hub{left:auto;right:50%;
+  transform:translate(50%,-50%) rotateX(calc(-1 * var(--tilt,15deg))) translateZ(14px)}
 .jmk-rtl .review blockquote::before{content:'»'}
 .jmk-rtl .review blockquote::after{content:'«'}
 
@@ -736,14 +810,11 @@ body.jmk-skin-casino .wheel-holder::before{
   background:linear-gradient(180deg,var(--g1),var(--g2));-webkit-background-clip:text;
   background-clip:text;color:transparent}
 
-/* roue : anneau or fin, sans ampoules */
-.jmk-skin-casino #wheel{
-  box-shadow:0 30px 80px -22px rgba(0,0,0,.9),0 0 0 5px var(--g3),0 0 0 8px var(--g2),
-             0 0 34px 4px rgba(217,164,65,.32)}
-.jmk-skin-casino .hub{
-  background:radial-gradient(circle at 40% 32%,#1A5C46,#07211A);
-  border:3px solid var(--g2);color:var(--g1);
-  box-shadow:0 0 0 2px rgba(138,93,18,.8),inset 0 2px 6px rgba(255,255,255,.2)}
+/* La roue casino porte sa monture en laiton : l'anneau dessiné en ombre
+   portée tombait juste derrière elle, invisible, et le halo doré débordait
+   par-dessus le métal. Les deux sont retirés — la monture fait le travail,
+   et l'épaisseur porte l'ombre. */
+.jmk-skin-casino .hub{color:#3A2A08;text-shadow:0 1px 0 rgba(255,235,180,.7)}
 .jmk-skin-casino .needle{border-top-color:var(--g1);filter:drop-shadow(0 3px 5px rgba(0,0,0,.7))}
 .jmk-skin-casino .result .code{
   background:#07211A;border:1px dashed var(--g2);color:var(--g1)}
