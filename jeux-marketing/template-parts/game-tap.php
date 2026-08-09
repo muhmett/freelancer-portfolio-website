@@ -34,8 +34,13 @@ $jmk_gift = '<svg class="gift" viewBox="0 0 24 24" aria-hidden="true" focusable=
 					/* translators: %d: numéro de la boîte. */
 					printf( jmk_t( 'open_box' ), (int) $jmk_i + 1 );
 				?>"><?php
+					/* Le lot attend sous le couvercle, vide, dès le premier
+					   affichage : le couvercle bascule pour le découvrir.
+					   Il occupe son propre élément — le script y écrit le
+					   résultat sans effacer le couvercle au passage. */
+				?><span class="box-prize"></span><span class="box-lid"><?php
 					echo $jmk_gift; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- balisage SVG fixe, sans donnée utilisateur.
-				?></button>
+				?></span></button>
 		<?php endfor; ?>
 	</div>
 	<div class="row-inline">

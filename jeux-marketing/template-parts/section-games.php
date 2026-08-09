@@ -36,7 +36,7 @@ if ( ! $jmk_games ) {
 }
 $jmk_total = count( $jmk_games );
 ?>
-<section id="autres">
+<section id="autres" class="games-bg">
 	<div class="wrap">
 		<div class="sec-head rv">
 			<p class="eyebrow"><?php jmk_e( 'games_eyebrow' ); ?></p>

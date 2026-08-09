@@ -608,7 +608,15 @@
 
 	/* ══════════ TAP TO WIN ══════════ */
 	var tapDone = false;
-	var boxFace = ( $( '.box' ) || {} ).innerHTML || '?';
+
+	/* Le résultat s'écrit sous le couvercle, jamais dans le bouton : y
+	   écrire directement effaçait couvercle et cadeau, et la boîte
+	   s'ouvrait sur rien. */
+	function tapMark( box, txt ) {
+		var slot = box.querySelector( '.box-prize' );
+		if ( slot ) { slot.textContent = txt; } else { box.textContent = txt; }
+	}
+
 	$$( '.box' ).forEach( function ( b ) {
 		b.addEventListener( 'click', function () {
 			if ( tapDone ) { return; }
@@ -619,10 +627,10 @@
 					o.classList.add( 'done' );
 					if ( o === b ) {
 						o.classList.add( code ? 'win' : 'lose' );
-						o.textContent = code ? '★' : '—';
+						tapMark( o, code ? '★' : '—' );
 					} else {
 						o.classList.add( 'lose' );
-						o.textContent = '—';
+						tapMark( o, '—' );
 					}
 				} );
 				$( '#tapMsg' ).textContent = code ? T.win + ' ' + w.label : T.lose;
@@ -637,7 +645,9 @@
 	if ( $( '#tapReset' ) ) {
 		$( '#tapReset' ).addEventListener( 'click', function () {
 			tapDone = false;
-			$$( '.box' ).forEach( function ( b ) { b.className = 'box'; b.innerHTML = boxFace; } );
+			// Remettre la classe suffit : le couvercle est resté en place,
+			// il se rabat tout seul puisque « done » disparaît.
+			$$( '.box' ).forEach( function ( b ) { b.className = 'box'; tapMark( b, '' ); } );
 			$( '#tapMsg' ).textContent = '';
 		} );
 	}
@@ -778,15 +788,40 @@
 
 		px.clearRect( 0, 0, s.w, s.h );
 
-		// Clous.
-		px.fillStyle = '#5A4770';
+		/* Le fond du plateau : sombre en haut, éclairé au centre. Sans lui,
+		   les clous flottent sur du vide et la planche reste un schéma. */
+		var fond = px.createLinearGradient( 0, 0, 0, s.h );
+		fond.addColorStop( 0, 'rgba(0,0,0,.55)' );
+		fond.addColorStop( 0.45, 'rgba(255,255,255,.04)' );
+		fond.addColorStop( 1, 'rgba(0,0,0,.5)' );
+		px.fillStyle = fond;
+		px.fillRect( 0, 0, s.w, s.h );
+
+		/* Les clous. Une ombre portée en bas à droite et un reflet en haut
+		   à gauche suffisent à les faire sortir de la planche — c'est la
+		   même lumière que partout ailleurs dans le thème. */
+		var PEG = 3.2;
 		for ( var row = 0; row < PK_ROWS; row++ ) {
 			var count = row + 2,
 				y     = top + ( row + 0.5 ) * gapY;
 			for ( var i = 0; i < count; i++ ) {
 				var x = s.w / 2 + ( i - ( count - 1 ) / 2 ) * gapX;
+
 				px.beginPath();
-				px.arc( x, y, 2.6, 0, Math.PI * 2 );
+				px.arc( x + 0.9, y + 1.2, PEG, 0, Math.PI * 2 );
+				px.fillStyle = 'rgba(0,0,0,.55)';
+				px.fill();
+
+				var bille = px.createRadialGradient(
+					x - PEG * 0.4, y - PEG * 0.45, PEG * 0.12,
+					x, y, PEG
+				);
+				bille.addColorStop( 0, '#EFE6FF' );
+				bille.addColorStop( 0.45, '#8E79AE' );
+				bille.addColorStop( 1, '#3B2F4C' );
+				px.beginPath();
+				px.arc( x, y, PEG, 0, Math.PI * 2 );
+				px.fillStyle = bille;
 				px.fill();
 			}
 		}
@@ -797,6 +832,16 @@
 			var out = null !== lot.cap && lot.awarded >= lot.cap;
 			px.globalAlpha = out ? 0.3 : 1;
 			px.fillStyle   = lotColor( lot );
+			roundPath( px, i * cw + 2, s.h - slotH, cw - 4, slotH - 2, 6 );
+			px.fill();
+
+			/* La case est une poche, pas un rectangle peint : le haut reçoit
+			   la lumière, le fond garde l'ombre. */
+			var creux = px.createLinearGradient( 0, s.h - slotH, 0, s.h );
+			creux.addColorStop( 0, 'rgba(0,0,0,.42)' );
+			creux.addColorStop( 0.34, 'rgba(255,255,255,.16)' );
+			creux.addColorStop( 1, 'rgba(0,0,0,.34)' );
+			px.fillStyle = creux;
 			roundPath( px, i * cw + 2, s.h - slotH, cw - 4, slotH - 2, 6 );
 			px.fill();
 			px.globalAlpha = 1;

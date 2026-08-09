@@ -33,7 +33,9 @@
 
 <!-- tap -->
 <div class="boxes" id="boxes">
-  <button class="box" data-i="0">?</button><button class="box" data-i="1">?</button><button class="box" data-i="2">?</button>
+  <button class="box" data-i="0"><span class="box-prize"></span><span class="box-lid">?</span></button>
+  <button class="box" data-i="1"><span class="box-prize"></span><span class="box-lid">?</span></button>
+  <button class="box" data-i="2"><span class="box-prize"></span><span class="box-lid">?</span></button>
 </div>
 <button id="tapReset">Rejouer</button><span id="tapMsg"></span>
 
@@ -190,6 +192,17 @@ function fire(el,type,init){ el.dispatchEvent(new MouseEvent(type,Object.assign(
   await wait(300);
   ok(SERVER.playCalls===before+1,'le tap tire côté serveur');
   ok(document.getElementById('tapMsg').textContent.length>0,'un message est affiché');
+  /* Le résultat s'écrivait dans le bouton : il emportait couvercle et
+     cadeau, et la boîte s'ouvrait sur rien. On lit à travers une fonction
+     tolérante au nul — sinon la régression fait planter le scénario au
+     lieu de se signaler, et on perd le reste des vérifications. */
+  var prizeTxt = function(){ var p=document.querySelector('.box .box-prize'); return p?p.textContent:null; };
+  ok(document.querySelectorAll('.box .box-lid').length===3,'les trois couvercles sont toujours là');
+  ok(prizeTxt()!==null&&prizeTxt().length>0,'le lot est écrit sous le couvercle');
+  document.getElementById('tapReset').click();
+  await wait(50);
+  ok(document.querySelectorAll('.box .box-lid').length===3,'et ils survivent à « rejouer »');
+  ok(prizeTxt()==='','le lot est effacé au recommencement');
 
   out.push('machine à sous');
   before=SERVER.playCalls;
