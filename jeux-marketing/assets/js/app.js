@@ -235,7 +235,8 @@
 			ctx.rotate( a0 + seg / 2 );
 			ctx.textAlign    = 'right';
 			ctx.textBaseline = 'middle';
-			ctx.font         = ( ARCADE ? '800 ' : '700 ' ) + '40px "Bricolage Grotesque", sans-serif';
+			var poids = ARCADE ? '800 ' : '700 ';
+			ctx.font  = poids + '40px "Bricolage Grotesque", sans-serif';
 			var ink = ( null === lot.hue || lot.losing )
 				? ( ARCADE ? '#D9C9FF' : '#9C90AC' )
 				: '#150C1D';
@@ -251,11 +252,29 @@
 				ctx.fillStyle = ink;
 				ctx.fillText( txt, rad - 44, dy );
 			};
-			if ( w.length > 1 && lot.label.length > 10 ) {
-				put( w[ 0 ], -24 );
-				put( w.slice( 1 ).join( ' ' ), 24 );
+			/* Le libellé vient du client, et le moyeu occupe le centre :
+			   on mesure avant d'écrire plutôt que de fixer une taille et
+			   d'espérer qu'un « Livraison offerte » tienne. */
+			var lignes = ( w.length > 1 && lot.label.length > 10 )
+				? [ w[ 0 ], w.slice( 1 ).join( ' ' ) ]
+				: [ lot.label ];
+			var place  = ( rad - 44 ) - R * 0.26;
+			var fs     = 40;
+			var tient  = function ( taille ) {
+				ctx.font = poids + taille + 'px "Bricolage Grotesque", sans-serif';
+				for ( var k = 0; k < lignes.length; k++ ) {
+					if ( ctx.measureText( lignes[ k ] ).width > place ) { return false; }
+				}
+				return true;
+			};
+			while ( fs > 15 && ! tient( fs ) ) { fs -= 1; }
+			ctx.font = poids + fs + 'px "Bricolage Grotesque", sans-serif';
+
+			if ( 2 === lignes.length ) {
+				put( lignes[ 0 ], -fs * 0.6 );
+				put( lignes[ 1 ], fs * 0.6 );
 			} else {
-				put( lot.label, 0 );
+				put( lignes[ 0 ], 0 );
 			}
 			if ( out ) {
 				ctx.font      = '700 21px "JetBrains Mono", monospace';
