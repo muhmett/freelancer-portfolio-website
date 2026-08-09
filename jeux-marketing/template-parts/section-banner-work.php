@@ -51,7 +51,8 @@ if ( ! $jmk_camps || ! $jmk_fmts ) {
 
 		<div class="banner-wall rv" id="bworkWall">
 			<?php foreach ( $jmk_fmts as $jmk_s ) : ?>
-				<figure class="banner-slot" data-w="<?php echo (int) $jmk_s['w']; ?>" data-h="<?php echo (int) $jmk_s['h']; ?>">
+				<figure class="banner-slot is-<?php echo esc_attr( jmk_banner_shape( $jmk_s['w'], $jmk_s['h'] ) ); ?>"
+					data-w="<?php echo (int) $jmk_s['w']; ?>" data-h="<?php echo (int) $jmk_s['h']; ?>">
 					<figcaption>
 						<?php /* Le « × » est neutre : en arabe il renverrait « 300×250 » à
 						   « 250×300 ». Une dimension ne se retourne pas. */ ?>

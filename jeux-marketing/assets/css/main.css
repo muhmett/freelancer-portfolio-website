@@ -799,7 +799,39 @@ body.jmk-skin-casino .wheel-holder::before{
    coupés à droite sans que rien ne les touche : ils payaient pour le
    bandeau. */
 .banner-slot{flex:0 1 auto;min-width:0;max-width:100%;margin:0}
-.banner-slot[data-w="728"],.banner-slot[data-w="970"],.banner-slot[data-w="980"]{flex-basis:100%}
+.banner-slot.is-wide{flex-basis:100%}
+
+/* Dès qu'il y a la place, le mur passe en grille. En ligne simple, un
+   bandeau prend la largeur entière et un gratte-ciel de 600 px de haut
+   laisse un trou de la même hauteur à côté de lui : la page se lit comme
+   une colonne trouée. En grille, le gratte-ciel tient une colonne et les
+   petits formats s'empilent à côté — c'est la planche de formats qu'un
+   client vient voir, pas une liste. */
+@media(min-width:1000px){
+  .banner-wall{display:grid;grid-template-columns:repeat(auto-fill,340px);
+    grid-auto-rows:min-content;justify-content:start;align-items:start}
+  /* Sans `min-content`, les rangées se partagent la hauteur du gratte-ciel :
+     la rangée du 300×250 s'étire à 340 px et un trou s'ouvre au-dessus du
+     format suivant. Les rangées se calent sur leur propre contenu, et c'est
+     la dernière rangée traversée qui absorbe ce qui reste. */
+  /* 340 px tient tous les formats « boîte » et « gratte-ciel » du catalogue
+     IAB — le plus large est un 336×280. Au-delà, c'est un bandeau, et un
+     bandeau prend la ligne. */
+  .banner-slot.is-wide{grid-column:1 / -1}
+  /* Un élément qui traverse N rangées voit sa hauteur répartie entre elles :
+     à `span 2`, le gratte-ciel poussait la rangée du 300×250 et ouvrait
+     125 px de vide au-dessus du format suivant. En traversant plus de
+     rangées qu'il n'y en a de remplies, le surplus tombe dans les rangées
+     vides — qui ne coûtent rien — et les formats se suivent à la gouttière
+     près. Le mur ne grandit pas pour autant : mesuré identique à `span 2`. */
+  .banner-slot.is-tall{grid-row:span 8}
+
+  /* Le portfolio ne montre que quatre formats choisis. Sur trois colonnes,
+     le gratte-ciel en tient une et les deux petits partent chacun de leur
+     côté, avec 350 px de vide sous eux. Sur deux, ils s'empilent contre le
+     gratte-ciel et la planche se tient. */
+  #bworkWall{grid-template-columns:repeat(2,340px)}
+}
 .banner-stage{max-width:100%;overflow:hidden}
 .banner-slot figcaption{display:flex;align-items:baseline;gap:10px;margin-bottom:8px}
 .banner-dim{font-family:var(--mono,ui-monospace,monospace);font-size:.78rem;

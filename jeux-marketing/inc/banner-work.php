@@ -120,11 +120,40 @@ function jmk_banner_work() {
  */
 function jmk_banner_work_sizes() {
 	return array(
-		array( 'w' => 300, 'h' => 250, 'name' => 'Medium Rectangle' ),
 		array( 'w' => 728, 'h' => 90,  'name' => 'Leaderboard' ),
 		array( 'w' => 160, 'h' => 600, 'name' => 'Wide Skyscraper' ),
+		array( 'w' => 300, 'h' => 250, 'name' => 'Medium Rectangle' ),
 		array( 'w' => 320, 'h' => 100, 'name' => 'Large Mobile Banner' ),
 	);
+}
+
+/**
+ * La forme d'un format, pour la mise en page du mur.
+ *
+ * Le mur ne peut pas ranger des formats qu'il ne distingue pas : un bandeau
+ * de 728 px et un gratte-ciel de 160 sont deux objets sans rapport, et les
+ * traiter pareil laissait la moitié de la ligne vide. La forme se déduit du
+ * rapport, pas d'une liste de tailles — un 970×250 ajouté demain sera rangé
+ * sans qu'on touche à la feuille de style.
+ *
+ * @param int $w Largeur en pixels.
+ * @param int $h Hauteur en pixels.
+ * @return string « wide », « tall » ou « box ».
+ */
+function jmk_banner_shape( $w, $h ) {
+	$w = (int) $w;
+	$h = (int) $h;
+
+	if ( $w < 1 || $h < 1 ) {
+		return 'box';
+	}
+	if ( $h >= $w * 2 ) {
+		return 'tall';
+	}
+	if ( $w >= $h * 4 ) {
+		return 'wide';
+	}
+	return 'box';
 }
 
 /**

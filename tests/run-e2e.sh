@@ -12,7 +12,7 @@ here="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 chrome="${1:-}"
 
 if [ -z "$chrome" ]; then
-	for c in "$CHROME_BIN" chromium chromium-browser google-chrome \
+	for c in "${CHROME_BIN:-}" chromium chromium-browser google-chrome \
 		/opt/pw-browsers/chromium-*/chrome-linux/chrome; do
 		if [ -n "${c:-}" ] && command -v "$c" >/dev/null 2>&1; then chrome="$c"; break; fi
 		if [ -n "${c:-}" ] && [ -x "$c" ]; then chrome="$c"; break; fi

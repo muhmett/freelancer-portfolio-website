@@ -39,7 +39,8 @@ if ( ! $jmk_sizes ) {
 
 		<div class="banner-wall rv" id="bannerWall">
 			<?php foreach ( $jmk_sizes as $jmk_s ) : ?>
-				<figure class="banner-slot" data-w="<?php echo (int) $jmk_s['w']; ?>" data-h="<?php echo (int) $jmk_s['h']; ?>">
+				<figure class="banner-slot is-<?php echo esc_attr( jmk_banner_shape( $jmk_s['w'], $jmk_s['h'] ) ); ?>"
+					data-w="<?php echo (int) $jmk_s['w']; ?>" data-h="<?php echo (int) $jmk_s['h']; ?>">
 					<figcaption>
 						<?php /* En arabe, le « × » est un caractère neutre entre deux nombres :
 						   l'algorithme bidirectionnel place le second à gauche et « 300×250 »
