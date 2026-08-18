@@ -937,11 +937,44 @@ body.jmk-skin-casino .wheel-holder::before{
 .bwork-note{margin:0 0 26px;font-size:.9rem;color:var(--muted);max-width:66ch;min-height:2.6em}
 @media(prefers-reduced-motion:reduce){.bwork-tab:hover{transform:none}}
 
+/* ══════════ CARROUSEL D'ACCUEIL ══════════
+   Quatre fonds générés (bin/make-hero-bg.php), en fondu enchaîné derrière
+   le texte. Le zoom lent est une transition CSS sur transform plutôt qu'une
+   animation à durée fixe : elle reste synchronisée avec l'intervalle choisi
+   côté JS sans dupliquer ce chiffre à deux endroits.
+
+   Le voile en dégradé n'assombrit que la moitié gauche, là où vit le
+   texte — la moitié droite garde la couleur du fond, sinon il n'y aurait
+   plus de carrousel à voir. */
+.hero-stage{position:relative;overflow:hidden}
+.hero-carousel{position:absolute;inset:0;z-index:0}
+.hero-bg-slide{position:absolute;inset:0;background-size:cover;background-position:center;
+  opacity:0;transform:scale(1.05);
+  transition:opacity 1.8s ease,transform 8s linear}
+.hero-bg-slide.is-active{opacity:1;transform:scale(1.15)}
+.hero-carousel-veil{position:absolute;inset:0;
+  background:
+    linear-gradient(100deg,var(--ink) 6%,color-mix(in srgb,var(--ink) 82%,transparent) 34%,
+      color-mix(in srgb,var(--ink) 38%,transparent) 62%,color-mix(in srgb,var(--ink) 12%,transparent) 84%),
+    linear-gradient(0deg,var(--ink) 0%,transparent 34%)}
+@media(max-width:760px){
+  .hero-carousel-veil{background:
+    linear-gradient(0deg,var(--ink) 4%,color-mix(in srgb,var(--ink) 72%,transparent) 46%,
+      color-mix(in srgb,var(--ink) 30%,transparent) 100%)}
+}
+@media(prefers-reduced-motion:reduce){
+  .hero-bg-slide{transition:opacity .01s linear;transform:none}
+}
+
 /* ── accueil : le carrefour ── */
-.hub-hero{padding-block:clamp(48px,9vw,104px) clamp(28px,5vw,52px);max-width:900px}
+.hub-hero{position:relative;z-index:1;padding-block:clamp(48px,9vw,104px) clamp(28px,5vw,52px);max-width:900px}
 .hub-hero h1{margin:6px 0 18px}
 .hub-hero .lede{max-width:60ch}
 .hub-hero .metaline{margin-top:22px}
+.hero-dots{display:flex;gap:10px;margin-top:30px}
+.hero-dots .carousel-dot{width:10px;height:10px;padding:0;border-radius:50%;transition:.25s}
+.hero-dots .carousel-dot.active{width:28px;border-radius:6px}
+@media(prefers-reduced-motion:reduce){.hero-dots .carousel-dot{transition:background-color .18s,border-color .18s}}
 
 .hub-grid{display:grid;gap:26px;grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
 .hub-card{display:flex;flex-direction:column;overflow:hidden;border-radius:var(--r);

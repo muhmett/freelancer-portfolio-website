@@ -77,6 +77,8 @@ return array(
 		'games_h2'           => "Plusieurs mécaniques, une seule configuration",
 		'games_lede'         => "Les lots, les probabilités et la capture d'email sont partagés. Changer de jeu ne change pas votre paramétrage.",
 		'get_code'           => "Recevoir mon code",
+		'hero_bg_dot'        => "Fond %d",
+		'hero_bg_group'      => "Changer le fond",
 		'hub_banners_cta'      => "Voir les bannières",
 		'hub_banners_eyebrow'  => "02 — Publicité display",
 		'hub_banners_p1'       => "Plus de 20 formats standard",

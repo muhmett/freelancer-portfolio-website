@@ -34,7 +34,8 @@ done
 # voit rien dans les journaux. C'est exactement le genre de panne qu'on ne
 # découvre que chez le client — donc on refuse de construire l'archive.
 for f in wheel/rim.webp wheel/rim.png wheel/hub.webp wheel/hub.png \
-	bg/casino.webp bg/arcade.webp bg/elegant.webp bg/metal.webp; do
+	bg/casino.webp bg/arcade.webp bg/elegant.webp bg/metal.webp \
+	hero/aurore.webp hero/confetti.webp hero/rayons.webp hero/grille.webp; do
 	if [ ! -s "$theme/assets/img/$f" ]; then
 		echo "Image manquante ou vide : assets/img/$f" >&2
 		echo "La produire avec bin/cut-disc.php ou bin/make-texture.php." >&2

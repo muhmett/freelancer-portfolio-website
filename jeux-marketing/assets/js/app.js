@@ -1577,6 +1577,45 @@
 		p.style.width = ( h > 0 ? ( window.scrollY / h ) * 100 : 0 ) + '%';
 	}, { passive: true } );
 
+	/* ══════════ CARROUSEL DE FOND — ACCUEIL ══════════
+	   Le zoom lui-même est en CSS (transition sur transform, 8s) : le script
+	   ne fait qu'échanger la classe is-active. « Mouvement réduit » laisse
+	   simplement le premier fond, immobile — c'est déjà l'état posé par PHP. */
+	var heroStage = $( '.hero-stage' );
+	if ( heroStage && ! reduced ) {
+		var heroSlides = $$( '#heroBg .hero-bg-slide' );
+		var heroDots   = $$( '#heroDots .carousel-dot' );
+		var heroAt     = 0;
+		var heroHold   = 7000; // < 8s : le fond suivant part avant que le zoom précédent n'ait fini.
+		var heroTimer  = null;
+
+		var heroShow = function ( i ) {
+			heroAt = ( i + heroSlides.length ) % heroSlides.length;
+			heroSlides.forEach( function ( s, j ) { s.classList.toggle( 'is-active', j === heroAt ); } );
+			heroDots.forEach( function ( d, j ) { d.classList.toggle( 'active', j === heroAt ); } );
+		};
+		var heroStart = function () {
+			if ( heroTimer || heroSlides.length < 2 ) { return; }
+			heroTimer = setInterval( function () { heroShow( heroAt + 1 ); }, heroHold );
+		};
+		var heroStop = function () {
+			clearInterval( heroTimer );
+			heroTimer = null;
+		};
+
+		heroDots.forEach( function ( d, j ) {
+			d.addEventListener( 'click', function () { heroShow( j ); heroStop(); heroStart(); } );
+		} );
+
+		heroStart();
+		document.addEventListener( 'visibilitychange', function () {
+			if ( document.hidden ) { heroStop(); } else { heroStart(); }
+		} );
+		// En pause au survol : le visiteur qui lit le titre ne doit pas voir le fond changer sous lui.
+		heroStage.addEventListener( 'mouseenter', heroStop );
+		heroStage.addEventListener( 'mouseleave', heroStart );
+	}
+
 	/* ══════════ CARROUSEL DES JEUX ══════════ */
 	var track = $( '#gamesTrack' );
 	if ( track ) {

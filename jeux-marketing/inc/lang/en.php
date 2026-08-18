@@ -77,6 +77,8 @@ return array(
 		'games_h2'           => "Several mechanics, one configuration",
 		'games_lede'         => "Prizes, odds and email capture are shared. Switching game does not change your settings.",
 		'get_code'           => "Send me my code",
+		'hero_bg_dot'        => "Background %d",
+		'hero_bg_group'      => "Switch background",
 		'hub_banners_cta'      => "See the banners",
 		'hub_banners_eyebrow'  => "02 — Display advertising",
 		'hub_banners_p1'       => "20+ standard formats",
